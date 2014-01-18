@@ -49,11 +49,11 @@ init()
         for (i in countries) {
             countries[i].inFCODB = "false";
             for (j in lgbtCountries) {
-                countries[i].lgbtRights = {};
-                countries[i].lgbtRights.persecution = false;
-                countries[i].lgbtRights.imprisonment = false;
-                countries[i].lgbtRights.deathPenalty = false;
                 if (countries[i].iso3 == lgbtCountries[j]['ISO 3166-1 (3 letter)']) {
+                    countries[i].lgbtRights = {};
+                    countries[i].lgbtRights.persecution = false;
+                    countries[i].lgbtRights.imprisonment = false;
+                    countries[i].lgbtRights.deathPenalty = false;
                     if (lgbtCountries[j]['Persecution'] == 'yes')
                         countries[i].lgbtRights.persecution = true;
                     if (lgbtCountries[j]['Imprisonment'] == 'yes')
@@ -85,7 +85,7 @@ init()
     return Q.all(promises);
 })
 .then(function(countries) {
-    console.log(countries);
+   console.log(countries);
     console.log("*** Finished importing data into the DB");
     db.close();
 });
