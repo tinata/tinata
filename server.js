@@ -25,9 +25,30 @@ app.get('/', function(req, res, next) {
     res.render('index');
 });
 
+// Legacy
 app.get('/all/', function(req, res, next) {
     res.setHeader('Content-Type', 'application/json');
     db.countries.find({}, function(err, countries) {
+        res.send( JSON.stringify(countries) );
+    });
+});
+
+/** 
+ * List all countries
+ */
+app.get('/country/', function(req, res, next) {
+    res.setHeader('Content-Type', 'application/json');
+    db.countries.find({}, function(err, countries) {
+        res.send( JSON.stringify(countries) );
+    });
+});
+
+/** 
+ * List countries who names match the query
+ */
+app.get('/country/:iso', function(req, res, next) {
+    res.setHeader('Content-Type', 'application/json');
+    db.countries.find({ "iso": req.params.iso }, function(err, countries) {
         res.send( JSON.stringify(countries) );
     });
 });

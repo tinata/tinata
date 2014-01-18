@@ -54,11 +54,11 @@ init()
                 countries[i].lgbtRights.imprisonment = false;
                 countries[i].lgbtRights.deathPenalty = false;
                 if (countries[i].iso3 == lgbtCountries[j]['ISO 3166-1 (3 letter)']) {
-                    if (lgbtCountries[j]['Persecution'] == true)
+                    if (lgbtCountries[j]['Persecution'] == 'yes')
                         countries[i].lgbtRights.persecution = true;
-                    if (lgbtCountries[j]['Imprisonment'] == true)
+                    if (lgbtCountries[j]['Imprisonment'] == 'yes')
                         countries[i].lgbtRights.imprisonment = true;
-                    if (lgbtCountries[j]['Death'] == true)
+                    if (lgbtCountries[j]['Death'] == 'yes')
                         countries[i].lgbtRights.deathPenalty = true;
                 }
             }
