@@ -1,0 +1,15 @@
+{
+  "name": "Tinatapi",
+  "description": "International travel advice API",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "3.*",
+    "express-partials": "*",
+    "ejs": "*",
+    "mongojs": "*",
+    "request": "*",
+    "q": "*",
+    "csvtojson": "*"
+  }
+}
