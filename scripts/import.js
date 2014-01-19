@@ -31,6 +31,9 @@ init()
                 if (countries[i].iso == FCOCountries[j]['ISO 3166-1 (2 letter)']) {
                     countries[i].iso3 = FCOCountries[j]['ISO 3166-1 (3 letter)'];
                     countries[i].name = FCOCountries[j]['Country'];
+                    countries[i].nameForCitizen = FCOCountries[j]['Name for Citizen'];
+                    countries[i].fcoTravelAdviceUrl = FCOCountries[j]['FCO travel advice'];
+                    countries[i].nhsTravelAdviceUrl = FCOCountries[j]['NHS Travel Health'];
                     countries[i].inUKFCODB = true;
                 }
             }
