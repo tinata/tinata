@@ -7,11 +7,11 @@ var util = require('util'); // For debugging
 var mongoJs = require('mongojs');
 var request = require('request');
 var Q = require('q'); // For promises
+var xml2js = require('xml2js');
 var config = require(__dirname + '/../config.json');
 var Converter = require("csvtojson").core.Converter;
 var countryLookup = require('country-data').lookup;
 var countryCurrencies = require('country-data').currencies;
-// Exchnge Rates
 var oxr = require('open-exchange-rates');
 var fx = require('money');
 
@@ -214,6 +214,41 @@ init()
         });
         return deferred.promise;
     }
+})
+.then(function(countries) {
+    // Get exchange rate info
+    var promises = [];
+    for (i in countries) {
+        var country = countries[i];
+        try {
+            // Get all bills currently before parliament from the RSS feed
+            var url = 'https://news.google.com/news/feeds?hl=en&gl=us&q='+encodeURIComponent(country.name.replace(' ', '+'))+'&um=1&ie=UTF-8&output=rss';
+            request(url, function (error, response, body) {
+                // Check the response seems okay
+                if (response.statusCode == 200) {
+                    var parser = new xml2js.Parser();
+                    parser.parseString(body, function (err, result) {
+                        var newsItem = {};
+                        if (!country.news)
+                            country.news = [];
+                        for (j in result.rss.channel) {
+                            newsItem.title = result.rss.channel[j].title;
+                            newsItem.link = result.rss.channel[j].link;
+                            newsItem.date = result.rss.channel[j].pubDate;
+                            country.news.push(newsItem);
+                        }
+                        promises.push(country);
+                    });
+                } else {
+                    console.log("Unable to fetch news feed from Google.com");
+                    promises.push(country);
+                }
+            });
+        } catch (e) {
+            promises.push(country);
+        }
+    }
+  return Q.all(promises);
 })
 .then(function(countries) {
     // Add Human Rights info From CIRI (http://www.humanrightsdata.org)
