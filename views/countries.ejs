@@ -12,7 +12,7 @@
             <h2>All countries</h2>
             <hr/>
             <% countries.forEach(function(country) { %>
-                <p><a href="/countries/<%= country.iso %>"><%= country.name %></a></p>
+                <p><a href="/countries/<%= country.iso %>"><%= country.name %></a> <span class="text-muted">(<%= country.iso %>)</span></p>
             <% }); %>
     </div>
 </div>
