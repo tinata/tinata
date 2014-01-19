@@ -176,9 +176,119 @@ init()
   deferred.resolve(countries);
   return deferred.promise;
 })
-// @todo Import FCO travel advice
-// @todo Import Human rights info
-// @todo Import Relevant other data (e.g. currency)
+.then(function(countries) {
+    // Add Human Rights info From CIRI (http://www.humanrightsdata.org)
+    var deferred = Q.defer();
+    var csvConverter = new Converter();
+    csvConverter.on("end_parsed", function(jsonObj) {
+        var humanRights = jsonObj.csvRows;
+        for (i in countries) {
+            for (j in humanRights) {
+                if (countries[i].name == humanRights[j].CTRY) {
+                    countries[i].humanRights = {};
+                    /*
+                    Physical Integrity Rights Index
+                    This is an additive index constructed from the Torture, Extrajudicial Killing, Political Imprisonment,
+                    and Disappearance indicators. It ranges from 0 (no government respect for these four rights) to 8 
+                    (full government respect for these four rights). Details on its construction and use can be found in:
+                    David L. Cingranelli and David L. Richards. 1999. "Measuring the Level, Pattern, and Sequence of 
+                    Government Respect for Physical Integrity Rights." International Studies Quarterly, Vol 43.2: 407-18.
+                    */
+                    if (humanRights[j].PHYSINT < 4) {
+                        countries[i].humanRights.physicalAbuses = 'High';
+                    } else if (humanRights[j].PHYSINT < 7) {
+                        countries[i].humanRights.physicalAbuses = 'Medium';
+                    } else {
+                        countries[i].humanRights.physicalAbuses = 'Low';
+                    }
+                    
+                    /*
+                    Disappearance
+                    Disappearances are cases in which people have disappeared, political motivation appears likely, and
+                    the victims have not been found. Knowledge of the whereabouts of the disappeared is, by definition,
+                    not public knowledge. However, while there is typically no way of knowing where victims are, it is
+                    typically known by whom they were taken and under what circumstances. A score of 0 indicates that
+                    disappearances have occurred frequently in a given year; a score of 1 indicates that disappearances
+                    occasionally occurred; and a score of 2 indicates that disappearances did not occur in a given year.
+                    */
+                    if (humanRights[j].DISAP == 0) {
+                        countries[i].humanRights.disapperances = 'High';
+                    } else if (humanRights[j].DISAP == 1) {
+                        countries[i].humanRights.disapperances = 'Medium';
+                    } else {
+                        countries[i].humanRights.disapperances = 'Low';
+                    }
+                    
+                    /*
+                    Political Imprisonment
+                    Political imprisonment refers to the incarceration of people by government officials because of:
+                    their speech; their non-violent opposition to government policies or leaders; their religious beliefs;
+                    their non-violent religious practices including proselytizing; or their membership in a group,
+                    including an ethnic or racial group. A score of 0 indicates that there were many people imprisoned
+                    because of their religious, political, or other beliefs in a given year; a score of 1 indicates that
+                    a few people were imprisoned; and a score of 2 indicates that no persons were imprisoned for any of
+                    the above reasons in a given year.
+                    */
+                    if (humanRights[j].POLPRIS == 0) {
+                        countries[i].humanRights.politicalImprisonment = 'High';
+                    } else if (humanRights[j].POLPRIS == 1) {
+                        countries[i].humanRights.politicalImprisonment = 'Medium';
+                    } else {
+                        countries[i].humanRights.politicalImprisonment = 'Low';
+                    }
+                    
+                    /*
+                    Freedom of Speech
+                    This variable indicates the extent to which freedoms of speech and press are affected by government
+                    censorship, including ownership of media outlets. Censorship is any form of restriction that is
+                    placed on freedom of the press, speech or expression. Expression may be in the form of art or music.
+                    A score of 0 indicates that government censorship of the media was complete; a score of 1 indicates
+                    that there was some government censorship of the media; and a score of 2 indicates that there was
+                    no government censorship of the media in a given year.
+                    */
+                    if (humanRights[j].SPEECH == 0) {
+                        countries[i].humanRights.restrictionsOnFreedomOfSpeech = 'High';
+                    } else if (humanRights[j].SPEECH == 1) {
+                        countries[i].humanRights.restrictionsOnFreedomOfSpeech = 'Medium';
+                    } else {
+                        countries[i].humanRights.restrictionsOnFreedomOfSpeech = 'Low';
+                    }
+                    
+                    /*
+                    Women's Social Rights
+                    Women's social rights include a number of internationally recognized rights. These rights include:
+                    
+                    - The right to equal inheritance
+                    - The right to enter into marriage on a basis of equality with men
+                    - The right to travel abroad
+                    - The right to obtain a passport
+                    - The right to confer citizenship to children or a husband
+                    - The right to initiate a divorce
+                    - The right to own, acquire, manage, and retain property brought into marriage
+                    - The right to participate in social, cultural, and community activities
+                    - The right to an education
+                    - The freedom to choose a residence/domicile
+                    - Freedom from female genital mutilation of children and of adults without their consent
+                    - Freedom from forced sterilization
+                    
+                    A score of 0 indicates that there were no social rights for women in law and that systematic
+                    discrimination based on sex may have been built into law. A score of 1 indicates that women had
+                    some social rights under law, but these rights were not effectively enforced. A score of 2 indicates
+                    that women had some social rights under law, and the government effectively enforced these rights
+                    in practice while still allowing a low level of discrimination against women in economic matters.
+                    Finally, a score of 3 indicates that all or nearly all of women's social rights were guaranteed by
+                    law and the government fully and vigorously enforced these laws in practice.
+                    */
+                    // No data for some reason :(
+                    //countries[i].humanRights.womensSocialRights = humanRights[j].WOSOC;
+                }
+            }
+        }
+        deferred.resolve(countries);
+    });
+    csvConverter.from("../data/Human-Rights.csv");
+    return deferred.promise;
+})
 // @todo Import latest news and weather alerts (Google)
 .then(function(countries) {
     var promises = [];
