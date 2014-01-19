@@ -26,12 +26,12 @@ init()
     csvConverter.on("end_parsed", function(jsonObj) {
         var FCOCountries = jsonObj.csvRows;
         for (i in countries) {
-            countries[i].inFCODB = "false";
+            countries[i].inUKFCODB = false;
             for (j in FCOCountries) {
                 if (countries[i].iso == FCOCountries[j]['ISO 3166-1 (2 letter)']) {
                     countries[i].iso3 = FCOCountries[j]['ISO 3166-1 (3 letter)'];
                     countries[i].name = FCOCountries[j]['Country'];
-                    countries[i].inFCODB = "true";
+                    countries[i].inUKFCODB = true;
                 }
             }
         }
@@ -47,7 +47,6 @@ init()
     csvConverter.on("end_parsed", function(jsonObj) {
         var lgbtCountries = jsonObj.csvRows;
         for (i in countries) {
-            countries[i].inFCODB = "false";
             for (j in lgbtCountries) {
                 if (countries[i].iso3 == lgbtCountries[j]['ISO 3166-1 (3 letter)']) {
                     countries[i].lgbtRights = {};
@@ -76,7 +75,6 @@ init()
     csvConverter.on("end_parsed", function(jsonObj) {
         var britsAbroad = jsonObj.csvRows;
         for (i in countries) {
-            countries[i].inFCODB = "false";
             for (j in britsAbroad) {
                 if (countries[i].iso == britsAbroad[j]['The two-letter ISO 3166-1 code']) {
                     
