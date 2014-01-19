@@ -83,36 +83,43 @@ init()
                     
                     countries[i].uk = {};
 
+                    britsAbroad[j]['Drug Arrests'] = britsAbroad[j]['Drug Arrests'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Drug Arrests']) > 0)
                         countries[i].uk.drugArrests = parseInt(britsAbroad[j]['Drug Arrests']);
 
+                    britsAbroad[j]['Total Arrests / Detentions'] = britsAbroad[j]['Total Arrests / Detentions'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Total Arrests / Detentions']) > 0)
                             countries[i].uk.arrests = parseInt(britsAbroad[j]['Total Arrests / Detentions']);
 
+                    britsAbroad[j]['Total Deaths'] = britsAbroad[j]['Total Deaths'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Total Deaths']) > 0)
                         countries[i].uk.deaths = parseInt(britsAbroad[j]['Total Deaths']);
 
+                    britsAbroad[j]['Hospitalisation'] = britsAbroad[j]['Hospitalisation'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Hospitalisation']) > 0)
                         countries[i].uk.hospitalizations = parseInt(britsAbroad[j]['Hospitalisation']);
 
+                    britsAbroad[j]['Rape'] = britsAbroad[j]['Rape'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Rape']) > 0)
                         countries[i].uk.rapes = parseInt(britsAbroad[j]['Rape']);
 
+                    britsAbroad[j]['Sexual Assault'] = britsAbroad[j]['Sexual Assault'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Sexual Assault']) > 0)
                         countries[i].uk.sexualAssaults = parseInt(britsAbroad[j]['Sexual Assault']);
 
+                    britsAbroad[j]['Total Assistance'] = britsAbroad[j]['Total Assistance'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Total Assistance']) > 0)
                         countries[i].uk.totalConsularAssistance = parseInt(britsAbroad[j]['Total Assistance']);
 
+                    britsAbroad[j]['Total Other Assistance'] = britsAbroad[j]['Total Other Assistance'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Total Other Assistance']) > 0)
                         countries[i].uk.givenOtherConsularAssistance = parseInt(britsAbroad[j]['Total Other Assistance']);
 
-                    if (parseInt(britsAbroad[j]['Total Other Assistance']) > 0)
-                        countries[i].uk.givenOtherConsularAssistance = parseInt(britsAbroad[j]['Total Other Assistance']);
-
+                    britsAbroad[j]['Passport Lost/Stolen'] = britsAbroad[j]['Passport Lost/Stolen'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Passport Lost/Stolen']) > 0)
                         countries[i].uk.lostPassport = parseInt(britsAbroad[j]['Passport Lost/Stolen']);
 
+                    britsAbroad[j]['IPS Visitors'] = britsAbroad[j]['IPS Visitors'].replace('<', '');
                     if (parseInt(britsAbroad[j]['IPS Visitors']) > 0)
                         countries[i].uk.visitors = parseInt(britsAbroad[j]['IPS Visitors']);
 
