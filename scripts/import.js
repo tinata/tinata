@@ -8,8 +8,8 @@ var mongoJs = require('mongojs');
 var request = require('request');
 var Q = require('q'); // For promises
 var Converter = require("csvtojson").core.Converter;
-
-var date = new Date();
+var countryLookup = require('country-data').lookup;
+var countryCurrencies = require('country-data').currencies;
 
 GLOBAL.db = mongoJs.connect("127.0.0.1/tinatapi", ["countries"]);
         
@@ -69,9 +69,8 @@ init()
     return deferred.promise;
 })
 .then(function(countries) {
-
-    // Loop through all countries (defined by UN and add 3 letter ISO abbr,
-    // use the FCO name and note if it's in the FCO DB or not.
+    
+    // Add crime statistics ( crimes commited & where citizens were victims)
     var deferred = Q.defer();
     var csvConverter = new Converter();
     csvConverter.on("end_parsed", function(jsonObj) {
@@ -101,6 +100,12 @@ init()
                     if (parseInt(britsAbroad[j]['Sexual Assault']) > 0)
                         countries[i].uk.sexualAssaults = parseInt(britsAbroad[j]['Sexual Assault']);
 
+                    if (parseInt(britsAbroad[j]['Total Assistance']) > 0)
+                        countries[i].uk.totalConsularAssistance = parseInt(britsAbroad[j]['Total Assistance']);
+
+                    if (parseInt(britsAbroad[j]['Total Other Assistance']) > 0)
+                        countries[i].uk.givenOtherConsularAssistance = parseInt(britsAbroad[j]['Total Other Assistance']);
+
                     if (parseInt(britsAbroad[j]['Total Other Assistance']) > 0)
                         countries[i].uk.givenOtherConsularAssistance = parseInt(britsAbroad[j]['Total Other Assistance']);
 
@@ -110,8 +115,7 @@ init()
                     if (parseInt(britsAbroad[j]['IPS Visitors']) > 0)
                         countries[i].uk.visitors = parseInt(britsAbroad[j]['IPS Visitors']);
 
-
-                    // Add warnings if level of activity is above normal
+                    // Add warnings if level of activity is above 'normal'
                     countries[i].warnings = {};
                     if (britsAbroad[j]['Drug Arrests'].indexOf('HIGH') > 0)
                         countries[i].warnings.drugArrests = 'High';
@@ -130,7 +134,10 @@ init()
                     
                     if (britsAbroad[j]['Sexual Assault'].indexOf('HIGH') > 0)
                         countries[i].warnings.sexualAssaults = 'High';
-                    
+
+                    if (britsAbroad[j]['Total Assistance'].indexOf('HIGH') > 0)
+                        countries[i].warnings.totalConsularAssistance = 'High';
+
                     if (britsAbroad[j]['Total Other Assistance'].indexOf('HIGH') > 0)
                         countries[i].warnings.givenOtherConsularAssistance = 'High';
                     
@@ -143,6 +150,23 @@ init()
     });
     csvConverter.from("../data/British-Behaviour-Abroad_2012-2013.csv");
     return deferred.promise;
+})
+.then(function(countries) {
+    // Get currency info
+    var deferred = Q.defer();
+    for (i in countries) {            
+        var country = countryLookup.countries({alpha2: countries[i].iso})[0];
+        // @fixme Some countries (e.g. Zimbabwe) have multiple currencies
+        if (country) {
+            if (country.currencies.length) {
+                countries[i].currency = {};
+                countries[i].currency.name = countryCurrencies[country.currencies[0]].name;
+                countries[i].currency.code = country.currencies[0];
+            }
+        }
+    }
+  deferred.resolve(countries);
+  return deferred.promise;
 })
 // @todo Import FCO travel advice
 // @todo Import Human rights info
