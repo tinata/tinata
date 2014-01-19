@@ -1,5 +1,6 @@
 /**
- * TINATAPI
+ * TINATAPI - An API that provides information useful to travellers. For #FOCHACK
+ * @author      me@iaincollins.com
  */
 
 var express = require('express');
@@ -63,6 +64,7 @@ app.get('/country/:iso', function(req, res, next) {
  */
 app.get('/countries', function(req, res, next) {
     res.setHeader('Content-Type', 'application/json');
+    res.setHeader("Access-Control-Allow-Origin", "*");
     db.countries.find({}, function(err, countries) {
         res.send( JSON.stringify(countries) );
     });
@@ -73,6 +75,7 @@ app.get('/countries', function(req, res, next) {
  */
 app.get('/countries/:iso', function(req, res, next) {
     res.setHeader('Content-Type', 'application/json');
+    res.setHeader("Access-Control-Allow-Origin", "*");
     db.countries.find({ "iso": req.params.iso }, function(err, countries) {
         res.send( JSON.stringify(countries) );
     });
