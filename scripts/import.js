@@ -19,8 +19,6 @@ GLOBAL.db = mongoJs.connect("127.0.0.1/tinatapi", ["countries"]);
         
 console.log("*** Importing data into the DB");
 
-var gCountries;
-
 init()
 .then(function(countries) {
     // Loop through all countries (defined by UN and add 3 letter ISO abbr,
@@ -30,15 +28,25 @@ init()
     csvConverter.on("end_parsed", function(jsonObj) {
         var FCOCountries = jsonObj.csvRows;
         for (i in countries) {
-            countries[i].inUKFCODB = false;
+            
+            // Remove old properties that are longer supported.
+            delete countries[i].uk;
+            delete countries[i].inUKFCODB;
+            delete countries[i].fcoTravelAdviceUrl;
+            delete countries[i].nhsTravelAdviceUrl;
+            delete countries[i].travelAdvice;
+            
             for (j in FCOCountries) {
                 if (countries[i].iso == FCOCountries[j]['ISO 3166-1 (2 letter)']) {
                     countries[i].iso3 = FCOCountries[j]['ISO 3166-1 (3 letter)'];
                     countries[i].name = FCOCountries[j]['Country'];
                     countries[i].nameForCitizen = FCOCountries[j]['Name for Citizen'];
-                    countries[i].fcoTravelAdviceUrl = FCOCountries[j]['FCO travel advice'];
-                    countries[i].nhsTravelAdviceUrl = FCOCountries[j]['NHS Travel Health'];
-                    countries[i].inUKFCODB = true;
+                    
+                    if (!countries[i].ukTravelAdvice)
+                        countries[i].ukTravelAdvice = {};
+
+                    countries[i].ukTravelAdvice.fcoTravelAdviceUrl = FCOCountries[j]['FCO travel advice'];
+                    countries[i].ukTravelAdvice.nhsTravelAdviceUrl = FCOCountries[j]['NHS Travel Health'];
                 }
             }
         }
@@ -48,30 +56,83 @@ init()
     return deferred.promise;
 })
 .then(function(countries) {
-    // Add LGBT Rights info
+    // Adding consular data
     var deferred = Q.defer();
     var csvConverter = new Converter();
     csvConverter.on("end_parsed", function(jsonObj) {
-        var lgbtCountries = jsonObj.csvRows;
+        var consularData = jsonObj.csvRows;
         for (i in countries) {
-            for (j in lgbtCountries) {
-                if (countries[i].iso3 == lgbtCountries[j]['ISO 3166-1 (3 letter)']) {
-                    countries[i].lgbtRights = {};
-                    countries[i].lgbtRights.persecution = false;
-                    countries[i].lgbtRights.imprisonment = false;
-                    countries[i].lgbtRights.deathPenalty = false;
-                    if (lgbtCountries[j]['Persecution'] == 'yes')
-                        countries[i].lgbtRights.persecution = true;
-                    if (lgbtCountries[j]['Imprisonment'] == 'yes')
-                        countries[i].lgbtRights.imprisonment = true;
-                    if (lgbtCountries[j]['Death'] == 'yes')
-                        countries[i].lgbtRights.deathPenalty = true;
+            for (j in consularData) {
+                if (countries[i].name == consularData[j]['Summary 2013']) {                    
+                    countries[i].ukConsularData = {};
+                    countries[i].ukConsularData.abduction = consularData[j]['Abduction'];
+                    countries[i].ukConsularData.arrestChildSex = consularData[j]['Arrest/Detention - Child Sex'];
+                    countries[i].ukConsularData.arrestDrugs = consularData[j]['Arrest/Detention - Drugs'];
+                    countries[i].ukConsularData.arrestGeneral = consularData[j]['Arrest/Detention - General'];
+                    countries[i].ukConsularData.arrestImmigration = consularData[j]['Arrest/Detention - Immigration'];
+                    countries[i].ukConsularData.childAccess = consularData[j]['Child - Access'];	
+                    countries[i].ukConsularData.childCustody = consularData[j]['Child Custody'];
+                    countries[i].ukConsularData.deathAccidental = consularData[j]['Death - Accidental'];
+                    countries[i].ukConsularData.deathExecution = consularData[j]['Death - Execution'];
+                    countries[i].ukConsularData.deathNatural = consularData[j]['Death - Natural'];
+                    countries[i].ukConsularData.deathSuicude = consularData[j]['Death - Suicide'];
+                    countries[i].ukConsularData.deathUnknown = consularData[j]['Death - Unknown'];
+                    countries[i].ukConsularData.deathOpen = consularData[j]['Death - Open'];
+                    countries[i].ukConsularData.deathRoad = consularData[j]['Death - Road'];
+                    countries[i].ukConsularData.forcedMarriage = consularData[j]['Forced Marriage'];
+                    countries[i].ukConsularData.hosipitalisation = consularData[j]['Hospitalisation'];
+                    countries[i].ukConsularData.missingPersons = consularData[j]['Missing Persons'];
+                    countries[i].ukConsularData.psychiatric = consularData[j]['Psychiatric'];
+                    countries[i].ukConsularData.psychiatricDiagnosed = consularData[j]['Psychiatric (Diagnosed)'];
+                    countries[i].ukConsularData.psychiatricUndiagnosed = consularData[j]['Psychiatric (Undiagnosed)'];
+                    countries[i].ukConsularData.mentalHealth = consularData[j]['Mental Health'];
+                    countries[i].ukConsularData.rape = consularData[j]['Rape'];
+                    countries[i].ukConsularData.assultSexual = consularData[j]['Assault - Sexual'];
+                    countries[i].ukConsularData.accidentAir = consularData[j]['Accident - Air'];
+                    countries[i].ukConsularData.accidentGeneral = consularData[j]['Accident - General'];
+                    countries[i].ukConsularData.accidentMarine = consularData[j]['Accident - Marine'];
+                    countries[i].ukConsularData.accidentRail = consularData[j]['Accident - Rail'];
+                    countries[i].ukConsularData.accidentRoad = consularData[j]['Accident - Road'];
+                    countries[i].ukConsularData.accidentSki = consularData[j]['Accident - Ski'];
+                    countries[i].ukConsularData.assultGeneral = consularData[j]['Assault - General'];
+                    countries[i].ukConsularData.assistance = consularData[j]['Assistance'];
+                    countries[i].ukConsularData.infoLocal = consularData[j]['Info. (local)'];
+                    countries[i].ukConsularData.infoUK = consularData[j]['Information (UK)'];
+                    countries[i].ukConsularData.loss = consularData[j]['Loss'];
+                    countries[i].ukConsularData.medical = consularData[j]['Medical'];
+                    countries[i].ukConsularData.theft = consularData[j]['Theft'];
+                    countries[i].ukConsularData.deportation = consularData[j]['Deportation'];
+                    countries[i].ukConsularData.disaster = consularData[j]['Disaster'];
+                    countries[i].ukConsularData.natural = consularData[j]['Natural'];
+                    countries[i].ukConsularData.accidentRail = consularData[j]['Dispute'];
+                    countries[i].ukConsularData.domesticViolence = consularData[j]['Domestic Violence'];
+                    countries[i].ukConsularData.estates = consularData[j]['Estates'];
+                    countries[i].ukConsularData.evacuation = consularData[j]['Evacuation'];
+                    countries[i].ukConsularData.financialTransaction = consularData[j]['Financial Transaction'];
+                    countries[i].ukConsularData.hijacking = consularData[j]['Hijacking'];
+                    countries[i].ukConsularData.injury = consularData[j]['Injury'];
+                    countries[i].ukConsularData.miscellaneous = consularData[j]['Miscellaneous'];
+                    countries[i].ukConsularData.reluctantSponsor = consularData[j]['Reluctant Sponsor'];
+                    countries[i].ukConsularData.repatriation = consularData[j]['Repatriation'];
+                    countries[i].ukConsularData.medical = consularData[j]['Medical'];
+                    countries[i].ukConsularData.nonMedical = consularData[j]['Non-medical'];
+                    countries[i].ukConsularData.shipping = consularData[j]['Shipping'];
+                    countries[i].ukConsularData.evacuation = consularData[j]['Transfer from Crisis'];
+                    countries[i].ukConsularData.welfare = consularData[j]['Welfare'];
+                    countries[i].ukConsularData.whereabouts = consularData[j]['Whereabouts'];
+                    countries[i].ukConsularData.welfareWhereabouts = consularData[j]['Welfare/Whereabouts'];
+                    
+                    // Unset values that equal 0
+                    for (k in countries[i].ukConsularData) {
+                        if (countries[i].ukConsularData[k])
+                            delete countries[i].ukConsularData[k];
+                    }
                 }
             }
         }
         deferred.resolve(countries);
     });
-    csvConverter.from("../data/LGBT.csv");
+    csvConverter.from("../data/Consular-Data-2013-Summary.csv");
     return deferred.promise;
 })
 .then(function(countries) {
@@ -84,82 +145,120 @@ init()
             for (j in britsAbroad) {
                 if (countries[i].iso == britsAbroad[j]['The two-letter ISO 3166-1 code']) {
                     
-                    countries[i].uk = {};
+                    if (!countries[i].ukConsularData)
+                        countries[i].ukConsularData = {};
 
                     britsAbroad[j]['Drug Arrests'] = britsAbroad[j]['Drug Arrests'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Drug Arrests']) > 0)
-                        countries[i].uk.drugArrests = parseInt(britsAbroad[j]['Drug Arrests']);
+                        countries[i].ukConsularData.drugArrests = parseInt(britsAbroad[j]['Drug Arrests']);
 
                     britsAbroad[j]['Total Arrests / Detentions'] = britsAbroad[j]['Total Arrests / Detentions'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Total Arrests / Detentions']) > 0)
-                            countries[i].uk.arrests = parseInt(britsAbroad[j]['Total Arrests / Detentions']);
+                            countries[i].ukConsularData.arrests = parseInt(britsAbroad[j]['Total Arrests / Detentions']);
 
                     britsAbroad[j]['Total Deaths'] = britsAbroad[j]['Total Deaths'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Total Deaths']) > 0)
-                        countries[i].uk.deaths = parseInt(britsAbroad[j]['Total Deaths']);
+                        countries[i].ukConsularData.deaths = parseInt(britsAbroad[j]['Total Deaths']);
 
                     britsAbroad[j]['Hospitalisation'] = britsAbroad[j]['Hospitalisation'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Hospitalisation']) > 0)
-                        countries[i].uk.hospitalizations = parseInt(britsAbroad[j]['Hospitalisation']);
+                        countries[i].ukConsularData.hospitalizations = parseInt(britsAbroad[j]['Hospitalisation']);
 
                     britsAbroad[j]['Rape'] = britsAbroad[j]['Rape'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Rape']) > 0)
-                        countries[i].uk.rapes = parseInt(britsAbroad[j]['Rape']);
+                        countries[i].ukConsularData.rapes = parseInt(britsAbroad[j]['Rape']);
 
                     britsAbroad[j]['Sexual Assault'] = britsAbroad[j]['Sexual Assault'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Sexual Assault']) > 0)
-                        countries[i].uk.sexualAssaults = parseInt(britsAbroad[j]['Sexual Assault']);
+                        countries[i].ukConsularData.sexualAssaults = parseInt(britsAbroad[j]['Sexual Assault']);
 
                     britsAbroad[j]['Total Assistance'] = britsAbroad[j]['Total Assistance'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Total Assistance']) > 0)
-                        countries[i].uk.totalConsularAssistance = parseInt(britsAbroad[j]['Total Assistance']);
+                        countries[i].ukConsularData.totalConsularAssistance = parseInt(britsAbroad[j]['Total Assistance']);
 
                     britsAbroad[j]['Total Other Assistance'] = britsAbroad[j]['Total Other Assistance'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Total Other Assistance']) > 0)
-                        countries[i].uk.givenOtherConsularAssistance = parseInt(britsAbroad[j]['Total Other Assistance']);
+                        countries[i].ukConsularData.givenOtherConsularAssistance = parseInt(britsAbroad[j]['Total Other Assistance']);
 
                     britsAbroad[j]['Passport Lost/Stolen'] = britsAbroad[j]['Passport Lost/Stolen'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Passport Lost/Stolen']) > 0)
-                        countries[i].uk.lostPassport = parseInt(britsAbroad[j]['Passport Lost/Stolen']);
+                        countries[i].ukConsularData.lostPassport = parseInt(britsAbroad[j]['Passport Lost/Stolen']);
 
                     britsAbroad[j]['IPS Visitors'] = britsAbroad[j]['IPS Visitors'].replace('<', '');
                     if (parseInt(britsAbroad[j]['IPS Visitors']) > 0)
-                        countries[i].uk.visitors = parseInt(britsAbroad[j]['IPS Visitors']);
+                        countries[i].ukConsularData.visitors = parseInt(britsAbroad[j]['IPS Visitors']);
 
-                    // Add warnings if level of activity is above 'normal'
-                    countries[i].warnings = {};
-                    if (britsAbroad[j]['Drug Arrests'].indexOf('HIGH') > 0)
-                        countries[i].warnings.drugArrests = 'High';
-                    
-                    if (britsAbroad[j]['Total Arrests / Detentions'].indexOf('HIGH') > 0)
-                        countries[i].warnings.arrests = 'High';
-                    
-                    if (britsAbroad[j]['Total Deaths'].indexOf('HIGH') > 0)
-                        countries[i].warnings.deaths = 'High';
-                    
-                    if (britsAbroad[j]['Hospitalisation'].indexOf('HIGH') > 0)
-                        countries[i].warnings.hospitalizations = 'High';
-                    
-                    if (britsAbroad[j]['Rape'].indexOf('HIGH') > 0)
-                        countries[i].warnings.rapes = 'High';
-                    
-                    if (britsAbroad[j]['Sexual Assault'].indexOf('HIGH') > 0)
-                        countries[i].warnings.sexualAssaults = 'High';
-
-                    if (britsAbroad[j]['Total Assistance'].indexOf('HIGH') > 0)
-                        countries[i].warnings.totalConsularAssistance = 'High';
-
-                    if (britsAbroad[j]['Total Other Assistance'].indexOf('HIGH') > 0)
-                        countries[i].warnings.givenOtherConsularAssistance = 'High';
-                    
-                    if (britsAbroad[j]['Passport Lost/Stolen'].indexOf('HIGH') > 0)
-                        countries[i].warnings.lostPassport = 'High';
+                    // // Add warnings if level of activity is above 'normal'
+                    // countries[i].warnings = {};
+                    // if (britsAbroad[j]['Drug Arrests'].indexOf('HIGH') > 0)
+                    //     countries[i].ukConsularData.warnings.drugArrests = 'High';
+                    // 
+                    // if (britsAbroad[j]['Total Arrests / Detentions'].indexOf('HIGH') > 0)
+                    //     countries[i].warnings.arrests = 'High';
+                    // 
+                    // if (britsAbroad[j]['Total Deaths'].indexOf('HIGH') > 0)
+                    //     countries[i].warnings.deaths = 'High';
+                    // 
+                    // if (britsAbroad[j]['Hospitalisation'].indexOf('HIGH') > 0)
+                    //     countries[i].warnings.hospitalizations = 'High';
+                    // 
+                    // if (britsAbroad[j]['Rape'].indexOf('HIGH') > 0)
+                    //     countries[i].warnings.rapes = 'High';
+                    // 
+                    // if (britsAbroad[j]['Sexual Assault'].indexOf('HIGH') > 0)
+                    //     countries[i].warnings.sexualAssaults = 'High';
+                    // 
+                    // if (britsAbroad[j]['Total Assistance'].indexOf('HIGH') > 0)
+                    //     countries[i].warnings.totalConsularAssistance = 'High';
+                    // 
+                    // if (britsAbroad[j]['Total Other Assistance'].indexOf('HIGH') > 0)
+                    //     countries[i].warnings.givenOtherConsularAssistance = 'High';
+                    // 
+                    // if (britsAbroad[j]['Passport Lost/Stolen'].indexOf('HIGH') > 0)
+                    //     countries[i].warnings.lostPassport = 'High';
                 }
             }
         }
         deferred.resolve(countries);
     });
     csvConverter.from("../data/British-Behaviour-Abroad_2012-2013.csv");
+    return deferred.promise;
+})
+.then(function(countries) {
+    // Add LGBT Rights info
+    var deferred = Q.defer();
+    var csvConverter = new Converter();
+    csvConverter.on("end_parsed", function(jsonObj) {
+        var lgbtCountries = jsonObj.csvRows;
+        for (i in countries) {
+            for (j in lgbtCountries) {
+                if (countries[i].iso3 == lgbtCountries[j]['ISO 3166-1 (3 letter)']) {
+                    
+                    countries[i].lgbtRights = {};
+                    countries[i].lgbtRights.persecution = false;
+                    countries[i].lgbtRights.imprisonment = false;
+                    countries[i].lgbtRights.deathPenalty = false;
+                    
+                    if (lgbtCountries[j]['Persecution'] == 'yes') {
+                        countries[i].lgbtRights.persecution = true;
+                    }
+                    
+                    if (lgbtCountries[j]['Imprisonment'] == 'yes') {
+                        countries[i].lgbtRights.persecution = true;
+                        countries[i].lgbtRights.imprisonment = true;
+                    }
+                    
+                    if (lgbtCountries[j]['Death'] == 'yes') {
+                        countries[i].lgbtRights.persecution = true;
+                        countries[i].lgbtRights.imprisonment = true;
+                        countries[i].lgbtRights.deathPenalty = true;
+                    }
+                }
+            }
+        }
+        deferred.resolve(countries);
+    });
+    csvConverter.from("../data/LGBT.csv");
     return deferred.promise;
 })
 .then(function(countries) {
@@ -181,10 +280,10 @@ init()
   return deferred.promise;
 })
 .then(function(countries) {
-    if (config['openexchangerates.org'].apiKey != '') {
+    var deferred = Q.defer();
+    try {
         oxr.set({ app_id: config['openexchangerates.org'].apiKey });
         // Get exchange rate info
-        var deferred = Q.defer();
         oxr.latest(function() {
             // You can now use `oxr.rates`, `oxr.base` and `oxr.timestamp`...
             fx.rates = oxr.rates;
@@ -213,8 +312,11 @@ init()
             }
             deferred.resolve(countries);
         });
-        return deferred.promise;
+    } catch (e) {
+        // Ingore errors fetching exchange rate info
+        deferred.resolve(countries);
     }
+    return deferred.promise;
 })
 // .then(function(countries) {
 //     // Get exchange rate info
