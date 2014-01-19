@@ -7,9 +7,13 @@ var util = require('util'); // For debugging
 var mongoJs = require('mongojs');
 var request = require('request');
 var Q = require('q'); // For promises
+var config = require(__dirname + '/../config.json');
 var Converter = require("csvtojson").core.Converter;
 var countryLookup = require('country-data').lookup;
 var countryCurrencies = require('country-data').currencies;
+// Exchnge Rates
+var oxr = require('open-exchange-rates');
+var fx = require('money');
 
 GLOBAL.db = mongoJs.connect("127.0.0.1/tinatapi", ["countries"]);
         
@@ -71,8 +75,7 @@ init()
     return deferred.promise;
 })
 .then(function(countries) {
-    
-    // Add crime statistics ( crimes commited & where citizens were victims)
+    // Add crime statistics (both crimes commited & where citizens were victims)
     var deferred = Q.defer();
     var csvConverter = new Converter();
     csvConverter.on("end_parsed", function(jsonObj) {
@@ -160,7 +163,7 @@ init()
     return deferred.promise;
 })
 .then(function(countries) {
-    // Get currency info
+    // Get currency info (name, abbreviation)
     var deferred = Q.defer();
     for (i in countries) {            
         var country = countryLookup.countries({alpha2: countries[i].iso})[0];
@@ -175,6 +178,42 @@ init()
     }
   deferred.resolve(countries);
   return deferred.promise;
+})
+.then(function(countries) {
+    if (config['openexchangerates.org'].apiKey != '') {
+        oxr.set({ app_id: config['openexchangerates.org'].apiKey });
+        // Get exchange rate info
+        var deferred = Q.defer();
+        oxr.latest(function() {
+            // You can now use `oxr.rates`, `oxr.base` and `oxr.timestamp`...
+            fx.rates = oxr.rates;
+            fx.base = oxr.base;
+            for (i in countries) {
+                if (!countries[i].currency)
+                    continue;
+            
+                countries[i].currency.exchange = {};
+            
+                // Show conversion rates for common amounts in USD
+                countries[i].currency.exchange.USD = {};
+                countries[i].currency.exchange.USD['1'] = fx(1).from('USD').to(countries[i].currency.code).toFixed(2);
+                countries[i].currency.exchange.USD['10'] = fx(10).from('USD').to(countries[i].currency.code).toFixed(2);
+                countries[i].currency.exchange.USD['25'] = fx(25).from('USD').to(countries[i].currency.code).toFixed(2);
+                countries[i].currency.exchange.USD['50'] = fx(50).from('USD').to(countries[i].currency.code).toFixed(2);
+                countries[i].currency.exchange.USD['100'] = fx(100).from('USD').to(countries[i].currency.code).toFixed(2);
+            
+                // Show conversion rates for common amounts in GBP
+                countries[i].currency.exchange.GBP = {};
+                countries[i].currency.exchange.GBP['1'] = fx(1).from('GBP').to(countries[i].currency.code).toFixed(2);
+                countries[i].currency.exchange.GBP['10'] = fx(10).from('GBP').to(countries[i].currency.code).toFixed(2);
+                countries[i].currency.exchange.GBP['25'] = fx(25).from('GBP').to(countries[i].currency.code).toFixed(2);
+                countries[i].currency.exchange.GBP['50'] = fx(50).from('GBP').to(countries[i].currency.code).toFixed(2);
+                countries[i].currency.exchange.GBP['100'] = fx(100).from('GBP').to(countries[i].currency.code).toFixed(2);
+            }
+            deferred.resolve(countries);
+        });
+        return deferred.promise;
+    }
 })
 .then(function(countries) {
     // Add Human Rights info From CIRI (http://www.humanrightsdata.org)

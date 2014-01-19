@@ -11,6 +11,8 @@
     "request": "*",
     "q": "*",
     "csvtojson": "*",
-    "country-data": "*"
+    "country-data": "*",
+    "open-exchange-rates": "*",
+    "money": "*"
   }
 }
