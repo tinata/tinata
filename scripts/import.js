@@ -375,13 +375,19 @@ init()
 });
 
 function init() {
+    // Load countries from DB (or from UN CSV if DB empty)
     var deferred = Q.defer();
-    // Start by loading all countries from the complete UN CSV
-    var csvConverter = new Converter();
-    csvConverter.on("end_parsed", function(jsonObj) {
-        deferred.resolve(jsonObj.csvRows);
+    db.countries.find({}, function(err, countries) {
+        if (countries.length && countries.length > 0) {
+            deferred.resolve(countries);
+        } else {
+            var csvConverter = new Converter();
+            csvConverter.on("end_parsed", function(jsonObj) {
+                deferred.resolve(jsonObj.csvRows);
+            });
+            csvConverter.from("../data/UN-Countries.csv");
+        }
     });
-    csvConverter.from("../data/UN-Countries.csv");
     return deferred.promise;
 }
 
