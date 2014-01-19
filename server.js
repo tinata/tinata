@@ -63,7 +63,7 @@ app.get('/country/:iso', function(req, res, next) {
  * List all countries
  */
 app.get('/countries.html', function(req, res, next) {
-    db.countries.find({ '$query': {}, '$orderby': { name: -1 } }, function(err, countries) {
+    db.countries.find({ '$query': {}, '$orderby': { name: 1 } }, function(err, countries) {
         res.render('countries', { countries: countries } );
     });
 });
