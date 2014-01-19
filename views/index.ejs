@@ -1,6 +1,6 @@
 <div class="container">
     <div class="row">
-        <div class="col-sm-8">
+        <div class="col-sm-12">
             <h1>
                 Tinatapi
                 <small>International travel advice API</small>
@@ -23,6 +23,63 @@
                     <p><a href="/country/IR">/country/IR</a> - Iran</p>
                 </li>
             </ul>
+            <h2>
+                API Response Example
+                <small>(sample data)</small>
+            </h2>
+            <hr/>
+            <p>
+                Note: If statistics for events (UK citizen arrests, deaths, etc) is not available then the property is not returned.
+            <p/>
+            <p>
+                These statistics are for 2010-2013. How they are displayed will be updated in a future version of this API (after the hackday).
+            </p>
+            <pre>
+[
+    {
+        "_id": "US",
+        "currency": {
+            "code": "USD",
+            "name": "United States dollar"
+        },
+        "fcoTravelAdviceUrl": "https://www.gov.uk/foreign-travel-advice/usa",
+        "inUKFCODB": true,
+        "iso": "US",
+        "iso3": "USA",
+        "lgbtRights": {
+            "deathPenalty": false,
+            "imprisonment": false,
+            "persecution": false
+        },
+        "name": "United States",
+        "nameForCitizen": "United States citizen",
+        "nhsTravelAdviceUrl": "http://www.fitfortravel.nhs.uk/destinations/north-america/united-states-of-america.aspx",
+        "uk": {
+            "arrests": 1120,
+            "deaths": 153,
+            "drugArrests": 143,
+            "hospitalizations": 140,
+            "lostPassport": 1539,
+            "rapes": 0,
+            "sexualAssaults": 0,
+            "givenOtherConsularAssistance": 131,
+            "totalConsularAssistance": 1544,
+            "visitors": 3011377
+        },
+        "warnings": {
+            "arrests": "High",
+            "deaths": "High",
+            "drugArrests": "High",
+            "hospitalizations": "High",
+            "lostPassport": "High"
+            "rapes": "High"
+            "sexualAssaults": "High"
+            "givenOtherConsularAssistance": "High",
+            "totalConsularAssistance": "High"
+        }
+    }
+]
+            </pre>
      </div>
     </div>
 </div>
