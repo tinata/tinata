@@ -10,6 +10,7 @@
     "mongojs": "*",
     "request": "*",
     "q": "*",
-    "csvtojson": "*"
+    "csvtojson": "*",
+    "country-data": "*"
   }
 }
