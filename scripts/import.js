@@ -253,7 +253,24 @@ init()
                     } else {
                         countries[i].humanRights.restrictionsOnFreedomOfSpeech = 'Low';
                     }
+
+                    /*
+                    Freedom of Foreign Movement
+                    This variable indicates citizens' freedom to leave and return to their country. A score of 0
+                    indicates that this freedom was severely restricted, a score of 1 indicates the freedom was somewhat
+                    restricted, and a score of 2 indicates unrestricted freedom of foreign movement.
                     
+                    Freedom of Domestic Movement
+                    This variable indicates citizens' freedom to travel within their own country. A score of 0 indicates
+                    that this freedom was severely restricted, a score of 1 indicates the freedom was somewhat restricted,
+                    and a score of 2 indicates unrestricted freedom of foreign movement. 
+                    */                    
+                    countries[i].humanRights.restrictionsOnMovement = "Low";
+                    if (humanRights[j].FORMOV <2 || humanRights[j].DOMMOV <2)
+                        countries[i].humanRights.restrictionsOnMovement = "Medium";
+                    if (humanRights[j].FORMOV <1 || humanRights[j].DOMMOV <1)
+                        countries[i].humanRights.restrictionsOnMovement = "High";
+
                     /*
                     Women's Social Rights
                     Women's social rights include a number of internationally recognized rights. These rights include:
@@ -281,6 +298,16 @@ init()
                     */
                     // No data for some reason :(
                     //countries[i].humanRights.womensSocialRights = humanRights[j].WOSOC;
+
+                    // Women's Economic Rights & Women's Political Rights
+                    // From 3 (good) to 0 (bad).
+                    // Using these as Women's Social Rights data not avalible.
+                    countries[i].humanRights.restrictionsOnWomensRights = "Low";
+                    if (humanRights[j].WECON <3 || humanRights[j].WOPOL <3)
+                        countries[i].humanRights.restrictionsOnWomensRights = "Medium";
+                    if (humanRights[j].FORMOV <1 || humanRights[j].DOMMOV <1)
+                        countries[i].humanRights.restrictionsOnWomensRights = "High";
+                    
                 }
             }
         }
