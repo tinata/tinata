@@ -25,8 +25,11 @@ app.get('/', function(req, res, next) {
     res.render('index');
 });
 
-// Legacy
-app.get('/all/', function(req, res, next) {
+/** 
+ * List all countries
+ * @deprecated
+ */
+app.get('/all', function(req, res, next) {
     res.setHeader('Content-Type', 'application/json');
     db.countries.find({}, function(err, countries) {
         res.send( JSON.stringify(countries) );
@@ -35,8 +38,9 @@ app.get('/all/', function(req, res, next) {
 
 /** 
  * List all countries
+ * @deprecated
  */
-app.get('/country/', function(req, res, next) {
+app.get('/country', function(req, res, next) {
     res.setHeader('Content-Type', 'application/json');
     db.countries.find({}, function(err, countries) {
         res.send( JSON.stringify(countries) );
@@ -45,8 +49,29 @@ app.get('/country/', function(req, res, next) {
 
 /** 
  * List countries who names match the query
+ * @deprecated
  */
 app.get('/country/:iso', function(req, res, next) {
+    res.setHeader('Content-Type', 'application/json');
+    db.countries.find({ "iso": req.params.iso }, function(err, countries) {
+        res.send( JSON.stringify(countries) );
+    });
+});
+
+/** 
+ * List all countries
+ */
+app.get('/countries', function(req, res, next) {
+    res.setHeader('Content-Type', 'application/json');
+    db.countries.find({}, function(err, countries) {
+        res.send( JSON.stringify(countries) );
+    });
+});
+
+/** 
+ * List a specific country by 2 character ISO code
+ */
+app.get('/countries/:iso', function(req, res, next) {
     res.setHeader('Content-Type', 'application/json');
     db.countries.find({ "iso": req.params.iso }, function(err, countries) {
         res.send( JSON.stringify(countries) );
