@@ -62,6 +62,15 @@ app.get('/country/:iso', function(req, res, next) {
 /** 
  * List all countries
  */
+app.get('/countries.html', function(req, res, next) {
+    db.countries.find({ '$query': {}, '$orderby': { name: -1 } }, function(err, countries) {
+        res.render('countries', { countries: countries } );
+    });
+});
+
+/** 
+ * List all countries on an HTML page
+ */
 app.get('/countries', function(req, res, next) {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader("Access-Control-Allow-Origin", "*");
@@ -69,6 +78,7 @@ app.get('/countries', function(req, res, next) {
         res.send( JSON.stringify(countries) );
     });
 });
+
 
 /** 
  * List a specific country by 2 character ISO code

@@ -1,0 +1,18 @@
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>
+                <span class="fa-stack fa-lg">
+                    <i class="fa fa-plane fa-stack-1x"></i>
+                    <i class="fa fa-square-o fa-stack-2x"></i>
+                </span>
+                Tinatapi
+                <small>An API that provides information useful to travellers</small>
+            </h1>
+            <h2>All countries</h2>
+            <hr/>
+            <% countries.forEach(function(country) { %>
+                <p><a href="/countries/<%= country.iso %>"><%= country.name %></a></p>
+            <% }); %>
+    </div>
+</div>
