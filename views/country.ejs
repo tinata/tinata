@@ -9,12 +9,12 @@
                 Tinatapi
                 <small>An API that provides information useful to travellers</small>
             </h1>
-            <h2>Countries</h2>
+            <h2><%= country.name %></h2>
             <p class="lead">
-                To fetch this page via JSON use the URL <a href="/countries/">/countries/</a>
+                To fetch this page via JSON use the URL <a href="/countries/<%= country.iso %>">/countries/<%= country.iso %></a>
             </p>
-            <% countries.forEach(function(country) { %>
-                <p><a href="/countries/<%= country.iso %>.html"><%= country.name %></a> <span class="text-muted">(<%= country.iso %>)</span></p>
-            <% }); %>
+            <pre>
+<%= JSON.stringify(country, null, 2) %>
+            </pre>
     </div>
 </div>

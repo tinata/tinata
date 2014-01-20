@@ -12,109 +12,51 @@
             <p class="lead">
                 This API uses data from the <a href="https://www.gov.uk/government/organisations/foreign-commonwealth-office">UK Foreign &amp; Commonwealth Office</a> and other sources.
             </p>
+            <h2>
+                About Tinatapi
+            </h2>
             <p>
-                This submission for <a href="https://twitter.com/search?q=FCOHACK">#FCOHACK</a> brings together different FCO (& external) datasets to make them more accessible.
+               Tinatapi (<em>pronounced tin-a-tap-e</em>) stands for <em>Tinatapi is not a travel API</em>.
+            </p>
+            <p>
+                It was a <a href="http://hacks.rewiredstate.org/events/fcohack/tinatapi">winning submission</a> for <a href="https://twitter.com/search?q=FCOHACK">#FCOHACK</a> which brings together different FCO (& external) datasets to make them more accessible.
             </p>
             <p>
                 <i class="fa fa-lg fa-github"></i> It is <strong>public domain</strong> software and lives at <a href="https://github.com/iaincollins/fcohack2014">https://github.com/iaincollins/fcohack2014</a>
             </p>
-            <h2>API URLs</h2>
-            <hr/>
-            <ul>
-                <li>
-                    <p><a href="/countries/">/countries/</a> - Get information about all available countries.</p>
-                </li>
-                <li>
-                    <p><strong>/countries/{2-character-ISO-code}</strong> - Get information about a specific country using it's 2 character ISO code.</p>
-                    <p>Examples:</p>
-                    <p><a href="/countries/US">/countries/US</a> - United States</p>
-                    <p><a href="/countries/AF">/countries/AF</a> - Afghanistan</p>
-                    <p><a href="/countries/ZW">/countries/ZW</a> - Zimbabwe</p>
-                    <p><a href="/countries/IR">/countries/IR</a> - Iran</p>
-                </li>
-            </ul>
-            <h2>
-                Example response
-            </h2>
-            <hr/>
-            <p>
-                Note: If statistics for events (UK citizen arrests, deaths, etc) are not available then the property is not returned. Likewise warnings 
-                are only returned if there is an abnormally high risk.
-            <p/>
-            <p>
-                The statistics returned are for 2010-2013. How they are displayed will be updated in a future version of this API. I'll do this after the hackday as I'm keen not 
-                to break it for those developing against the API over the weekend.
-            </p>
-            <h4>United States</h4>
-            <pre>
-[
-    {
-        "_id": "US",
-        "callingCodes": [
-            "+1"
-        ],
-        "currency": {
-            "code": "USD",
-            "exchange": {
-                "GBP": {
-                    "1": "1.64",
-                    "10": "16.42",
-                    "100": "164.21",
-                    "25": "41.05",
-                    "50": "82.11"
-                },
-                "USD": {
-                    "1": "1.00",
-                    "10": "10.00",
-                    "100": "100.00",
-                    "25": "25.00",
-                    "50": "50.00"
-                }
-            },
-            "name": "United States dollar"
-        },
-        "humanRights": {
-            "disapperances": "Low",
-            "physicalAbuses": "Medium",
-            "politicalImprisonment": "Low",
-            "restrictionsOnFreedomOfSpeech": "Low",
-            "restrictionsOnMovement": "Medium",
-            "restrictionsOnWomensRights": "Medium"
-        },
-        "iso": "US",
-        "iso3": "USA",
-        "lgbtRights": {
-            "deathPenalty": false,
-            "imprisonment": false,
-            "persecution": false
-        },
-        "name": "United States",
-        "nameForCitizen": "United States citizen",
-        "ukConsularData": {
-            "arrests": 1120,
-            "deaths": 153,
-            "drugArrests": 143,
-            "givenOtherConsularAssistance": 131,
-            "hospitalizations": 140,
-            "lostPassport": 1539,
-            "rapes": 5,
-            "sexualAssaults": 5,
-            "totalConsularAssistance": 1544,
-            "visitors": 3011377
-        },
-        "ukTravelAdvice": {
-            "fcoTravelAdviceUrl": "https://www.gov.uk/foreign-travel-advice/usa",
-            "nhsTravelAdviceUrl": "http://www.fitfortravel.nhs.uk/destinations/north-america/united-states-of-america.aspx"
-        },
-        "warnings": {
-            "arrests": "High",
-            "drugArrests": "High",
-            "lostPassport": "High"
-        }
-    }
-]
 
-            </pre>
-     </div>
+            <h3>About the data</h3>
+            <p>
+                The data comes from various sources, including the <a href="https://www.gov.uk/government/organisations/foreign-commonwealth-office">UK Foreign &amp; Commonwealth Office</a>,
+                the <a href="http://www.un.org">United Nations</a>, <a href="http://human-rights.org">CIRI Human Rights Data Project</a>, the <a href="ilga.org">IGLA</a> and other datasets.
+            </p>
+            <p>
+                Some of statistics returned are for 2010-2013/. If statistics for events (UK citizen arrests, deaths, etc) are not available then the property is not returned. Likewise warnings 
+                are only returned if there is an abnormally high risk. How the information is displayed and parsed will be subject to review.
+            </p>
+            <p>
+                The service should currently be considered beta. <a href="https://github.com/iaincollins/fcohack2014/issues">Bug reports, feature requests and suggests are welcome!</a>
+            </p>
+            <hr/>
+            <h2>API URLs</h2>
+            <h3>Lookup all countries</h3>
+            <p><a href="/countries.html">/countries/</a> - Get information about all available countries in a single request.</p>
+            
+            <h3>Lookup a specific country</h3>
+            <h4>By ISO identifier</h4>
+            <p><strong>/countries/{2-character-ISO-identifier}</strong> - Get information about a specific country using it's 2 character ISO country identifier.</p>
+            <p>Example endpoints:</p>
+            <p><a href="/countries/US.html">/countries/US</a> - United States</p>
+            <p><a href="/countries/AF.html">/countries/AF</a> - Afghanistan</p>
+            <p><a href="/countries/ZW.html">/countries/ZW</a> - Zimbabwe</p>
+            <p><a href="/countries/IR.html">/countries/IR</a> - Iran</p>
+            <p>Note: Lookups using the 3 character ISO identifier also works in some cases, but currently only for some countries.</p>
+            <h4>By country name</h4>
+            <p>Although using the ISO code is recommended, you can also reference countries by name.</p>
+            <p><a href="/countries/United_States.html">/countries/United_States</a> - United States</p>
+            <p><a href="/countries/Canada.html">/countries/Canada</a> - Canada</p>
+            <p><a href="/countries/France.html">/countries/France</a> - France</p>
+            <hr/>
+         </div>
     </div>
 </div>

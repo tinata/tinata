@@ -26,41 +26,9 @@ app.get('/', function(req, res, next) {
     res.render('index');
 });
 
-/** 
- * List all countries
- * @deprecated
- */
-app.get('/all', function(req, res, next) {
-    res.setHeader('Content-Type', 'application/json');
-    db.countries.find({}, function(err, countries) {
-        res.send( JSON.stringify(countries) );
-    });
-});
 
 /** 
- * List all countries
- * @deprecated
- */
-app.get('/country', function(req, res, next) {
-    res.setHeader('Content-Type', 'application/json');
-    db.countries.find({}, function(err, countries) {
-        res.send( JSON.stringify(countries) );
-    });
-});
-
-/** 
- * List countries who names match the query
- * @deprecated
- */
-app.get('/country/:iso', function(req, res, next) {
-    res.setHeader('Content-Type', 'application/json');
-    db.countries.find({ "iso": req.params.iso }, function(err, countries) {
-        res.send( JSON.stringify(countries) );
-    });
-});
-
-/** 
- * List all countries
+ * List all countries on an HTML page
  */
 app.get('/countries.html', function(req, res, next) {
     db.countries.find({ '$query': {}, '$orderby': { name: 1 } }, function(err, countries) {
@@ -69,27 +37,67 @@ app.get('/countries.html', function(req, res, next) {
 });
 
 /** 
- * List all countries on an HTML page
+ * Return data for all countries in a JSON object
  */
 app.get('/countries', function(req, res, next) {
     res.setHeader('Content-Type', 'application/json');
     res.setHeader("Access-Control-Allow-Origin", "*");
-    db.countries.find({}, function(err, countries) {
+    db.countries.find({ '$query': {}, '$orderby': { name: 1 } }, function(err, countries) {
         res.send( JSON.stringify(countries) );
     });
 });
-
 
 /** 
- * List a specific country by 2 character ISO code
+ * List data for a specific country by 2 character ISO code
  */
-app.get('/countries/:iso', function(req, res, next) {
-    res.setHeader('Content-Type', 'application/json');
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    db.countries.find({ "iso": req.params.iso }, function(err, countries) {
-        res.send( JSON.stringify(countries) );
+app.get('/countries/:name', function(req, res, next) {
+    var path = req.params.name.split('.');
+    var countryIdentifier = path[0].replace('_', ' ');
+    
+    // Default response is json but is also able to return HTML
+    var responseFormat = 'json';
+    if (path.length > 1)
+        if (path[1] == 'html')
+            responseFormat = 'html';
+            
+    // Search for match on 2 character country code
+    db.countries.find({ "iso": countryIdentifier }, function(err, countries) {
+        if (countries.length > 0) {
+            displayCountry(res, countries[0], responseFormat);
+        } else {
+            // Search for match on 3 character country code
+            db.countries.find({ "iso3": countryIdentifier }, function(err, countries) {
+                if (countries.length > 0) {
+                    displayCountry(res, countries[0], responseFormat);
+                } else {
+                    // Search for match on country name
+                    db.countries.find({ "name": countryIdentifier }, function(err, countries) {
+                        if (countries.length > 0) {
+                            displayCountry(res, countries[0], responseFormat);
+                        } else {
+                            // If all lookups fail, return 404
+                            res.status(404).render('page-not-found', {
+                                title: "Page not found"
+                            });   
+                        }
+                    });
+                }
+            });
+        }
     });
 });
+
+function displayCountry(res, country, format) {
+    if (format == 'html') {
+        // Reutrn country information as an HTML page.
+        res.render('country', { country: country } );
+    } else {
+        // Default (JSON)
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.send( JSON.stringify(country) );
+    }
+}
 
 /**
  * Handle all other requests as 404 / Page Not Found errors
