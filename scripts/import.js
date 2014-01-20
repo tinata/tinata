@@ -301,7 +301,15 @@ init()
                 countries[i].currency.exchange.USD['25'] = fx(25).from('USD').to(countries[i].currency.code).toFixed(2);
                 countries[i].currency.exchange.USD['50'] = fx(50).from('USD').to(countries[i].currency.code).toFixed(2);
                 countries[i].currency.exchange.USD['100'] = fx(100).from('USD').to(countries[i].currency.code).toFixed(2);
-            
+
+                // Show conversion rates for common amounts in USD
+                countries[i].currency.exchange.EUR = {};
+                countries[i].currency.exchange.EUR['1'] = fx(1).from('EUR').to(countries[i].currency.code).toFixed(2);
+                countries[i].currency.exchange.EUR['10'] = fx(10).from('EUR').to(countries[i].currency.code).toFixed(2);
+                countries[i].currency.exchange.EUR['25'] = fx(25).from('EUR').to(countries[i].currency.code).toFixed(2);
+                countries[i].currency.exchange.EUR['50'] = fx(50).from('EUR').to(countries[i].currency.code).toFixed(2);
+                countries[i].currency.exchange.EUR['100'] = fx(100).from('EUR').to(countries[i].currency.code).toFixed(2);
+                
                 // Show conversion rates for common amounts in GBP
                 countries[i].currency.exchange.GBP = {};
                 countries[i].currency.exchange.GBP['1'] = fx(1).from('GBP').to(countries[i].currency.code).toFixed(2);
