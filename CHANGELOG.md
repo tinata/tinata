@@ -23,7 +23,7 @@ Changes to the underlyig code and API. The API should be considered unstable for
 
 ### Bugfixes
 
-- **Updated the description for ukConsularData* now more accurate
+- **new description for ukConsularData** now more accurate
 
 ### API Changes
 
