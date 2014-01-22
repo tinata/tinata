@@ -538,7 +538,7 @@ function getCurrentTravelAdvice(country) {
                     if (!country.travelAdvice)
                         country.travelAdvice = {};
 
-                    country.travelAdvice.description = "Travel advice provided by the UK Foreign & Commonwealth Office (www.gov.uk/foreign-travel-advice)/";
+                    country.travelAdvice.description = "Travel advice provided by the UK Foreign & Commonwealth Office (www.gov.uk/foreign-travel-advice/)";
                     country.travelAdvice.currentAdvice = [];
                     $('article[role="article"] p').each(function(i, element) {
                         // Ignore first line (meta info about the summary)
