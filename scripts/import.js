@@ -70,6 +70,7 @@ init()
     csvConverter.on("end_parsed", function(jsonObj) {
         var fipsCountries = jsonObj.csvRows;
         for (i in countries) {
+            delete countries[i].fipsCountryCode;
             for (j in fipsCountries) {
                 if (countries[i].name.toLowerCase() == fipsCountries[j]['COUNTRY NAME'].toLowerCase()) {
                     countries[i].fipsCountryCode = fipsCountries[j]['FIPS CODE'];
