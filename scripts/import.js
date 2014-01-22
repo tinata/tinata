@@ -35,6 +35,10 @@ init()
             delete countries[i].fcoTravelAdviceUrl;
             delete countries[i].nhsTravelAdviceUrl;
             delete countries[i].travelAdvice;
+            delete countries[i].warnings;
+            
+            countries[i].ukConsularData = {};
+            countries[i].ukConsularData.description = "UK Consular data for the last 12 months.";
             
             for (j in FCOCountries) {
                 if (countries[i].iso == FCOCountries[j]['ISO 3166-1 (2 letter)']) {
@@ -56,6 +60,30 @@ init()
     return deferred.promise;
 })
 .then(function(countries) {
+    // Get 3 char ISO code (if not there already), currencies & dialing code.
+    var deferred = Q.defer();
+    for (i in countries) {            
+        var country = countryLookup.countries({alpha2: countries[i].iso})[0];
+        if (country) {
+            countries[i].iso3 = country.alpha3;
+            countries[i].callingCodes = country.countryCallingCodes;
+            // Get info about each currency
+            // Note: Some countries (e.g. Zimbabwe) have multiple currencies
+            if (country.currencies.length) {
+                countries[i].currency = {};
+                for (j in country.currencies) {
+                    var currency = country.currencies[j];
+                    countries[i].currency[currency] = {};
+                    countries[i].currency[currency].code = currency;
+                    countries[i].currency[currency].name = countryCurrencies[currency].name;
+                }
+            }
+        }
+    }
+  deferred.resolve(countries);
+  return deferred.promise;
+})
+.then(function(countries) {
     // Adding consular data
     var deferred = Q.defer();
     var csvConverter = new Converter();
@@ -63,8 +91,7 @@ init()
         var consularData = jsonObj.csvRows;
         for (i in countries) {
             for (j in consularData) {
-                if (countries[i].name == consularData[j]['Summary 2013']) {                    
-                    countries[i].ukConsularData = {};
+                if (countries[i].name == consularData[j]['Summary 2013']) {
                     countries[i].ukConsularData.abduction = consularData[j]['Abduction'];
                     countries[i].ukConsularData.arrestChildSex = consularData[j]['Arrest/Detention - Child Sex'];
                     countries[i].ukConsularData.arrestDrugs = consularData[j]['Arrest/Detention - Drugs'];
@@ -136,7 +163,7 @@ init()
     return deferred.promise;
 })
 .then(function(countries) {
-    // Add crime statistics (both crimes commited & where citizens were victims)
+    // Add crime statistics (both crimes commited & where citizens were victims) for the last 12 months.
     var deferred = Q.defer();
     var csvConverter = new Converter();
     csvConverter.on("end_parsed", function(jsonObj) {
@@ -145,9 +172,6 @@ init()
             for (j in britsAbroad) {
                 if (countries[i].iso == britsAbroad[j]['The two-letter ISO 3166-1 code']) {
                     
-                    if (!countries[i].ukConsularData)
-                        countries[i].ukConsularData = {};
-
                     britsAbroad[j]['Drug Arrests'] = britsAbroad[j]['Drug Arrests'].replace('<', '');
                     if (parseInt(britsAbroad[j]['Drug Arrests']) > 0)
                         countries[i].ukConsularData.drugArrests = parseInt(britsAbroad[j]['Drug Arrests']);
@@ -187,35 +211,6 @@ init()
                     britsAbroad[j]['IPS Visitors'] = britsAbroad[j]['IPS Visitors'].replace('<', '');
                     if (parseInt(britsAbroad[j]['IPS Visitors']) > 0)
                         countries[i].ukConsularData.visitors = parseInt(britsAbroad[j]['IPS Visitors']);
-
-                    // // Add warnings if level of activity is above 'normal'
-                    // countries[i].warnings = {};
-                    // if (britsAbroad[j]['Drug Arrests'].indexOf('HIGH') > 0)
-                    //     countries[i].ukConsularData.warnings.drugArrests = 'High';
-                    // 
-                    // if (britsAbroad[j]['Total Arrests / Detentions'].indexOf('HIGH') > 0)
-                    //     countries[i].warnings.arrests = 'High';
-                    // 
-                    // if (britsAbroad[j]['Total Deaths'].indexOf('HIGH') > 0)
-                    //     countries[i].warnings.deaths = 'High';
-                    // 
-                    // if (britsAbroad[j]['Hospitalisation'].indexOf('HIGH') > 0)
-                    //     countries[i].warnings.hospitalizations = 'High';
-                    // 
-                    // if (britsAbroad[j]['Rape'].indexOf('HIGH') > 0)
-                    //     countries[i].warnings.rapes = 'High';
-                    // 
-                    // if (britsAbroad[j]['Sexual Assault'].indexOf('HIGH') > 0)
-                    //     countries[i].warnings.sexualAssaults = 'High';
-                    // 
-                    // if (britsAbroad[j]['Total Assistance'].indexOf('HIGH') > 0)
-                    //     countries[i].warnings.totalConsularAssistance = 'High';
-                    // 
-                    // if (britsAbroad[j]['Total Other Assistance'].indexOf('HIGH') > 0)
-                    //     countries[i].warnings.givenOtherConsularAssistance = 'High';
-                    // 
-                    // if (britsAbroad[j]['Passport Lost/Stolen'].indexOf('HIGH') > 0)
-                    //     countries[i].warnings.lostPassport = 'High';
                 }
             }
         }
@@ -262,24 +257,6 @@ init()
     return deferred.promise;
 })
 .then(function(countries) {
-    // Get currency info (name, abbreviation)
-    var deferred = Q.defer();
-    for (i in countries) {            
-        var country = countryLookup.countries({alpha2: countries[i].iso})[0];
-        // @fixme Some countries (e.g. Zimbabwe) have multiple currencies
-        if (country) {
-            if (country.currencies.length) {
-                countries[i].currency = {};
-                countries[i].currency.name = countryCurrencies[country.currencies[0]].name;
-                countries[i].currency.code = country.currencies[0];
-                countries[i].callingCodes = country.countryCallingCodes;
-            }
-        }
-    }
-  deferred.resolve(countries);
-  return deferred.promise;
-})
-.then(function(countries) {
     var deferred = Q.defer();
     try {
         oxr.set({ app_id: config['openexchangerates.org'].apiKey });
@@ -292,31 +269,40 @@ init()
                 if (!countries[i].currency)
                     continue;
             
-                countries[i].currency.exchange = {};
-            
-                // Show conversion rates for common amounts in USD
-                countries[i].currency.exchange.USD = {};
-                countries[i].currency.exchange.USD['1'] = fx(1).from('USD').to(countries[i].currency.code).toFixed(2);
-                countries[i].currency.exchange.USD['10'] = fx(10).from('USD').to(countries[i].currency.code).toFixed(2);
-                countries[i].currency.exchange.USD['25'] = fx(25).from('USD').to(countries[i].currency.code).toFixed(2);
-                countries[i].currency.exchange.USD['50'] = fx(50).from('USD').to(countries[i].currency.code).toFixed(2);
-                countries[i].currency.exchange.USD['100'] = fx(100).from('USD').to(countries[i].currency.code).toFixed(2);
+                for (j in countries[i].currency) {
+                    var currency = countries[i].currency[j].code;
+                    if (!countries[i].currency[currency].exchange)
+                        countries[i].currency[currency].exchange = {};
 
-                // Show conversion rates for common amounts in USD
-                countries[i].currency.exchange.EUR = {};
-                countries[i].currency.exchange.EUR['1'] = fx(1).from('EUR').to(countries[i].currency.code).toFixed(2);
-                countries[i].currency.exchange.EUR['10'] = fx(10).from('EUR').to(countries[i].currency.code).toFixed(2);
-                countries[i].currency.exchange.EUR['25'] = fx(25).from('EUR').to(countries[i].currency.code).toFixed(2);
-                countries[i].currency.exchange.EUR['50'] = fx(50).from('EUR').to(countries[i].currency.code).toFixed(2);
-                countries[i].currency.exchange.EUR['100'] = fx(100).from('EUR').to(countries[i].currency.code).toFixed(2);
-                
-                // Show conversion rates for common amounts in GBP
-                countries[i].currency.exchange.GBP = {};
-                countries[i].currency.exchange.GBP['1'] = fx(1).from('GBP').to(countries[i].currency.code).toFixed(2);
-                countries[i].currency.exchange.GBP['10'] = fx(10).from('GBP').to(countries[i].currency.code).toFixed(2);
-                countries[i].currency.exchange.GBP['25'] = fx(25).from('GBP').to(countries[i].currency.code).toFixed(2);
-                countries[i].currency.exchange.GBP['50'] = fx(50).from('GBP').to(countries[i].currency.code).toFixed(2);
-                countries[i].currency.exchange.GBP['100'] = fx(100).from('GBP').to(countries[i].currency.code).toFixed(2);
+                    try {
+                        // Show conversion rates for common amounts in USD
+                        countries[i].currency[currency].exchange.USD = {};
+                        countries[i].currency[currency].exchange.USD['1'] = fx(1).from('USD').to(currency).toFixed(2);
+                        countries[i].currency[currency].exchange.USD['10'] = fx(10).from('USD').to(currency).toFixed(2);
+                        countries[i].currency[currency].exchange.USD['25'] = fx(25).from('USD').to(currency).toFixed(2);
+                        countries[i].currency[currency].exchange.USD['50'] = fx(50).from('USD').to(currency).toFixed(2);
+                        countries[i].currency[currency].exchange.USD['100'] = fx(100).from('USD').to(currency).toFixed(2);
+                    
+                        // Show conversion rates for common amounts in USD
+                        countries[i].currency[currency].exchange.EUR = {};
+                        countries[i].currency[currency].exchange.EUR['1'] = fx(1).from('EUR').to(currency).toFixed(2);
+                        countries[i].currency[currency].exchange.EUR['10'] = fx(10).from('EUR').to(currency).toFixed(2);
+                        countries[i].currency[currency].exchange.EUR['25'] = fx(25).from('EUR').to(currency).toFixed(2);
+                        countries[i].currency[currency].exchange.EUR['50'] = fx(50).from('EUR').to(currency).toFixed(2);
+                        countries[i].currency[currency].exchange.EUR['100'] = fx(100).from('EUR').to(currency).toFixed(2);
+                                    
+                        // Show conversion rates for common amounts in GBP
+                        countries[i].currency[currency].exchange.GBP = {};
+                        countries[i].currency[currency].exchange.GBP['1'] = fx(1).from('GBP').to(currency).toFixed(2);
+                        countries[i].currency[currency].exchange.GBP['10'] = fx(10).from('GBP').to(currency).toFixed(2);
+                        countries[i].currency[currency].exchange.GBP['25'] = fx(25).from('GBP').to(currency).toFixed(2);
+                        countries[i].currency[currency].exchange.GBP['50'] = fx(50).from('GBP').to(currency).toFixed(2);
+                        countries[i].currency[currency].exchange.GBP['100'] = fx(100).from('GBP').to(currency).toFixed(2);
+                    } catch (exception) {
+                        delete countries[i].currency[currency];
+                        console.log("Warning: Unable to get currency information for "+currency);
+                    }
+                }
             }
             deferred.resolve(countries);
         });
@@ -327,12 +313,11 @@ init()
     return deferred.promise;
 })
 // .then(function(countries) {
-//     // Get exchange rate info
+//     // Get news feed info (currently disabled as rate limited)
 //     var promises = [];
 //     for (i in countries) {
 //         var country = countries[i];
 //         try {
-//             // Get all bills currently before parliament from the RSS feed
 //             var url = 'https://news.google.com/news/feeds?hl=en&gl=us&q='+encodeURIComponent(country.name.replace(' ', '+'))+'&um=1&ie=UTF-8&output=rss';
 //             request(url, function (error, response, body) {
 //                 // Check the response seems okay
@@ -371,6 +356,7 @@ init()
             for (j in humanRights) {
                 if (countries[i].name == humanRights[j].CTRY) {
                     countries[i].humanRights = {};
+                    countries[i].humanRights.description = "Based on the Cingranelli-Richards (CIRI) indexes for Human Rights on humanrightsdata.org"
                     /*
                     Physical Integrity Rights Index
                     This is an additive index constructed from the Torture, Extrajudicial Killing, Political Imprisonment,
@@ -456,37 +442,9 @@ init()
                     if (humanRights[j].FORMOV <1 || humanRights[j].DOMMOV <1)
                         countries[i].humanRights.restrictionsOnMovement = "High";
 
-                    /*
-                    Women's Social Rights
-                    Women's social rights include a number of internationally recognized rights. These rights include:
-                    
-                    - The right to equal inheritance
-                    - The right to enter into marriage on a basis of equality with men
-                    - The right to travel abroad
-                    - The right to obtain a passport
-                    - The right to confer citizenship to children or a husband
-                    - The right to initiate a divorce
-                    - The right to own, acquire, manage, and retain property brought into marriage
-                    - The right to participate in social, cultural, and community activities
-                    - The right to an education
-                    - The freedom to choose a residence/domicile
-                    - Freedom from female genital mutilation of children and of adults without their consent
-                    - Freedom from forced sterilization
-                    
-                    A score of 0 indicates that there were no social rights for women in law and that systematic
-                    discrimination based on sex may have been built into law. A score of 1 indicates that women had
-                    some social rights under law, but these rights were not effectively enforced. A score of 2 indicates
-                    that women had some social rights under law, and the government effectively enforced these rights
-                    in practice while still allowing a low level of discrimination against women in economic matters.
-                    Finally, a score of 3 indicates that all or nearly all of women's social rights were guaranteed by
-                    law and the government fully and vigorously enforced these laws in practice.
-                    */
-                    // No data for some reason :(
-                    //countries[i].humanRights.womensSocialRights = humanRights[j].WOSOC;
-
                     // Women's Economic Rights & Women's Political Rights
-                    // From 3 (good) to 0 (bad).
-                    // Using these as Women's Social Rights data not avalible.
+                    // The range is from from 3 (full rights) to 0 (no rights).
+                    // Fallback as Women's Social Rights (WOSOC) is unavailable.
                     countries[i].humanRights.restrictionsOnWomensRights = "Low";
                     if (humanRights[j].WECON <3 || humanRights[j].WOPOL <3)
                         countries[i].humanRights.restrictionsOnWomensRights = "Medium";
@@ -515,7 +473,7 @@ init()
     return Q.all(promises);
 })
 .then(function(countries) {
-    console.log(countries);
+    console.log("Updated data for "+countries.length+" countries");
     console.log("*** Finished importing data into the DB");
     db.close();
 });
