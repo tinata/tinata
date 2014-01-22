@@ -555,7 +555,9 @@ function getCurrentTravelAdvice(country) {
                             text = text.replace(/See Money(\.)?$/, '');
                             text = text.replace(/See Health(\.)?$/, '');
                             text = text.replace(/See Dual nationals(\.)?$/, '');
-
+                            text = text.replace(/See Safety and security(\.)?$/, '');
+                            text = text.replace(/See Consular assistance(\.)?$/, '');
+                            
                             text = text.replace(/Download map \(PDF\)(\.)?$/, '');
                             text = text.trim();
                             
