@@ -3,6 +3,13 @@
 Changes to the underlyig code and API. The API should be considered unstable for now - properties may be renamed or removed completely.
 
 ====
+
+## 2014-01-22/4 API enchancements
+
+### API Changes
+
+- **fipsCountryCode** added. An older country code system used by the US government for datasets like the CIA World Factbook.
+
 ## 2014-01-22/3 API enchancements
 
 ### API Changes

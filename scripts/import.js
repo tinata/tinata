@@ -27,7 +27,7 @@ init()
     var deferred = Q.defer();
     var csvConverter = new Converter();
     csvConverter.on("end_parsed", function(jsonObj) {
-        var FCOCountries = jsonObj.csvRows;
+        var fcoCountries = jsonObj.csvRows;
         for (i in countries) {
             
             // These properties are no longer exported
@@ -42,24 +42,43 @@ init()
             countries[i].ukConsularData = {};
             countries[i].ukConsularData.description = "Consular data for UK citizens abroad during 2013 (from the UK Foreign & Commonwealth Office).";
             
-            for (j in FCOCountries) {
-                if (countries[i].iso == FCOCountries[j]['ISO 3166-1 (2 letter)']) {
+            for (j in fcoCountries) {
+                if (countries[i].iso == fcoCountries[j]['ISO 3166-1 (2 letter)']) {
                     var country = countryLookup.countries({alpha2: countries[i].iso})[0];
-                    countries[i].iso3 = FCOCountries[j]['ISO 3166-1 (3 letter)'];
-                    countries[i].name = FCOCountries[j]['Country'];
-                    countries[i].nameForCitizen = FCOCountries[j]['Name for Citizen'];
+                    countries[i].iso3 = fcoCountries[j]['ISO 3166-1 (3 letter)'];
+                    countries[i].name = fcoCountries[j]['Country'];
+                    countries[i].nameForCitizen = fcoCountries[j]['Name for Citizen'];
                     
                     if (!countries[i].travelAdvice)
                         countries[i].travelAdvice = {};
 
-                    countries[i].travelAdvice.fcoTravelAdviceUrl = FCOCountries[j]['FCO travel advice'];
-                    countries[i].travelAdvice.nhsTravelAdviceUrl = FCOCountries[j]['NHS Travel Health'];
+                    countries[i].travelAdvice.fcoTravelAdviceUrl = fcoCountries[j]['FCO travel advice'];
+                    countries[i].travelAdvice.nhsTravelAdviceUrl = fcoCountries[j]['NHS Travel Health'];
                 }
             }
         }
         deferred.resolve(countries);
     });
-    csvConverter.from("../data/FCO-Countries.csv");
+    csvConverter.from("../data/uk-fco-countries.csv");
+    return deferred.promise;
+})
+.then(function(countries) {
+    // Add FIPS 10-4 country codes
+    // FIPS codes are used by US government sources like the CIA World Factbook
+    var deferred = Q.defer();
+    var csvConverter = new Converter();
+    csvConverter.on("end_parsed", function(jsonObj) {
+        var fipsCountries = jsonObj.csvRows;
+        for (i in countries) {
+            for (j in fipsCountries) {
+                if (countries[i].name.toLowerCase() == fipsCountries[j]['COUNTRY NAME'].toLowerCase()) {
+                    countries[i].fipsCountryCode = fipsCountries[j]['FIPS CODE'];
+                }
+            }
+        }
+        deferred.resolve(countries);
+    });
+    csvConverter.from("../data/fips-countries.csv");
     return deferred.promise;
 })
 .then(function(countries) {
@@ -162,7 +181,7 @@ init()
         }
         deferred.resolve(countries);
     });
-    csvConverter.from("../data/Consular-Data-2013-Summary.csv");
+    csvConverter.from("../data/uk-fco-consular-data-2013.csv");
     return deferred.promise;
 })
 .then(function(countries) {
@@ -260,7 +279,7 @@ init()
         }
         deferred.resolve(countries);
     });
-    csvConverter.from("../data/LGBT.csv");
+    csvConverter.from("../data/ilga-lgbt-rights.csv");
     return deferred.promise;
 })
 .then(function(countries) {
@@ -464,7 +483,7 @@ init()
         }
         deferred.resolve(countries);
     });
-    csvConverter.from("../data/Human-Rights.csv");
+    csvConverter.from("../data/ciri-human-rights-data.csv");
     return deferred.promise;
 })
 .then(function(countries) {
@@ -538,7 +557,7 @@ function init() {
             csvConverter.on("end_parsed", function(jsonObj) {
                 deferred.resolve(jsonObj.csvRows);
             });
-            csvConverter.from("../data/UN-Countries.csv");
+            csvConverter.from("../data/un-countries.csv");
         }
     });
     return deferred.promise;
