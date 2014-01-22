@@ -478,6 +478,56 @@ init()
   return Q.all(promises);
 })
 .then(function(countries) {
+    // Lookup latest FCO travel advice on money from gov.uk
+    var promises = [];
+    for (i in countries) {
+        var country = countries[i];
+        var promise = getMoneyTravelAdvice(country);
+        promises.push(promise);
+    }
+  return Q.all(promises);
+})
+.then(function(countries) {
+    // Lookup latest FCO travel advice on health from gov.uk
+    var promises = [];
+    for (i in countries) {
+        var country = countries[i];
+        var promise = getHealthTravelAdvice(country);
+        promises.push(promise);
+    }
+  return Q.all(promises);
+})
+.then(function(countries) {
+    // Lookup latest FCO travel advice on local laws and customs from gov.uk
+    var promises = [];
+    for (i in countries) {
+        var country = countries[i];
+        var promise = getLocalLawsAndCustomsTravelAdvice(country);
+        promises.push(promise);
+    }
+  return Q.all(promises);
+})
+.then(function(countries) {
+    // Lookup latest FCO travel advice on safety and security from gov.uk
+    var promises = [];
+    for (i in countries) {
+        var country = countries[i];
+        var promise = getSafetyAndSecurityTravelAdvice(country);
+        promises.push(promise);
+    }
+  return Q.all(promises);
+})
+.then(function(countries) {
+    // Lookup latest FCO travel advice on entry requirements from gov.uk
+    var promises = [];
+    for (i in countries) {
+        var country = countries[i];
+        var promise = getEntryRequirementsTravelAdvice(country);
+        promises.push(promise);
+    }
+  return Q.all(promises);
+})
+.then(function(countries) {
     // Get UN population statistics by scraping Wikipedia
     var deferred = Q.defer();
     try {
@@ -521,7 +571,7 @@ init()
     return Q.all(promises);
 })
 .then(function(countries) {
-//    console.log(countries);
+    // console.log(countries);
     console.log("Updated data for "+countries.length+" countries");
     console.log("*** Finished importing data into the DB");
     db.close();
@@ -615,3 +665,205 @@ function getCurrentTravelAdvice(country) {
     }
     return deferred.promise;
 }
+
+
+/**
+ * Get the latest travel advice relating to money by scraping gov.uk
+ */
+function getMoneyTravelAdvice(country) {
+    var deferred = Q.defer();
+    try {
+        if (country.travelAdvice.fcoTravelAdviceUrl 
+            && country.travelAdvice.fcoTravelAdviceUrl != undefined) {
+            request(country.travelAdvice.fcoTravelAdviceUrl+'/money', function (error, response, body) {
+                // Check the response seems okay
+                if (response && response.statusCode == 200) {
+                    var $ = cheerio.load(body);
+                    if (!country.travelAdvice)
+                        country.travelAdvice = {};
+
+                    country.travelAdvice.money = [];
+                    $('article[role="article"] p').each(function(i, element) {
+                        var text = $(element).text().trim();
+                        text = text.replace(/\.\.$/, '.');
+                        
+                        if (text != "")
+                            country.travelAdvice.money.push( text );
+                    });
+                    deferred.resolve(country);
+                } else {
+                    console.log("Warning: Failed to fetch latest money travel advice for "+country.name+" from "+country.travelAdvice.fcoTravelAdviceUrl);
+                    deferred.resolve(country);
+                }
+            });
+        } else {
+            // Money related travel advice is not available for all countries.
+            deferred.resolve(country);
+        }
+    } catch (exception) {
+        // Always return the country object (even if an error occurs)
+        deferred.resolve(country);
+    }
+    return deferred.promise;
+}
+
+/**
+ * Get the latest travel advice relating to health by scraping gov.uk
+ */
+function getHealthTravelAdvice(country) {
+    var deferred = Q.defer();
+    try {
+        if (country.travelAdvice.fcoTravelAdviceUrl 
+            && country.travelAdvice.fcoTravelAdviceUrl != undefined) {
+            request(country.travelAdvice.fcoTravelAdviceUrl+'/health', function (error, response, body) {
+                // Check the response seems okay
+                if (response && response.statusCode == 200) {
+                    var $ = cheerio.load(body);
+                    if (!country.travelAdvice)
+                        country.travelAdvice = {};
+
+                    country.travelAdvice.health = [];
+                    $('article[role="article"] p').each(function(i, element) {
+                        var text = $(element).text().trim();
+                        text = text.replace(/\.\.$/, '.');
+                        
+                        if (text != "")
+                            country.travelAdvice.health.push( text );
+                    });
+                    deferred.resolve(country);
+                } else {
+                    console.log("Warning: Failed to fetch latest health travel advice for "+country.name+" from "+country.travelAdvice.fcoTravelAdviceUrl);
+                    deferred.resolve(country);
+                }
+            });
+        } else {
+            // Health realted travel advice is not available for all countries.
+            deferred.resolve(country);
+        }
+    } catch (exception) {
+        // Always return the country object (even if an error occurs)
+        deferred.resolve(country);
+    }
+    return deferred.promise;
+}
+
+/**
+ * Get the latest travel advice relating to local laws and customs by scraping gov.uk
+ */
+function getLocalLawsAndCustomsTravelAdvice(country) {
+    var deferred = Q.defer();
+    try {
+        if (country.travelAdvice.fcoTravelAdviceUrl 
+            && country.travelAdvice.fcoTravelAdviceUrl != undefined) {
+            request(country.travelAdvice.fcoTravelAdviceUrl+'/local-laws-and-customs', function (error, response, body) {
+                // Check the response seems okay
+                if (response && response.statusCode == 200) {
+                    var $ = cheerio.load(body);
+                    if (!country.travelAdvice)
+                        country.travelAdvice = {};
+
+                    country.travelAdvice.localLawsAndCustoms = [];
+                    $('article[role="article"] p').each(function(i, element) {
+                        var text = $(element).text().trim();
+                        text = text.replace(/\.\.$/, '.');
+                        
+                        if (text != "")
+                            country.travelAdvice.localLawsAndCustoms.push( text );
+                    });
+                    deferred.resolve(country);
+                } else {
+                    console.log("Warning: Failed to fetch latest local laws and customs travel advice for "+country.name+" from "+country.travelAdvice.fcoTravelAdviceUrl);
+                    deferred.resolve(country);
+                }
+            });
+        } else {
+            // Health realted travel advice is not available for all countries.
+            deferred.resolve(country);
+        }
+    } catch (exception) {
+        // Always return the country object (even if an error occurs)
+        deferred.resolve(country);
+    }
+    return deferred.promise;
+}
+
+/**
+ * Get the latest travel advice relating to safety and security by scraping gov.uk
+ */
+function getSafetyAndSecurityTravelAdvice(country) {
+    var deferred = Q.defer();
+    try {
+        if (country.travelAdvice.fcoTravelAdviceUrl 
+            && country.travelAdvice.fcoTravelAdviceUrl != undefined) {
+            request(country.travelAdvice.fcoTravelAdviceUrl+'/safety-and-security', function (error, response, body) {
+                // Check the response seems okay
+                if (response && response.statusCode == 200) {
+                    var $ = cheerio.load(body);
+                    if (!country.travelAdvice)
+                        country.travelAdvice = {};
+
+                    country.travelAdvice.safetyAndSecurity = [];
+                    $('article[role="article"] p').each(function(i, element) {
+                        var text = $(element).text().trim();
+                        text = text.replace(/\.\.$/, '.');
+                        
+                        if (text != "")
+                            country.travelAdvice.safetyAndSecurity.push( text );
+                    });
+                    deferred.resolve(country);
+                } else {
+                    console.log("Warning: Failed to fetch latest safety and security travel advice for "+country.name+" from "+country.travelAdvice.fcoTravelAdviceUrl);
+                    deferred.resolve(country);
+                }
+            });
+        } else {
+            // Health realted travel advice is not available for all countries.
+            deferred.resolve(country);
+        }
+    } catch (exception) {
+        // Always return the country object (even if an error occurs)
+        deferred.resolve(country);
+    }
+    return deferred.promise;
+}
+
+/**
+ * Get the latest travel advice relating to safety and security by scraping gov.uk
+ */
+function getEntryRequirementsTravelAdvice(country) {
+    var deferred = Q.defer();
+    try {
+        if (country.travelAdvice.fcoTravelAdviceUrl 
+            && country.travelAdvice.fcoTravelAdviceUrl != undefined) {
+            request(country.travelAdvice.fcoTravelAdviceUrl+'/entry-requirements', function (error, response, body) {
+                // Check the response seems okay
+                if (response && response.statusCode == 200) {
+                    var $ = cheerio.load(body);
+                    if (!country.travelAdvice)
+                        country.travelAdvice = {};
+
+                    country.travelAdvice.entryRequirements = [];
+                    $('article[role="article"] p').each(function(i, element) {
+                        var text = $(element).text().trim();
+                        text = text.replace(/\.\.$/, '.');
+                        
+                        if (text != "")
+                            country.travelAdvice.entryRequirements.push( text );
+                    });
+                    deferred.resolve(country);
+                } else {
+                    console.log("Warning: Failed to fetch latest entry requirements travel advice for "+country.name+" from "+country.travelAdvice.fcoTravelAdviceUrl);
+                    deferred.resolve(country);
+                }
+            });
+        } else {
+            // Health realted travel advice is not available for all countries.
+            deferred.resolve(country);
+        }
+    } catch (exception) {
+        // Always return the country object (even if an error occurs)
+        deferred.resolve(country);
+    }
+    return deferred.promise;
+}
+

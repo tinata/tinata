@@ -3,6 +3,15 @@
 Changes to the underlyig code and API. The API should be considered unstable for now - properties may be renamed or removed completely.
 
 ====
+## 2014-01-22/3 API enchancements
+
+### API Changes
+
+- **travelAdvice.health** added
+- **travelAdvice.money** added
+- **travelAdvice.localLawsAndCustoms** added
+- **travelAdvice.safetyAndSecurity** added
+- **travelAdvice.entryRequirements** added
 
 ## 2014-01-22/2 API enchancements
 
