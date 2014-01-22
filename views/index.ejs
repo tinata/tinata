@@ -22,6 +22,9 @@
                 It was a <a href="http://hacks.rewiredstate.org/events/fcohack/tinatapi">winning submission</a> for <a href="https://twitter.com/search?q=FCOHACK">#FCOHACK</a> which brings together different FCO (& external) datasets to make them more accessible.
             </p>
             <p>
+                It is provided free without warrenty for both commercial and non-commercial use.
+            </p>
+            <p>
                 <i class="fa fa-lg fa-github"></i> It is <strong>public domain</strong> software and lives at <a href="https://github.com/iaincollins/fcohack2014">https://github.com/iaincollins/fcohack2014</a>
             </p>
 
@@ -31,8 +34,7 @@
                 the <a href="http://www.un.org">United Nations</a>, <a href="http://human-rights.org">CIRI Human Rights Data Project</a>, the <a href="ilga.org">IGLA</a> and other datasets.
             </p>
             <p>
-                Some of statistics returned are for 2010-2013/. If statistics for events (UK citizen arrests, deaths, etc) are not available then the property is not returned. Likewise warnings 
-                are only returned if there is an abnormally high risk. How the information is displayed and parsed will be subject to review.
+                If data is not available (UK citizens aboard data, total population, human rights data, etc) then it is not returned.
             </p>
             <p>
                 The service should currently be considered beta. <a href="https://github.com/iaincollins/fcohack2014/issues">Bug reports, feature requests and suggests are welcome!</a>
@@ -44,19 +46,47 @@
             
             <h3>Lookup a specific country</h3>
             <h4>By ISO identifier</h4>
-            <p><strong>/countries/{2-character-ISO-identifier}</strong> - Get information about a specific country using it's 2 character ISO country identifier.</p>
+            <p><strong>/countries/{ISO-identifier}</strong> - Get information about a specific country using it's 2 or 3 character ISO identifier.</p>
             <p>Example endpoints:</p>
-            <p><a href="/countries/US.html">/countries/US</a> - United States</p>
-            <p><a href="/countries/AF.html">/countries/AF</a> - Afghanistan</p>
+            <p><a href="/countries/USA.html">/countries/USA</a> - United States</p>
+            <p><a href="/countries/CH.html">/countries/CH</a> - China</p>
             <p><a href="/countries/ZW.html">/countries/ZW</a> - Zimbabwe</p>
             <p><a href="/countries/IR.html">/countries/IR</a> - Iran</p>
-            <p>Note: Lookups using the 3 character ISO identifier also works in some cases, but currently only for some countries.</p>
             <h4>By country name</h4>
             <p>Although using the ISO code is recommended, you can also reference countries by name.</p>
             <p><a href="/countries/United_States.html">/countries/United_States</a> - United States</p>
             <p><a href="/countries/Canada.html">/countries/Canada</a> - Canada</p>
             <p><a href="/countries/France.html">/countries/France</a> - France</p>
+            <p><a href="/countries/France.html">/countries/India</a> - India</p>
             <hr/>
+            <h2>Terms &amp; Conditions</h2>
+            <h4>Public domain licence</h4>            
+            <pre>
+This is free and unencumbered software released into the public domain.
+
+Anyone is free to copy, modify, publish, use, compile, sell, or
+distribute this software, either in source code form or as a compiled
+binary, for any purpose, commercial or non-commercial, and by any
+means.
+
+In jurisdictions that recognize copyright laws, the author or authors
+of this software dedicate any and all copyright interest in the
+software to the public domain. We make this dedication for the benefit
+of the public at large and to the detriment of our heirs and
+successors. We intend this dedication to be an overt act of
+relinquishment in perpetuity of all present and future rights to this
+software under copyright law.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+For more information, please refer to <a href="http://unlicense.org">unlicense.org</a>
+            </pre>
          </div>
     </div>
 </div>

@@ -578,7 +578,7 @@ function getCurrentTravelAdvice(country) {
                             var text = $(element).text().trim();
                             
                             // Remove links at the end of sentances & fix typos
-                            text = text.replace(/See Terrorism(\.)$/gi, '');
+                            text = text.replace(/See Terrorism(\.)?$/gi, '');
                             text = text.replace(/See Crime(\.)?$/gi, '');
                             text = text.replace(/See Natural disasters(\.)?$/gi, '');
                             text = text.replace(/See Entry requirements(\.)?$/gi, '');
@@ -590,10 +590,11 @@ function getCurrentTravelAdvice(country) {
                             text = text.replace(/See Safety and security(\.)?$/gi, '');
                             text = text.replace(/See Consular assistance(\.)?$/gi, '');
                             text = text.replace(/See Local travel(\.)?$/gi, '');
+                            text = text.replace(/See Outdoor sports activities(\.)?$/gi, '');
                             text = text.replace(/Download map \(PDF\)(\.)?$/gi, '');
                             text = text.trim();
                             text = text.replace(/\.\.$/, '.');
-
+                            
                             if (text != "")
                                 country.travelAdvice.currentAdvice.push( text );
                         }
