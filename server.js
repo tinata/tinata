@@ -40,7 +40,7 @@ app.get('/countries.html', function(req, res, next) {
  * Return data for all countries in a JSON object
  */
 app.get('/countries', function(req, res, next) {
-    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Type', 'application/json; charset=utf-8');
     res.setHeader("Access-Control-Allow-Origin", "*");
     db.countries.find({ '$query': {}, '$orderby': { name: 1 } }, function(err, countries) {
         res.send( JSON.stringify(countries) );
@@ -93,7 +93,7 @@ function displayCountry(res, country, format) {
         res.render('country', { country: country } );
     } else {
         // Default (JSON)
-        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
         res.setHeader("Access-Control-Allow-Origin", "*");
         res.send( JSON.stringify(country) );
     }
