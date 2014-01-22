@@ -4,6 +4,12 @@ Changes to the underlyig code and API. The API should be considered unstable for
 
 ====
 
+## 2014-01-22/2 API enchancements
+
+### API Changes
+
+- **population** added (Based on UN Population statistics on Wikipedia)
+
 ## 2014-01-22/1 Bugfixes and API enchancements
 
 ### Bugfixes

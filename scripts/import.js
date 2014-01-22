@@ -44,6 +44,7 @@ init()
             
             for (j in FCOCountries) {
                 if (countries[i].iso == FCOCountries[j]['ISO 3166-1 (2 letter)']) {
+                    var country = countryLookup.countries({alpha2: countries[i].iso})[0];
                     countries[i].iso3 = FCOCountries[j]['ISO 3166-1 (3 letter)'];
                     countries[i].name = FCOCountries[j]['Country'];
                     countries[i].nameForCitizen = FCOCountries[j]['Name for Citizen'];
@@ -477,6 +478,37 @@ init()
   return Q.all(promises);
 })
 .then(function(countries) {
+    // Get UN population statistics by scraping Wikipedia
+    var deferred = Q.defer();
+    try {
+        request('http://en.wikipedia.org/wiki/List_of_countries_by_population_(United_Nations)', function (error, response, body) {
+            // Check the response seems okay
+            if (response && response.statusCode == 200) {
+                var $ = cheerio.load(body);
+                $('table').first().children('tr').each(function(i, element) {
+                    var countryName =  $(element).children('td:nth-child(2)').text().replace(/\[(.*)?\]/g, '').trim();
+                    var countryPopulation = $(element).children('td:nth-child(3)').text().replace(/,/g, '').trim();
+                    for (i in countries) {
+                        if (countries[i].name == countryName) {
+                            if (parseInt(countryPopulation) == 1 || parseInt(countryPopulation) == 0) {
+                                console.log("Warning: Unable to fetch population data for "+countryName);
+                            } else {
+                                countries[i].population = countryPopulation;
+                            }
+                        }
+                    }
+                });
+            }
+            deferred.resolve(countries);
+        });
+    } catch (exception) {
+        console.log("Warning: Unable to fetch population data");
+        // Always return the country object (even if an error occurs)
+        deferred.resolve(countries);
+    }
+    return deferred.promise;
+})
+.then(function(countries) {
     var promises = [];
     for (i in countries) {
         // Set the 2 digit ISO code as the ID
@@ -524,10 +556,10 @@ function saveCountry(country) {
 }
 
 /**
- * Get the latest travel advice from gov.uk by screen scraping
+ * Get the latest travel advice by scraping gov.uk
  */
 function getCurrentTravelAdvice(country) {
-    var deferred = Q.defer()
+    var deferred = Q.defer();
     try {
         if (country.travelAdvice.fcoTravelAdviceUrl 
             && country.travelAdvice.fcoTravelAdviceUrl != undefined) {
@@ -545,8 +577,8 @@ function getCurrentTravelAdvice(country) {
                         if (i>0) {
                             var text = $(element).text().trim();
                             
-                            // Remove links at the end of sentances
-                            text = text.replace(/See Terrorism(\.)?$/gi, '');
+                            // Remove links at the end of sentances & fix typos
+                            text = text.replace(/See Terrorism(\.)$/gi, '');
                             text = text.replace(/See Crime(\.)?$/gi, '');
                             text = text.replace(/See Natural disasters(\.)?$/gi, '');
                             text = text.replace(/See Entry requirements(\.)?$/gi, '');
@@ -557,9 +589,11 @@ function getCurrentTravelAdvice(country) {
                             text = text.replace(/See Dual nationals(\.)?$/gi, '');
                             text = text.replace(/See Safety and security(\.)?$/gi, '');
                             text = text.replace(/See Consular assistance(\.)?$/gi, '');
+                            text = text.replace(/See Local travel(\.)?$/gi, '');
                             text = text.replace(/Download map \(PDF\)(\.)?$/gi, '');
                             text = text.trim();
-                            
+                            text = text.replace(/\.\.$/, '.');
+
                             if (text != "")
                                 country.travelAdvice.currentAdvice.push( text );
                         }
