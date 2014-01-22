@@ -546,19 +546,18 @@ function getCurrentTravelAdvice(country) {
                             var text = $(element).text().trim();
                             
                             // Remove links at the end of sentances
-                            text = text.replace(/See Terrorism(\.)?$/, '');
-                            text = text.replace(/See Crime(\.)?$/, '');
-                            text = text.replace(/See Natural disasters(\.)?$/, '');
-                            text = text.replace(/See Entry requirements(\.)?$/, '');
-                            text = text.replace(/See Political situation(\.)?$/, '');
-                            text = text.replace(/See Visas(\.)?$/, '');
-                            text = text.replace(/See Money(\.)?$/, '');
-                            text = text.replace(/See Health(\.)?$/, '');
-                            text = text.replace(/See Dual nationals(\.)?$/, '');
-                            text = text.replace(/See Safety and security(\.)?$/, '');
-                            text = text.replace(/See Consular assistance(\.)?$/, '');
-                            
-                            text = text.replace(/Download map \(PDF\)(\.)?$/, '');
+                            text = text.replace(/See Terrorism(\.)?$/gi, '');
+                            text = text.replace(/See Crime(\.)?$/gi, '');
+                            text = text.replace(/See Natural disasters(\.)?$/gi, '');
+                            text = text.replace(/See Entry requirements(\.)?$/gi, '');
+                            text = text.replace(/See Political situation(\.)?$/gi, '');
+                            text = text.replace(/See Visas(\.)?$/gi, '');
+                            text = text.replace(/See Money(\.)?$/gi, '');
+                            text = text.replace(/See Health(\.)?$/gi, '');
+                            text = text.replace(/See Dual nationals(\.)?$/gi, '');
+                            text = text.replace(/See Safety and security(\.)?$/gi, '');
+                            text = text.replace(/See Consular assistance(\.)?$/gi, '');
+                            text = text.replace(/Download map \(PDF\)(\.)?$/gi, '');
                             text = text.trim();
                             
                             if (text != "")
