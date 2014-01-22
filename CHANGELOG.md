@@ -14,7 +14,7 @@ Changes to the underlyig code and API. The API should be considered unstable for
 - **ukConsularData** now includes description field
 - **humanRights** now includes description field
 - **inUKFCODB** property removed
-- **fcoTravelAdviceUrl** renamed (now fcoAdvice.fcoTravelAdviceUrl)
+- **fcoTravelAdviceUrl** renamed (now ukTravelAdvice.fcoTravelAdviceUrl)
 - **nhsTravelAdviceUrl** renamed (now ukTravelAdvice.nhsTravelAdviceUrl)
 - **Warnings removed** Removed temporarily due to data quality issues. This will return after a review of how ukConsularData is collated and presented.
 - **Currency property now an array** (Fixes #2)
