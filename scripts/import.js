@@ -14,6 +14,7 @@ var countryLookup = require('country-data').lookup;
 var countryCurrencies = require('country-data').currencies;
 var oxr = require('open-exchange-rates');
 var fx = require('money');
+var cheerio = require('cheerio'); // For DOM parsing
 
 GLOBAL.db = mongoJs.connect("127.0.0.1/tinatapi", ["countries"]);
         
@@ -29,16 +30,17 @@ init()
         var FCOCountries = jsonObj.csvRows;
         for (i in countries) {
             
-            // Remove old properties that are longer supported.
+            // These properties are no longer exported
             delete countries[i].uk;
             delete countries[i].inUKFCODB;
             delete countries[i].fcoTravelAdviceUrl;
             delete countries[i].nhsTravelAdviceUrl;
-            delete countries[i].travelAdvice;
             delete countries[i].warnings;
+            delete countries[i].ukTravelAdvice;
+            delete countries[i].lgbtRights;
             
             countries[i].ukConsularData = {};
-            countries[i].ukConsularData.description = "UK Consular data for the last 12 months.";
+            countries[i].ukConsularData.description = "Consular data for UK citizens abroad during 2013 (from the UK Foreign & Commonwealth Office).";
             
             for (j in FCOCountries) {
                 if (countries[i].iso == FCOCountries[j]['ISO 3166-1 (2 letter)']) {
@@ -46,11 +48,11 @@ init()
                     countries[i].name = FCOCountries[j]['Country'];
                     countries[i].nameForCitizen = FCOCountries[j]['Name for Citizen'];
                     
-                    if (!countries[i].ukTravelAdvice)
-                        countries[i].ukTravelAdvice = {};
+                    if (!countries[i].travelAdvice)
+                        countries[i].travelAdvice = {};
 
-                    countries[i].ukTravelAdvice.fcoTravelAdviceUrl = FCOCountries[j]['FCO travel advice'];
-                    countries[i].ukTravelAdvice.nhsTravelAdviceUrl = FCOCountries[j]['NHS Travel Health'];
+                    countries[i].travelAdvice.fcoTravelAdviceUrl = FCOCountries[j]['FCO travel advice'];
+                    countries[i].travelAdvice.nhsTravelAdviceUrl = FCOCountries[j]['NHS Travel Health'];
                 }
             }
         }
@@ -228,25 +230,29 @@ init()
         for (i in countries) {
             for (j in lgbtCountries) {
                 if (countries[i].iso3 == lgbtCountries[j]['ISO 3166-1 (3 letter)']) {
-                    
-                    countries[i].lgbtRights = {};
-                    countries[i].lgbtRights.persecution = false;
-                    countries[i].lgbtRights.imprisonment = false;
-                    countries[i].lgbtRights.deathPenalty = false;
+
+                    if (!countries[i].humanRights)
+                        countries[i].humanRights = {};
+
+                    countries[i].humanRights.lgbt = {};
+                    countries[i].humanRights.lgbt.description = "LGBT rights data from the International Lesbian and Gay Association (ilga.org)";
+                    countries[i].humanRights.lgbt.persecution = false;
+                    countries[i].humanRights.lgbt.imprisonment = false;
+                    countries[i].humanRights.lgbt.deathPenalty = false;
                     
                     if (lgbtCountries[j]['Persecution'] == 'yes') {
-                        countries[i].lgbtRights.persecution = true;
+                        countries[i].humanRights.lgbt.persecution = true;
                     }
                     
                     if (lgbtCountries[j]['Imprisonment'] == 'yes') {
-                        countries[i].lgbtRights.persecution = true;
-                        countries[i].lgbtRights.imprisonment = true;
+                        countries[i].humanRights.lgbt.persecution = true;
+                        countries[i].humanRights.lgbt.imprisonment = true;
                     }
                     
                     if (lgbtCountries[j]['Death'] == 'yes') {
-                        countries[i].lgbtRights.persecution = true;
-                        countries[i].lgbtRights.imprisonment = true;
-                        countries[i].lgbtRights.deathPenalty = true;
+                        countries[i].humanRights.lgbt.persecution = true;
+                        countries[i].humanRights.lgbt.imprisonment = true;
+                        countries[i].humanRights.lgbt.deathPenalty = true;
                     }
                 }
             }
@@ -355,8 +361,9 @@ init()
         for (i in countries) {
             for (j in humanRights) {
                 if (countries[i].name == humanRights[j].CTRY) {
-                    countries[i].humanRights = {};
-                    countries[i].humanRights.description = "Based on the Cingranelli-Richards (CIRI) indexes for Human Rights on humanrightsdata.org"
+                    if (!countries[i].humanRights)
+                        countries[i].humanRights = {};
+                    countries[i].humanRights.description = "Based on the Cingranelli-Richards (CIRI) indexes for Human Rights (humanrightsdata.org)"
                     /*
                     Physical Integrity Rights Index
                     This is an additive index constructed from the Torture, Extrajudicial Killing, Political Imprisonment,
@@ -459,7 +466,16 @@ init()
     csvConverter.from("../data/Human-Rights.csv");
     return deferred.promise;
 })
-// @todo Import latest news and weather alerts (Google)
+.then(function(countries) {
+    // Lookup latest FCO travel advice from gov.uk
+    var promises = [];
+    for (i in countries) {
+        var country = countries[i];
+        var promise = getCurrentTravelAdvice(country);
+        promises.push(promise);
+    }
+  return Q.all(promises);
+})
 .then(function(countries) {
     var promises = [];
     for (i in countries) {
@@ -473,6 +489,7 @@ init()
     return Q.all(promises);
 })
 .then(function(countries) {
+//    console.log(countries);
     console.log("Updated data for "+countries.length+" countries");
     console.log("*** Finished importing data into the DB");
     db.close();
@@ -503,5 +520,62 @@ function saveCountry(country) {
         }
         deferred.resolve(country);
     });
+    return deferred.promise;
+}
+
+/**
+ * Get the latest travel advice from gov.uk by screen scraping
+ */
+function getCurrentTravelAdvice(country) {
+    var deferred = Q.defer()
+    try {
+        if (country.travelAdvice.fcoTravelAdviceUrl 
+            && country.travelAdvice.fcoTravelAdviceUrl != undefined) {
+            request(country.travelAdvice.fcoTravelAdviceUrl, function (error, response, body) {
+                // Check the response seems okay
+                if (response && response.statusCode == 200) {
+                    var $ = cheerio.load(body);
+                    if (!country.travelAdvice)
+                        country.travelAdvice = {};
+
+                    country.travelAdvice.description = "Travel advice provided by the UK Foreign & Commonwealth Office (www.gov.uk/foreign-travel-advice)/";
+                    country.travelAdvice.currentAdvice = [];
+                    $('article[role="article"] p').each(function(i, element) {
+                        // Ignore first line (meta info about the summary)
+                        if (i>0) {
+                            var text = $(element).text().trim();
+                            
+                            // Remove links at the end of sentances
+                            text = text.replace(/See Terrorism(\.)?$/, '');
+                            text = text.replace(/See Crime(\.)?$/, '');
+                            text = text.replace(/See Natural disasters(\.)?$/, '');
+                            text = text.replace(/See Entry requirements(\.)?$/, '');
+                            text = text.replace(/See Political situation(\.)?$/, '');
+                            text = text.replace(/See Visas(\.)?$/, '');
+                            text = text.replace(/See Money(\.)?$/, '');
+                            text = text.replace(/See Health(\.)?$/, '');
+                            text = text.replace(/See Dual nationals(\.)?$/, '');
+
+                            text = text.replace(/Download map \(PDF\)(\.)?$/, '');
+                            text = text.trim();
+                            
+                            if (text != "")
+                                country.travelAdvice.currentAdvice.push( text );
+                        }
+                    });
+                    deferred.resolve(country);
+                } else {
+                    console.log("Warning: Failed to fetch latest FCO travel advice for "+country.name+" from "+country.travelAdvice.fcoTravelAdviceUrl);
+                    deferred.resolve(country);
+                }
+            });
+        } else {
+            // Travel advice is not available for all countries.
+            deferred.resolve(country);
+        }
+    } catch (exception) {
+        // Always return the country object (even if an error occurs)
+        deferred.resolve(country);
+    }
     return deferred.promise;
 }

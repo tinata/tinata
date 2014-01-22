@@ -2,6 +2,24 @@
 
 Changes to the underlyig code and API. The API should be considered unstable for now - properties may be renamed or removed completely.
 
+====
+
+## 2014-01-22/1 Bugfixes and API enchancements
+
+### Bugfixes
+
+- **Updated the description for ukConsularData* now more accurate
+
+### API Changes
+
+- **lgbtRights** renamed **humanRights.lgbt**
+- **humanRights.lgbt.description** added to indicate where it comes from
+- **ukTravelAdvice** renamed **travelAdvice**
+- **currentAdvice** added. Edited summary of latest advice from the FCO.
+- **travelAdvice.description** added to indicate where the advice comes from.
+
+====
+
 ## 2014-01-22/0 Bugfixes and API enchancements
 
 ### Bugfixes

@@ -14,6 +14,7 @@
     "country-data": "*",
     "open-exchange-rates": "*",
     "money": "*",
-    "xml2js": "*"
+    "xml2js": "*",
+    "cheerio": "*"
   }
 }
