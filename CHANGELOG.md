@@ -30,7 +30,7 @@ Changes to the underlyig code and API. The API should be considered unstable for
 - **lgbtRights** renamed **humanRights.lgbt**
 - **humanRights.lgbt.description** added to indicate where it comes from
 - **ukTravelAdvice** renamed **travelAdvice**
-- **currentAdvice** added. Edited summary of latest advice from the FCO.
+- **travelAdvice.currentAdvice** added. Edited summary of latest advice from the FCO.
 - **travelAdvice.description** added to indicate where the advice comes from.
 
 ====
