@@ -78,7 +78,6 @@ init()
                     try {
                         var ciaWorldFactbookData = require(__dirname + '/../data/cia-world-factbook/'+fipsCountries[j]['FIPS CODE'].toLowerCase()+'.json');
                         countries[i].capitalCity = ciaWorldFactbookData.government.Capital['name:'];
-                        countries[i].sizeInSqKm = parseInt(ciaWorldFactbookData.geo.Area['total:'].quantity);
                     } catch (exception) {
                         console.log("Warning: Unable to load CIA World Factbook data for "+countries[i].name);
                     }
