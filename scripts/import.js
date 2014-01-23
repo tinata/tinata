@@ -38,6 +38,7 @@ init()
             delete countries[i].warnings;
             delete countries[i].ukTravelAdvice;
             delete countries[i].lgbtRights;
+            delete countries[i].sizeInSqKm;
             
             countries[i].ukConsularData = {};
             countries[i].ukConsularData.description = "Consular data for UK citizens abroad during 2013 (from the UK Foreign & Commonwealth Office).";
@@ -78,9 +79,6 @@ init()
                         var ciaWorldFactbookData = require(__dirname + '/../data/cia-world-factbook/'+fipsCountries[j]['FIPS CODE'].toLowerCase()+'.json');
                         countries[i].capitalCity = ciaWorldFactbookData.government.Capital['name:'];
                         countries[i].sizeInSqKm = parseInt(ciaWorldFactbookData.geo.Area['total:'].quantity);
-                        // Don't use if we don't have a valid value
-                        if (countries[i].sizeInSqKm == null || countries[i].sizeInSqKm == 0)
-                            delete countries[i].sizeInSqKm;
                     } catch (exception) {
                         console.log("Warning: Unable to load CIA World Factbook data for "+countries[i].name);
                     }

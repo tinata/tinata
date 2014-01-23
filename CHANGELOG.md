@@ -10,7 +10,6 @@ Changes to the underlyig code and API. The API should be considered unstable for
 
 - **fipsCountryCode** added. An older country code system used by the US government for datasets like the CIA World Factbook.
 - **capitalCity** added
-- **sizeInSqKm** added
 
 ## 2014-01-22/3 API enchancements
 
