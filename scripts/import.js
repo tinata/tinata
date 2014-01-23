@@ -63,17 +63,24 @@ init()
     return deferred.promise;
 })
 .then(function(countries) {
-    // Add FIPS 10-4 country codes
+    // Add FIPS 10-4 country codes and World Factbook Data
     // FIPS codes are used by US government sources like the CIA World Factbook
+    // Obtained via scraper at https://github.com/twigkit/worldfactbook-dataset/
     var deferred = Q.defer();
     var csvConverter = new Converter();
     csvConverter.on("end_parsed", function(jsonObj) {
         var fipsCountries = jsonObj.csvRows;
         for (i in countries) {
-            delete countries[i].fipsCountryCode;
             for (j in fipsCountries) {
                 if (countries[i].name.toLowerCase() == fipsCountries[j]['COUNTRY NAME'].toLowerCase()) {
                     countries[i].fipsCountryCode = fipsCountries[j]['FIPS CODE'];
+                    try {
+                        var ciaWorldFactbookData = require(__dirname + '/../data/cia-world-factbook/'+fipsCountries[j]['FIPS CODE'].toLowerCase()+'.json');
+                        countries[i].capitalCity = ciaWorldFactbookData.government.Capital['name:'];
+                        countries[i].sizeInSqKm = parseInt(ciaWorldFactbookData.geo.Area['total:'].quantity);
+                    } catch (exception) {
+                        console.log("Warning: Unable to load CIA World Factbook data for "+countries[i].name);
+                    }
                 }
             }
         }
