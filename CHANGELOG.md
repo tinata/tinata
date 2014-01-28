@@ -36,7 +36,8 @@ There are **MAJOR BREAKING** changes in this release - not just to the schema bu
 
 - **Defunction countries removed from DB** (e.g. East Germany, USSR)
 - **Fixed typo in example URL for China** (was pointing at Switzerland!)
-- **Partial exchange rate info no longer displayed** This means currencies like BOV - which aren't actually traded normally - don't show up oddly.
+- **Partial exchange rate info no longer displayed** This means currencies like BOV, which aren't actually traded normally, display correctly.
+
 ====
 
 ## 2014-01-22 Bugfixes and API enchancements
