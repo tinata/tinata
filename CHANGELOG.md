@@ -20,9 +20,8 @@ There are **MAJOR BREAKING** changes in this release - not just to the schema bu
 - **officalName** added using data provided by UK FCO
 - **notes** added using data provided by UK FCO
 - **travelAdvice.lastUpdated** added. Contains ISO timestamp of when the travel advice for the country was last updated by the UK FCO.
-- **capitalCity renamed capitalCities** is now an array. API currently only returns one capital city per country, hope to extend this soon.
+- **capitalCity renamed capitalCities** is now an array. API currently only returns one capital city per country, hope to add others soon.
 - **ukConsularData removed** pending further work to parse and translate the data into a more useable format (may be prove to be quite a bit of work)
-- 
 
 ### Enhancements
 
@@ -31,7 +30,7 @@ There are **MAJOR BREAKING** changes in this release - not just to the schema bu
 - **countries.csv** added. Contains core data to boostrap the DB from.
 - **refactored import.js** now much smaller. Still refactoring to do.
 - **Code moved to tinata-countries library** eventually will create npm module
-- **removed historical territories that have been deleted from ISO 3166-1**
+- **removed historical territories** all areas deleted from ISO 3166-1 removed
 
 ### Bugfixes
 
@@ -81,5 +80,5 @@ All changes made on on 2014-01-22 have been rolled into this single entry (read 
 
 ### Bugfixes
 
-- **new description for ukConsularData** now more accurate
+- **New description for ukConsularData** now more accurate
 - **All countries can be looked up by 3 letter ISO identifier** (Fixes #1)
