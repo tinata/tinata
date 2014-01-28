@@ -1,20 +1,225 @@
-<div class="container">
+<div class="container container-main" ng-app ng-controller="Controller">
     <div class="row">
         <div class="col-sm-12">
             <h1>
-                <span class="fa-stack fa-lg">
-                    <i class="fa fa-plane fa-stack-1x"></i>
-                    <i class="fa fa-square-o fa-stack-2x"></i>
-                </span>
-                Tinatapi
-                <small>An API that provides information useful to travellers</small>
+                Countries
+                <small class="pull-right">
+                     <input class="form-control" placeholder="Country name" ng-model="search.name">
+                </small>
             </h1>
-            <h2>Countries</h2>
             <p class="lead">
-                To fetch this page via JSON use the URL <a href="/countries/">/countries/</a>
+                Fetch information about every country in JSON by using the URL <a href="/countries.json">/countries.json</a>
             </p>
-            <% countries.forEach(function(country) { %>
-                <p><a href="/countries/<%= country.iso %>.html"><%= country.name %></a> <span class="text-muted">(<%= country.iso %>)</span></p>
-            <% }); %>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <a href="" class="btn-block" ng-click="predicate = 'name'; reverse=!reverse">Country name
+                                    <span ng-show="predicate == 'name'">
+                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
+                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
+                                    </span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="" class="btn-block" ng-click="predicate = 'numericId'; reverse=!reverse">UN ID
+                                    <span ng-show="predicate == 'numericId'">
+                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
+                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
+                                    </span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="" class="btn-block" ng-click="predicate = 'iso2'; reverse=!reverse">ISO-2
+                                    <span ng-show="predicate == 'iso2'">
+                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
+                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
+                                    </span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="" class="btn-block" ng-click="predicate = 'iso3'; reverse=!reverse">ISO-3
+                                    <span ng-show="predicate == 'iso3'">
+                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
+                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
+                                    </span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="" class="btn-block" ng-click="predicate = 'fips'; reverse=!reverse">FIPS
+                                    <span ng-show="predicate == 'fips'">
+                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
+                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
+                                    </span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="" class="btn-block" ng-click="predicate = 'humanRights'; reverse=!reverse">Human<br/>rights<br/>data
+                                    <span ng-show="predicate == 'humanRights'">
+                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
+                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
+                                    </span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="" class="btn-block" ng-click="predicate = 'humanRights.lgbt'; reverse=!reverse">LGBT<br/>rights<br/>data
+                                    <span ng-show="predicate == 'humanRights.lgbt'">
+                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
+                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
+                                    </span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="" class="btn-block" ng-click="predicate = 'travelAdvice'; reverse=!reverse">Travel<br/>advice
+                                    <span ng-show="predicate == 'travelAdvice'">
+                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
+                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
+                                    </span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="" class="btn-block" ng-click="predicate = 'notes'; reverse=!reverse">Notes
+                                    <span ng-show="predicate == 'notes'">
+                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
+                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
+                                    </span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="" class="btn-block" ng-click="predicate = 'capitalCities'; reverse=!reverse">Capital cities
+                                    <span ng-show="predicate == 'capitalCities'">
+                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
+                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
+                                    </span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="" class="btn-block" ng-click="predicate = 'currencies'; reverse=!reverse">Currencies
+                                    <span ng-show="predicate == 'currencies'">
+                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
+                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
+                                    </span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="" class="btn-block" ng-click="predicate = 'population'; reverse=!reverse">Population
+                                    <span ng-show="predicate == 'population'">
+                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
+                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
+                                    </span>
+                                </a>
+                            </th>
+                            <th>
+                                <a href="" class="btn-block" ng-click="predicate = 'callingCodes'; reverse=!reverse">Calling codes
+                                    <span ng-show="predicate == 'callingCodes'">
+                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
+                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
+                                    </span>
+                                </a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="country in countries | orderBy:predicate:reverse | filter:search:strict">
+                            <td>
+                                <p>
+                                   <strong><a href="/countries/{{ country.iso2 }}">{{ country.name }}</a></strong>
+                                   <span class="text-muted" ng-if="country.dependantTerritory">
+                                       <br/>Dependant territory
+                                   </span>
+                                </p>
+                            </td>
+                            <td>
+                               {{country.numericId}}
+                            </td>
+                            <td>
+                               {{country.iso2}}
+                            </td>
+                            <td>
+                               {{country.iso3}}
+                            </td>
+                            <td>
+                               {{country.fips}}
+                            </td>
+                            <td>
+                                <p ng-if="country.humanRights">
+                                    <strong>Yes</strong>
+                                </p>
+                                <p class="text-muted" ng-if="!country.humanRights">
+                                    No
+                                </p>
+                            </td>
+                            <td>
+                                <p ng-if="country.humanRights.lgbt">
+                                    <strong>Yes</strong>
+                                </p>
+                                <p class="text-muted" ng-if="!country.humanRights.lgbt">
+                                    No
+                                </p>
+                            </td>
+                            <td>
+                                <p ng-if="country.travelAdvice">
+                                    <strong>Yes</strong>
+                                </p>
+                                <p class="text-muted" ng-if="!country.travelAdvice">
+                                    No
+                                </p>
+                            </td>
+                            <td>
+                                <p ng-if="country.notes">
+                                    <strong>Yes</strong>
+                                </p>
+                                <p class="text-muted" ng-if="!country.notes">
+                                    No
+                                </p>
+                            </td>
+                            <td>
+                                <p ng-repeat="capitals in country.capitalCities">
+                                    {{capitals}}
+                                </p>
+                                <p class="text-muted" ng-if="!country.capitalCities">
+                                    N/A
+                                </p>
+                            </td>
+                            <td>
+                                <p ng-repeat="currency in country.currencies">
+                                    {{currency.code}}
+                                </p>
+                                <p class="text-muted" ng-if="!country.currencies">
+                                    N/A
+                                </p>
+                            </td>
+                            <td>
+                                <p ng-if="country.population">
+                                    {{country.population | number}}
+                                </p>
+                                <p class="text-muted" ng-if="!country.population">
+                                    N/A
+                                </p>
+                            </td>
+                            <td>
+                                <p ng-repeat="callingCode in country.callingCodes">
+                                    {{callingCode}}
+                                </p>
+                                <p class="text-muted" ng-if="!country.callingCodes">
+                                    N/A
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
+<script>
+function Controller($scope, $http) {
+    $http.get('/countries.json').success(function(countries) {
+        for (i in countries) {
+//            countries[i].population
+        }
+        $scope.countries = countries;
+    });
+}
+</script>

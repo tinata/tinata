@@ -7,8 +7,8 @@ var express = require('express');
 var partials = require('express-partials');
 var ejs = require('ejs');
 var mongoJs = require('mongojs');
-var Q = require('q');       // For promises
-var util = require('util'); // For debugging
+var Q = require('q');
+var tinataCountries = require(__dirname + '/lib/tinata-countries');
 
 GLOBAL.db = mongoJs.connect("127.0.0.1/tinatapi", ["countries"]);
 
@@ -22,16 +22,27 @@ app.set('view engine', 'ejs');
 app.engine('ejs', ejs.__express);
 partials.register('.ejs', ejs);
 
+/**
+ * The homepage
+ */
 app.get('/', function(req, res, next) {
     res.render('index');
 });
 
 
 /** 
+ * The About page
+ */
+app.get('/about', function(req, res, next) {
+    res.render('about');
+});
+
+/** 
  * List all countries on an HTML page
  */
-app.get('/countries.html', function(req, res, next) {
-    db.countries.find({ '$query': {}, '$orderby': { name: 1 } }, function(err, countries) {
+app.get('/countries(.html)?', function(req, res, next) {
+    tinataCountries.getAllCountries()
+    .then(function(countries) {
         res.render('countries', { countries: countries } );
     });
 });
@@ -39,10 +50,11 @@ app.get('/countries.html', function(req, res, next) {
 /** 
  * Return data for all countries in a JSON object
  */
-app.get('/countries', function(req, res, next) {
-    res.setHeader('Content-Type', 'application/json; charset=utf-8');
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    db.countries.find({ '$query': {}, '$orderby': { name: 1 } }, function(err, countries) {
+app.get('/countries.json?', function(req, res, next) {
+    tinataCountries.getAllCountries()
+    .then(function(countries) {
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        res.setHeader("Access-Control-Allow-Origin", "*");
         res.send( JSON.stringify(countries) );
     });
 });
@@ -54,14 +66,15 @@ app.get('/countries/:name', function(req, res, next) {
     var path = req.params.name.split('.');
     var countryIdentifier = path[0].replace('_', ' ');
     
-    // Default response is json but is also able to return HTML
-    var responseFormat = 'json';
+    // Default response is html. Returns JSON if .json file extention specified
+    var responseFormat = 'html';
     if (path.length > 1)
-        if (path[1] == 'html')
-            responseFormat = 'html';
+        if (path[1] == 'json')
+            responseFormat = 'json';
             
     // Search for match on 2 character country code
-    db.countries.find({ "iso": countryIdentifier }, function(err, countries) {
+    // @todo Create "tinataCountries.findCountry()" method to handle this
+    db.countries.find({ "iso2": countryIdentifier }, function(err, countries) {
         if (countries.length > 0) {
             displayCountry(res, countries[0], responseFormat);
         } else {
@@ -87,15 +100,32 @@ app.get('/countries/:name', function(req, res, next) {
     });
 });
 
+/** 
+ * Return information about the status of the database (which data is avalible for what countries)
+ */
+app.get('/status', function(req, res, next) {
+    db.countries.find({ '$query': {}, '$orderby': { name: 1 } }, function(err, countries) {
+        res.render('status', { countries: countries } );
+    });
+});
+
 function displayCountry(res, country, format) {
     if (format == 'html') {
-        // Reutrn country information as an HTML page.
-        res.render('country', { country: country } );
-    } else {
+        // Return country information as an HTML page.
+        // When returning HTML page identify known issues (missing data)
+        // @todo Refactor - move to function in class
+        var knownIssues = [];
+        res.render('country', { country: country, knownIssues: knownIssues } );
+    } else if (format == 'json') {
         // Default (JSON)
         res.setHeader('Content-Type', 'application/json; charset=utf-8');
         res.setHeader("Access-Control-Allow-Origin", "*");
         res.send( JSON.stringify(country) );
+    } else {
+        // If format unknown, return 404
+        res.status(404).render('page-not-found', {
+            title: "Page not found"
+        });
     }
 }
 

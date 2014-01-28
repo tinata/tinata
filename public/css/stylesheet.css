@@ -1,0 +1,64 @@
+body {
+    background: url(/img/background.jpg);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center top;
+    background-size: cover;
+    -moz-background-size: cover;
+}
+
+.navbar.navbar-default,
+.navbar.navbar-default .container {
+    background: #fff;
+}
+
+.jumbotron {
+    padding: 60px 0;
+    margin-bottom: 0;
+    background: none;
+}
+
+.jumbotron h1 {
+    font-size: 72px;
+}
+
+.jumbotron .lead {
+    font-size: 32px;
+    text-shadow: 0 1px 1px #fff;
+}
+
+.jumbotron .fa-stack {
+    margin-right: 30px;
+}
+
+.container.container-main {
+    position: relative;
+    top: 20px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    background: #fff;
+    background: rgba(255,255,255,0.9);
+}
+
+.wrapper-home {
+    background: #fff;
+    background: rgba(255,255,255,0.9);
+}
+
+.wrapper-home .container.container-main {
+    background: none;
+}
+
+.alert.padding-xs {
+    padding: 5px 10px;
+}
+
+.well.well-code {
+    border-color: #000;
+    background: #222;
+    color: #fff;
+}
+
+.well.well-code a {
+    color: #00d2ff !important;
+}

@@ -1,20 +1,43 @@
-<div class="container">
+<div class="container container-main">
     <div class="row">
         <div class="col-sm-12">
-            <h1>
-                <span class="fa-stack fa-lg">
-                    <i class="fa fa-plane fa-stack-1x"></i>
-                    <i class="fa fa-square-o fa-stack-2x"></i>
-                </span>
-                Tinatapi
-                <small>An API that provides information useful to travellers</small>
-            </h1>
-            <h2><%= country.name %></h2>
+            <h1><%= country.name %></h1>
             <p class="lead">
-                To fetch this page via JSON use the URL <a href="/countries/<%= country.iso %>">/countries/<%= country.iso %></a>
+                Fetch information about this country in JSON by using the URL <a href="/countries/<%= country.iso2 %>.json">/countries/<%= country.iso2 %>.json</a>
             </p>
-            <pre>
+            <div class="row">
+                <div class="col-sm-9">
+                    <h3>JSON Response</h3>
+                    <pre>
 <%= JSON.stringify(country, null, 2) %>
-            </pre>
+                    </pre>
+                </div>
+                <div class="col-sm-3">
+                    <!-- @todo
+                    <h3>Known issues</h3>
+                    <% if (knownIssues.length > 0) { %>
+                        <ul>
+                        <% knownIssues.forEach(function(knownIssue) { %>
+                            <li>
+                                <% knownIssue %>
+                            </li>
+                        <% }) %>
+                        <ul>
+                    <% } else { %>
+                        <p>There are no known issues with the data for this country.
+                    <% } %>
+                    -->
+                    <h3>Report a problem</h3>
+                    <p>
+                        Notice anything wrong? Let us know!
+                    </p>
+                    <p>
+                        <a target="_new" href="https://github.com/tinata/tinatapi/issues/new?title=Problem with data for <%= country.name %> (<%= country.iso2 %>)" class="btn btn-info btn-block">Report a problem</a>
+                    </p>
+                    <p class="text-muted">
+                        To report a problem, you currently need to have a GitHub account.
+                    </p>
+                </div>
+            </div>
     </div>
 </div>

@@ -1,0 +1,7 @@
+
+Export a list of information from the FCO APIs.
+
+End points:
+
+/search/?q=%string$ - Can search on country name. Returns list of countries that match in an array.
+/all/
