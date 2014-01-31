@@ -4,6 +4,19 @@ Changes to the underlyig code and API. The API should be considered unstable for
 
 ====
 
+## 2014-01-31 Refactoring & Enhancements
+
+Most of the work in this update is refactoring and the addition of support for aliases (and subsequently making it possible to look up countries by known aliases or by offical name).
+
+Future updates will leverage aliases for things like parsing Wikipedia pages to improve completeness of data. Alaises are maintained in country-aliases.csv
+
+Empty properties are now stripped when countries are saved to the DB.
+
+### API Changes
+
+- **numericId** renamed isoNumeric
+- **aliases** added countries can now easily be looked up by aliases (maintained in CSV file)
+
 ## 2014-01-28 Bugfixes and enchancements
 
 There are **MAJOR BREAKING** changes in this release - not just to the schema but to the URL endpoints (which now end in .JSON).
@@ -71,13 +84,14 @@ All changes made on on 2014-01-22 have been rolled into this single entry (read 
 
     For example, instead of:
 
-    currency.code = "USD";
-    currency.name = "United States dollar";
+        currency.code = "USD"; 
+        currency.name = "United States dollar";
 
     Now use:
 
-    currency.USD.code = "USD";
-    currency.USD.name = "United States dollar";
+        currency.USD.code = "USD";
+        currency.USD.name = "United States dollar";
+
 
 ### Bugfixes
 

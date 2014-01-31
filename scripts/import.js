@@ -2,6 +2,7 @@
 /**
  * Script to import data into MongoDB from various sources (CSV files, other APIs, etc)
  */
+var util = require('util');
 var mongoJs = require('mongojs');
 var request = require('request');
 var Q = require('q');
@@ -17,13 +18,65 @@ var cheerio = require('cheerio');
 var tinataCountries = require(__dirname + '/../lib/tinata-countries');
 
 GLOBAL.db = mongoJs.connect("127.0.0.1/tinatapi", ["countries"]);
-        
+
+// Steps which rely on external services / sites can be disabled here.
+GLOBAL.options = {};
+options.getExchangeRateData = true;
+options.getTravelAdvice = true;
+options.getWikipediaData = true;
+
 console.log("*** Importing data into the DB");
 
 // NB: If you're running an early version you are strongly advised to reset your database after upgrading to avoid corruption
-// db.countries.drop();
+//db.countries.drop();
 
 init()
+.then(function(countries) {
+    // Load aliases
+    var promises = [];
+    
+    var csvConverter = new Converter();
+    csvConverter.on("end_parsed", function(jsonObj) {
+        var aliases = jsonObj.csvRows;
+        countries.forEach(function(country, index) {
+            var countryAliases = [];
+            for (a in aliases) {
+                // Ignore blank lines/invalid country codes
+                if (aliases[a].iso2.length != 2)
+                    continue;
+                    
+                if (country.iso2 == aliases[a].iso2)
+                    countryAliases.push(aliases[a].alias);
+            }
+
+            // If there are aliases then validate them
+            if (countryAliases.length > 0) {
+                // Note: getValidAliases() replaces invalid aliases (used by other countries or that map to existing country names or country codes) with null
+                getValidAliases(countryAliases, countries)
+                .then(function(validAliases) {
+                    validAliases.forEach(function(validAlias, index) {
+                        // Create 'aliases' property if it doesn't exist already
+                        if (!country.aliases)
+                            country.aliases = [];
+
+                        // Add alias if it not been added already AND isn't null
+                        if (!(validAlias in country.aliases) && validAlias != null) {
+                            country.aliases.push(validAlias);
+                        }
+                    });
+                    promises.push(country);
+                });
+            } else {
+                // If no aliases, just return country object as-is
+                promises.push(country);
+            }
+            
+        });
+    });
+    
+    csvConverter.from("../data/csv/country-aliases.csv");
+    return Q.all(promises);
+})
 .then(function(countries) {
     // Load Human Rights info from CSV provided by the CIRI Human Rights Data Project (http://www.humanrightsdata.org)
     var deferred = Q.defer();
@@ -211,14 +264,18 @@ init()
     return deferred.promise;
 })
 .then(function(countries) {
-    // Get latest travel advice from FCO on gov.uk
-    var promises = [];
-    for (i in countries) {
-        var country = countries[i];
-        var promise = getTravelAdvice(country);
-        promises.push(promise);
+    if (options.getTravelAdvice == true) {
+        // Get latest travel advice from FCO on gov.uk
+        var promises = [];
+        for (i in countries) {
+            var country = countries[i];
+            var promise = getTravelAdvice(country);
+            promises.push(promise);
+        }
+      return Q.all(promises);
+    } else {
+        return countries;
     }
-  return Q.all(promises);
 })
 .then(function(countries) {
     // Get dialing code and local currencies
@@ -226,7 +283,13 @@ init()
     for (i in countries) {            
         var country = countryLookup.countries({alpha2: countries[i].iso2})[0];
         if (country) {
-            countries[i].callingCodes = country.countryCallingCodes;
+            
+            countries[i].callingCodes = [];
+            for (j in country.countryCallingCodes) {
+                // @todo? Remove Plus symbols and/or spaces? Unsure if I should.
+                countries[i].callingCodes.push(country.countryCallingCodes[j]);
+            }
+
             // Get info about each currency
             // Note: Some countries (e.g. Zimbabwe) have multiple currencies
             if (country.currencies.length) {
@@ -244,92 +307,100 @@ init()
   return deferred.promise;
 })
 .then(function(countries) {
-    // Get latest exchange rate info for USD, EUR and GBP if openexchangerates.org API key found
-    var deferred = Q.defer();
-    try {
-        oxr.set({ app_id: config['openexchangerates.org'].apiKey });
-        oxr.latest(function() {
-            var date = new Date();
+    if (options.getExchangeRateData == true) {
+        var deferred = Q.defer();
+        // Get latest exchange rate info for USD, EUR and GBP if openexchangerates.org API key found
+        try {
+            oxr.set({ app_id: config['openexchangerates.org'].apiKey });
+            oxr.latest(function() {
+                var date = new Date();
             
-            // You can now use `oxr.rates`, `oxr.base` and `oxr.timestamp`...
-            fx.rates = oxr.rates;
-            fx.base = oxr.base;
-            for (i in countries) {
-                if (!countries[i].currencies)
-                    continue;
+                // You can now use `oxr.rates`, `oxr.base` and `oxr.timestamp`...
+                fx.rates = oxr.rates;
+                fx.base = oxr.base;
+                for (i in countries) {
+                    if (!countries[i].currencies)
+                        continue;
             
-                for (j in countries[i].currencies) {
-                    var currency = countries[i].currencies[j].code;
-                    if (!countries[i].currencies[currency].exchange)
-                        countries[i].currencies[currency].exchange = {};
+                    for (j in countries[i].currencies) {
+                        var currency = countries[i].currencies[j].code;
+                        if (!countries[i].currencies[currency].exchange)
+                            countries[i].currencies[currency].exchange = {};
 
-                    try {
-                        // Show conversion rates for common amounts in USD
-                        countries[i].currencies[currency].exchange.USD = {};
-                        countries[i].currencies[currency].exchange.USD['1'] = fx(1).from('USD').to(currency).toFixed(2);
-                        countries[i].currencies[currency].exchange.USD.lastUpdated = date.toISOString();
+                        try {
+                            // Show conversion rates for common amounts in USD
+                            countries[i].currencies[currency].exchange.USD = {};
+                            countries[i].currencies[currency].exchange.USD['1'] = fx(1).from('USD').to(currency).toFixed(2);
+                            countries[i].currencies[currency].exchange.USD.lastUpdated = date.toISOString();
 
-                        // Show conversion rates for common amounts in USD
-                        countries[i].currencies[currency].exchange.EUR = {};
-                        countries[i].currencies[currency].exchange.EUR['1'] = fx(1).from('EUR').to(currency).toFixed(2);
-                        countries[i].currencies[currency].exchange.EUR.lastUpdated = date.toISOString();
+                            // Show conversion rates for common amounts in USD
+                            countries[i].currencies[currency].exchange.EUR = {};
+                            countries[i].currencies[currency].exchange.EUR['1'] = fx(1).from('EUR').to(currency).toFixed(2);
+                            countries[i].currencies[currency].exchange.EUR.lastUpdated = date.toISOString();
 
-                        // Show conversion rates for common amounts in GBP
-                        countries[i].currencies[currency].exchange.GBP = {};
-                        countries[i].currencies[currency].exchange.GBP['1'] = fx(1).from('GBP').to(currency).toFixed(2);
-                        countries[i].currencies[currency].exchange.GBP.lastUpdated = date.toISOString();
+                            // Show conversion rates for common amounts in GBP
+                            countries[i].currencies[currency].exchange.GBP = {};
+                            countries[i].currencies[currency].exchange.GBP['1'] = fx(1).from('GBP').to(currency).toFixed(2);
+                            countries[i].currencies[currency].exchange.GBP.lastUpdated = date.toISOString();
 
-                    } catch (exception) {
-                        // Don't show out of date / partial exchange rate data
-                        delete countries[i].currencies[currency].exchange;
-                        console.log("Warning: Unable to get currency information for "+currency);
-                    }
-                }
-            }
-            deferred.resolve(countries);
-        });
-    } catch (exception) {
-        // Ingore errors fetching exchange rate info
-        deferred.resolve(countries);
-    }
-    return deferred.promise;
-})
-.then(function(countries) {
-    // Get UN population statistics by scraping Wikipedia
-    var deferred = Q.defer();
-    try {
-        request('http://en.wikipedia.org/wiki/List_of_countries_by_population_(United_Nations)', function (error, response, body) {
-            // Check the response seems okay
-            if (response && response.statusCode == 200) {
-                var $ = cheerio.load(body);
-                $('table').first().children('tr').each(function(i, element) {
-                    var countryName =  $(element).children('td:nth-child(2)').text().replace(/\[(.*)?\]/g, '').trim();
-                    var countryPopulation = $(element).children('td:nth-child(3)').text().replace(/,/g, '').trim();
-                    for (i in countries) {
-                        if (countries[i].name == countryName) {
-                            if (parseInt(countryPopulation) == 1 || parseInt(countryPopulation) == 0) {
-                                console.log("Warning: Unable to fetch population data for "+countryName);
-                            } else {
-                                countries[i].population = parseInt(countryPopulation);
-                            }
+                        } catch (exception) {
+                            // Don't show out of date / partial exchange rate data
+                            delete countries[i].currencies[currency].exchange;
+                            console.log("Warning: Unable to get currency information for "+currency);
                         }
                     }
-                });
-            } else {
-                throw("Unable to fetch URL from Wikipedia");
-            }
+                }
+                deferred.resolve(countries);
+            });
+        } catch (exception) {
+            // Ingore errors fetching exchange rate info
             deferred.resolve(countries);
-        });
-    } catch (exception) {
-        console.log("Warning: Unable to fetch population data");
-        // Always return the country object (even if an error occurs)
-        deferred.resolve(countries);
+        }
+        return deferred.promise;
+    } else {
+        return countries;
     }
-    return deferred.promise;
+})
+.then(function(countries) {
+    if (options.getWikipediaData == true) {
+        // Get UN population statistics by scraping Wikipedia
+        var deferred = Q.defer();
+        try {
+            request('http://en.wikipedia.org/wiki/List_of_countries_by_population_(United_Nations)', function (error, response, body) {
+                // Check the response seems okay
+                if (response && response.statusCode == 200) {
+                    var $ = cheerio.load(body);
+                    $('table').first().children('tr').each(function(i, element) {
+                        var countryName =  $(element).children('td:nth-child(2)').text().replace(/\[(.*)?\]/g, '').trim();
+                        var countryPopulation = $(element).children('td:nth-child(3)').text().replace(/,/g, '').trim();
+                        for (i in countries) {
+                            if (countries[i].name == countryName) {
+                                if (parseInt(countryPopulation) == 1 || parseInt(countryPopulation) == 0) {
+                                    console.log("Warning: Unable to fetch population data for "+countryName);
+                                } else {
+                                    countries[i].population = parseInt(countryPopulation);
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    throw("Unable to fetch URL from Wikipedia");
+                }
+                deferred.resolve(countries);
+            });
+        } catch (exception) {
+            console.log("Warning: Unable to fetch population data");
+            // Always return the country object (even if an error occurs)
+            deferred.resolve(countries);
+        }
+        return deferred.promise;
+    } else {
+        return countries;
+    }
 })
 .then(function(countries) {
     // Import data from CIA World Factbook
-    // Note: Taking this slowly as the parsed data is not entirely reliable (the parser is still in development)
+    // Note: Taking this slowly as the parsed data is not entirely reliable (the parser that exports the data is still in development and buggy)
     var deferred = Q.defer();
     for (i in countries) {
         try {
@@ -339,7 +410,7 @@ init()
                 countries[i].capitalCities.push(ciaWorldFactbookData.government.Capital['name:']);
             }
         } catch (exception) {
-            console.log("Warning: Unable to load CIA World Factbook data for "+countries[i].name);
+            // console.log("Warning: Unable to load CIA World Factbook data for "+countries[i].name);
         }
     }
     deferred.resolve(countries);
@@ -376,17 +447,9 @@ function init() {
             csvConverter.on("end_parsed", function(jsonObj) {
                 var countries = jsonObj.csvRows;
                 for (i in countries) {
-                    
                     // Convert string to bool
                     if (countries[i].dependantTerritory == "true")
                         countries[i].dependantTerritory = true;
-
-                    // Remove any blank keys
-                    for (k in countries[i]) { 
-                        if (countries[i][k] == "")
-                            delete countries[i][k];
-                    }
-
                 }
                 deferred.resolve(countries);
             });
@@ -394,6 +457,32 @@ function init() {
         }
     });
     return deferred.promise;
+}
+
+/**
+ * Given a string of aliases for a country, return only valid ones
+ * (i.e. not already used or used as names for other countries).
+ * Values that are not valid are replaced with null.
+ *
+ * NB: Replacing with null requires less steps with promise chain
+ * than removing.
+ */
+function getValidAliases(aliases, countries) {
+    var validAlaisesPromises = [];
+    aliases.forEach(function(alias, index) {
+        var promise = tinataCountries.getCountry(alias, countries)
+        .then(function(country) {
+            // If we didn't get a match, then the alias is not in use.
+            if (country == false) {
+                var deferred = Q.defer();
+                deferred.resolve(alias);
+                return deferred.promise;
+            }
+            // If the alias is in use, null will be returned
+        });
+        validAlaisesPromises.push(promise);
+    });
+    return Q.all(validAlaisesPromises);
 }
 
 /**

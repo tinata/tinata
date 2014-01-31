@@ -1,4 +1,4 @@
-name,officalName,numericId,iso2,iso3,fips,nameForCitizen,adjective,dependantTerritory
+name,officalName,isoNumeric,iso2,iso3,fips,nameForCitizen,adjective,dependantTerritory
 "Andorra","The Principality of Andorra","20","AD","AND","AN","Andorran","Andorran",
 "United Arab Emirates","The United Arab Emirates","784","AE","ARE","AE","Citizen of the United Arab Emirates","of the United Arab Emirates",
 "Afghanistan","The Islamic Republic of Afghanistan","4","AF","AFG","AF","Afghan","Afghan",

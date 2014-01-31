@@ -64,37 +64,36 @@ app.get('/countries.json?', function(req, res, next) {
  */
 app.get('/countries/:name', function(req, res, next) {
     var path = req.params.name.split('.');
-    var countryIdentifier = path[0].replace('_', ' ');
+    var countryIdentifier = path[0].replace(/_/g, ' ');
     
     // Default response is html. Returns JSON if .json file extention specified
     var responseFormat = 'html';
     if (path.length > 1)
         if (path[1] == 'json')
             responseFormat = 'json';
-            
-    // Search for match on 2 character country code
-    // @todo Create "tinataCountries.findCountry()" method to handle this
-    db.countries.find({ "iso2": countryIdentifier }, function(err, countries) {
-        if (countries.length > 0) {
-            displayCountry(res, countries[0], responseFormat);
+
+    tinataCountries.getCountry(countryIdentifier)
+    .then(function(country) {
+        if (country == false) {
+            // If country not found, return 404
+            res.status(404).render('page-not-found', {
+                title: "Page not found"
+            });
+        } if (responseFormat == 'html') {
+            // Return country information as an HTML page.
+            // When returning HTML page identify known issues (missing data)
+            // @todo Refactor, move knownIssues to function in class
+            var knownIssues = [];
+            res.render('country', { country: country, knownIssues: knownIssues } );
+        } else if (responseFormat == 'json') {
+            // Default (JSON)
+            res.setHeader('Content-Type', 'application/json; charset=utf-8');
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            res.send( JSON.stringify(country) );
         } else {
-            // Search for match on 3 character country code
-            db.countries.find({ "iso3": countryIdentifier }, function(err, countries) {
-                if (countries.length > 0) {
-                    displayCountry(res, countries[0], responseFormat);
-                } else {
-                    // Search for match on country name
-                    db.countries.find({ "name": countryIdentifier }, function(err, countries) {
-                        if (countries.length > 0) {
-                            displayCountry(res, countries[0], responseFormat);
-                        } else {
-                            // If all lookups fail, return 404
-                            res.status(404).render('page-not-found', {
-                                title: "Page not found"
-                            });   
-                        }
-                    });
-                }
+            // If file extention not supported, return 404
+            res.status(404).render('page-not-found', {
+                title: "Page not found"
             });
         }
     });
@@ -108,26 +107,6 @@ app.get('/status', function(req, res, next) {
         res.render('status', { countries: countries } );
     });
 });
-
-function displayCountry(res, country, format) {
-    if (format == 'html') {
-        // Return country information as an HTML page.
-        // When returning HTML page identify known issues (missing data)
-        // @todo Refactor - move to function in class
-        var knownIssues = [];
-        res.render('country', { country: country, knownIssues: knownIssues } );
-    } else if (format == 'json') {
-        // Default (JSON)
-        res.setHeader('Content-Type', 'application/json; charset=utf-8');
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        res.send( JSON.stringify(country) );
-    } else {
-        // If format unknown, return 404
-        res.status(404).render('page-not-found', {
-            title: "Page not found"
-        });
-    }
-}
 
 /**
  * Handle all other requests as 404 / Page Not Found errors
