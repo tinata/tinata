@@ -23,15 +23,15 @@
                                 </a>
                             </th>
                             <th>
-                                <a href="" class="btn-block" ng-click="predicate = 'numericId'; reverse=!reverse">UN ID
-                                    <span ng-show="predicate == 'numericId'">
+                                <a href="" class="btn-block" ng-click="predicate = 'isoNumeric'; reverse=!reverse">ISO#
+                                    <span ng-show="predicate == 'isoNumeric'">
                                         <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
                                         <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
                                     </span>
                                 </a>
                             </th>
                             <th>
-                                <a href="" class="btn-block" ng-click="predicate = 'iso2'; reverse=!reverse">ISO-2
+                                <a href="" class="btn-block" ng-click="predicate = 'iso2'; reverse=!reverse">ISO2
                                     <span ng-show="predicate == 'iso2'">
                                         <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
                                         <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
@@ -39,7 +39,7 @@
                                 </a>
                             </th>
                             <th>
-                                <a href="" class="btn-block" ng-click="predicate = 'iso3'; reverse=!reverse">ISO-3
+                                <a href="" class="btn-block" ng-click="predicate = 'iso3'; reverse=!reverse">ISO3
                                     <span ng-show="predicate == 'iso3'">
                                         <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
                                         <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
@@ -55,16 +55,8 @@
                                 </a>
                             </th>
                             <th>
-                                <a href="" class="btn-block" ng-click="predicate = 'humanRights'; reverse=!reverse">Human<br/>rights<br/>data
-                                    <span ng-show="predicate == 'humanRights'">
-                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
-                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
-                                    </span>
-                                </a>
-                            </th>
-                            <th>
-                                <a href="" class="btn-block" ng-click="predicate = 'humanRights.lgbt'; reverse=!reverse">LGBT<br/>rights<br/>data
-                                    <span ng-show="predicate == 'humanRights.lgbt'">
+                                <a href="" class="btn-block" ng-click="predicate = 'warnings'; reverse=!reverse">Warnings
+                                    <span ng-show="predicate == 'warnings'">
                                         <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
                                         <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
                                     </span>
@@ -130,32 +122,16 @@
                                    </span>
                                 </p>
                             </td>
+                            <td>{{country.isoNumeric}}</td>
+                            <td>{{country.iso2}}</td>
+                            <td>{{country.iso3}}</td>
+                            <td>{{country.fips}}</td>
                             <td>
-                               {{country.numericId}}
-                            </td>
-                            <td>
-                               {{country.iso2}}
-                            </td>
-                            <td>
-                               {{country.iso3}}
-                            </td>
-                            <td>
-                               {{country.fips}}
-                            </td>
-                            <td>
-                                <p ng-if="country.humanRights">
+                                <p ng-if="country.warnings">
                                     <strong>Yes</strong>
                                 </p>
-                                <p class="text-muted" ng-if="!country.humanRights">
-                                    No
-                                </p>
-                            </td>
-                            <td>
-                                <p ng-if="country.humanRights.lgbt">
-                                    <strong>Yes</strong>
-                                </p>
-                                <p class="text-muted" ng-if="!country.humanRights.lgbt">
-                                    No
+                                <p class="text-muted" ng-if="!country.warnings">
+                                    None
                                 </p>
                             </td>
                             <td>

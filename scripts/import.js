@@ -28,7 +28,7 @@ options.getWikipediaData = true;
 console.log("*** Importing data into the DB");
 
 // NB: If you're running an early version you are strongly advised to reset your database after upgrading to avoid corruption
-db.countries.drop();
+//db.countries.drop();
 
 init()
 .then(function(countries) {
@@ -78,19 +78,24 @@ init()
     return Q.all(promises);
 })
 .then(function(countries) {
-    // Load Human Rights info from CSV provided by the CIRI Human Rights Data Project (http://www.humanrightsdata.org)
+    // Load Human Rights info from CSV provided by the CIRI Human Rights Data Project (http://www.humanrightsdata.org) and flag warnings appropriately
     var deferred = Q.defer();
     var csvConverter = new Converter();
     csvConverter.on("end_parsed", function(jsonObj) {
         var humanRights = jsonObj.csvRows;
         for (i in countries) {
+            
+            if (countries[i].humanRights)
+                delete countries[i].humanRights;
+
+            countries[i].warnings = {};
+            countries[i].warnings.high = {};
+            countries[i].warnings.medium = {};
+            countries[i].warnings.low = {};
+            
             for (j in humanRights) {
+                // Note: Am now only flagging major warnings, due to issues with the consistancy of the data.
                 if (countries[i].name == humanRights[j].CTRY) {
-                    if (!countries[i].humanRights)
-                        countries[i].humanRights = {};
-                        
-                    countries[i].humanRights.description = "Values are 'Low', 'Medium' or 'High'. Based on the Cingranelli-Richards (CIRI) indexes for Human Rights (humanrightsdata.org)"
-                    
                     /*
                     Physical Integrity Rights Index
                     This is an additive index constructed from the Torture, Extrajudicial Killing, Political Imprisonment,
@@ -99,12 +104,10 @@ init()
                     David L. Cingranelli and David L. Richards. 1999. "Measuring the Level, Pattern, and Sequence of 
                     Government Respect for Physical Integrity Rights." International Studies Quarterly, Vol 43.2: 407-18.
                     */
-                    if (humanRights[j].PHYSINT < 4) {
-                        countries[i].humanRights.physicalAbuses = 'High';
-                    } else if (humanRights[j].PHYSINT < 7) {
-                        countries[i].humanRights.physicalAbuses = 'Medium';
-                    } else {
-                        countries[i].humanRights.physicalAbuses = 'Low';
+                    if (humanRights[j].PHYSINT <= 3) {
+                        countries[i].warnings.high.physicalAbuses = "Limited government respect for an individual's physical rights.";
+                    } else if (humanRights[j].PHYSINT <= 6) {
+                        //countries[i].warnings.medium.physicalAbuses = "Concern over government respect for an individual's physical rights.";
                     }
                     
                     /*
@@ -117,11 +120,9 @@ init()
                     occasionally occurred; and a score of 2 indicates that disappearances did not occur in a given year.
                     */
                     if (humanRights[j].DISAP == 0) {
-                        countries[i].humanRights.disapperances = 'High';
+                        countries[i].warnings.high.disapperances = "Incidents of unresolved disappearances."
                     } else if (humanRights[j].DISAP == 1) {
-                        countries[i].humanRights.disapperances = 'Medium';
-                    } else {
-                        countries[i].humanRights.disapperances = 'Low';
+                        //countries[i].warnings.medium.disapperances = "Some incidents of unresolved disappearances."
                     }
                     
                     /*
@@ -135,11 +136,9 @@ init()
                     the above reasons in a given year.
                     */
                     if (humanRights[j].POLPRIS == 0) {
-                        countries[i].humanRights.politicalImprisonment = 'High';
+                        countries[i].warnings.high.politicalImprisonment = "Incidents of political imprisonment."
                     } else if (humanRights[j].POLPRIS == 1) {
-                        countries[i].humanRights.politicalImprisonment = 'Medium';
-                    } else {
-                        countries[i].humanRights.politicalImprisonment = 'Low';
+                        //countries[i].warnings.medium.politicalImprisonment = "Some incidents of political imprisonment."
                     }
                     
                     /*
@@ -152,11 +151,9 @@ init()
                     no government censorship of the media in a given year.
                     */
                     if (humanRights[j].SPEECH == 0) {
-                        countries[i].humanRights.restrictionsOnFreedomOfSpeech = 'High';
+                        countries[i].warnings.high.restrictedFreedomOfSpeech = "Restrictions on freedom of speech."
                     } else if (humanRights[j].SPEECH == 1) {
-                        countries[i].humanRights.restrictionsOnFreedomOfSpeech = 'Medium';
-                    } else {
-                        countries[i].humanRights.restrictionsOnFreedomOfSpeech = 'Low';
+                        // countries[i].warnings.medium.restrictedFreedomOfSpeech = "Some restrictions on freedom of speech."
                     }
 
                     /*
@@ -170,24 +167,17 @@ init()
                     that this freedom was severely restricted, a score of 1 indicates the freedom was somewhat restricted,
                     and a score of 2 indicates unrestricted freedom of foreign movement. 
                     */                    
-                    countries[i].humanRights.restrictionsOnMovement = "Low";
-                    if (humanRights[j].FORMOV <2 || humanRights[j].DOMMOV <2)
-                        countries[i].humanRights.restrictionsOnMovement = "Medium";
-                    if (humanRights[j].FORMOV <1 || humanRights[j].DOMMOV <1)
-                        countries[i].humanRights.restrictionsOnMovement = "High";
+                    if (humanRights[j].FORMOV <1 || humanRights[j].DOMMOV <1) {
+                        countries[i].warnings.high.restrictedMovement = "Restrictions on freedom of movement."
+                    } else if (humanRights[j].FORMOV <2 || humanRights[j].DOMMOV <2) {
+                        // countries[i].warnings.medium.restrictedMovement = "Some restrictions on freedom of movement."
+                    }
 
                     /*
-                    Women's Economic Rights & Women's Political Rights
+                    Women's Social Rights (WOSOC), Women's Economic Rights (WECON) & Women's Political Rights (WOPOL)
                     The range for reach category is from 3 (full rights) to 0 (no rights).
-                    We are using these to get a useful value for restrictions on Womens rights
-                    as values for Women's Social Rights (WOSOC) are unavailable.
-                    */
-                    countries[i].humanRights.restrictionsOnWomensRights = "Low";
-                    if (humanRights[j].WECON <3 || humanRights[j].WOPOL <3)
-                        countries[i].humanRights.restrictionsOnWomensRights = "Medium";
-                    if (humanRights[j].FORMOV <1 || humanRights[j].DOMMOV <1)
-                        countries[i].humanRights.restrictionsOnWomensRights = "High";
-                    
+                    @fixme Both WOSOC and WOPOL data found to be missing (leading to incorrect warnigns being generated)
+                    */ 
                 }
             }
         }
@@ -197,7 +187,7 @@ init()
     return deferred.promise;
 })
 .then(function(countries) {
-    // Add LGBT Rights info
+    // Flag any warnings related to LGBT persecution or improsionment
     var deferred = Q.defer();
     var csvConverter = new Converter();
     csvConverter.on("end_parsed", function(jsonObj) {
@@ -205,29 +195,12 @@ init()
         for (i in countries) {
             for (j in lgbtCountries) {
                 if (countries[i].iso3 && countries[i].iso3 == lgbtCountries[j]['ISO 3166-1 (3 letter)']) {
-
-                    if (!countries[i].humanRights)
-                        countries[i].humanRights = {};
-
-                    countries[i].humanRights.lgbt = {};
-                    countries[i].humanRights.lgbt.description = "Based on data from the International Lesbian and Gay Association (ilga.org)";
-                    countries[i].humanRights.lgbt.persecution = false;
-                    countries[i].humanRights.lgbt.imprisonment = false;
-                    countries[i].humanRights.lgbt.deathPenalty = false;
-                    
                     if (lgbtCountries[j]['Persecution'] == 'yes') {
-                        countries[i].humanRights.lgbt.persecution = true;
-                    }
-                    
-                    if (lgbtCountries[j]['Imprisonment'] == 'yes') {
-                        countries[i].humanRights.lgbt.persecution = true;
-                        countries[i].humanRights.lgbt.imprisonment = true;
-                    }
-                    
-                    if (lgbtCountries[j]['Death'] == 'yes') {
-                        countries[i].humanRights.lgbt.persecution = true;
-                        countries[i].humanRights.lgbt.imprisonment = true;
-                        countries[i].humanRights.lgbt.deathPenalty = true;
+                        countries[i].warnings.medium.lgbtPersecution = "Members of the LGBT community may be at risk of persecution.";
+                    } else if (lgbtCountries[j]['Imprisonment'] == 'yes') {
+                        countries[i].warnings.high.lgbtImprisonment = "Members of the LGBT community may be at risk of imprisonment.";
+                    } else if (lgbtCountries[j]['Death'] == 'yes') {
+                        countries[i].warnings.high.lgbtDeathPenalty = "Members of the LGBT community may be at risk of imprisonment or death.";
                     }
                 }
             }
@@ -253,8 +226,11 @@ init()
                     if (!countries[i].travelAdvice)
                         countries[i].travelAdvice = {};
 
-                    countries[i].travelAdvice.fcoTravelAdviceUrl = fcoCountries[j]['FCO travel advice'];
-                    countries[i].travelAdvice.nhsTravelAdviceUrl = fcoCountries[j]['NHS Travel Health'];
+                    if (fcoCountries[j]['FCO travel advice'])
+                        countries[i].travelAdvice.fcoTravelAdviceUrl = fcoCountries[j]['FCO travel advice'];
+                        
+                    if (fcoCountries[j]['NHS Travel Health'])
+                        countries[i].travelAdvice.nhsTravelAdviceUrl = fcoCountries[j]['NHS Travel Health'];
                 }
             }
         }
@@ -382,18 +358,14 @@ init()
 .then(function(countries) {
     // Save all countries to the DB
     var promises = [];
-    for (i in countries) {
-        // Set the 2 digit ISO code as the ID
-        var country = countries[i];
-        country._id = country.iso2;
-        
-        var promise = tinataCountries.saveCountry(country);
+    for (i in countries) {        
+        var promise = tinataCountries.saveCountry(countries[i]);
         promises.push(promise);
     }
     return Q.all(promises);
 })
 .then(function(countries) {
-    if (options.getWikipediaData == true) {        
+    if (options.getWikipediaData == true) {
         var deferred = Q.defer();
         // Get UN population statistics by scraping Wikipedia
         try {
@@ -433,7 +405,6 @@ init()
         }
         return deferred.promise;
     }
-    console.log("done parsing pop");
 })
 .then(function() {
     db.countries.find({}, function(err, countries) {

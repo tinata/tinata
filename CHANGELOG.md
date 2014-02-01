@@ -4,6 +4,29 @@ Changes to the underlyig code and API. The API should be considered unstable for
 
 ====
 
+## 2014-02-01 Enhancements
+
+Today sees the roll out of improved aliases, a scraper for data on Wikipedia that leverages this code the removal of the humanRights property and it's replacement in the form of more generic 'warnings' field (with warnings categoried as 'high', 'medium' or 'low').
+
+Due to issues with data quality warnings are only raised when there is a clear case for doing so (e.g. there is notably low score on the CIRI index, or there is risk of physical harm or imprisonment).
+
+While this nails how they will work, how warnings are maintained will be subject to change - it will likely be combined into a single CSV.
+
+### API Changes
+
+- **humanRights** removed (due to both licensing and data quality issues)
+- **warnings** added this is re-instated and includes entries in warnings.high, warnings.medium and warnings.low as appropriate.
+
+    Example:
+    
+        "warnings": {
+            "high": {
+              "restrictedMovement": "Restrictions on freedom of movement.",
+              "lgbtImprisonment": "Members of the LGBT community may be at risk of imprisonment."
+            }
+        }
+    
+
 ## 2014-01-31 Refactoring & Enhancements
 
 Most of the work in this update is refactoring and the addition of support for aliases (and subsequently making it possible to look up countries by known aliases or by offical name).
