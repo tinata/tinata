@@ -6,7 +6,6 @@ name,officalName,isoNumeric,iso2,iso3,fips,nameForCitizen,adjective,dependantTer
 "Anguilla","","660","AI","AIA","AV","","",true
 "Albania","The Republic of Albania","8","AL","ALB","AL","Albanian","Albanian",
 "Armenia","The Republic of Armenia","51","AM","ARM","AM","Armenian","Armenian",
-"Netherlands Antilles","","530","AN","ANT","NT","","",true
 "Angola","The Republic of Angola","24","AO","AGO","AO","Angolan","Angolan",
 "Antarctica","","10","AQ","ATA","AY","","",true
 "Argentina","The Argentine Republic","32","AR","ARG","AR","Argentine; Argentinian","Argentine; Argentinian",
@@ -41,6 +40,7 @@ name,officalName,isoNumeric,iso2,iso3,fips,nameForCitizen,adjective,dependantTer
 "Congo (Democratic Republic)","The Democratic Republic of the Congo","180","CD","COD","","Citizen of The Democratic Republic of the Congo","of the Democratic Republic of the Congo; Congolese",
 "Central African Republic","The Central African Republic","140","CF","CAF","CT","Citizen of the Central African Republic","Central African Republic",
 "Congo","The Republic of the Congo","178","CG","COG","CF","Citizen of the Republic of the Congo","of the Republic of the Congo; Congolese",
+"Curaçao","Country of Curaçao","","CW","","","","",true
 "Switzerland","The Swiss Confederation","756","CH","CHE","SZ","Swiss","Swiss",
 "Ivory Coast","The Republic of Cote D'Ivoire","384","CI","CIV","","Citizen of the Ivory Coast","Ivorian; Ivory Coast (as in 'Ivory Coast Government')",
 "Cook Islands","","184","CK","COK","CW","","",true

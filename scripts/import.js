@@ -28,7 +28,7 @@ options.getWikipediaData = true;
 console.log("*** Importing data into the DB");
 
 // NB: If you're running an early version you are strongly advised to reset your database after upgrading to avoid corruption
-//db.countries.drop();
+db.countries.drop();
 
 init()
 .then(function(countries) {
@@ -362,43 +362,6 @@ init()
     }
 })
 .then(function(countries) {
-    if (options.getWikipediaData == true) {
-        // Get UN population statistics by scraping Wikipedia
-        var deferred = Q.defer();
-        try {
-            request('http://en.wikipedia.org/wiki/List_of_countries_by_population_(United_Nations)', function (error, response, body) {
-                // Check the response seems okay
-                if (response && response.statusCode == 200) {
-                    var $ = cheerio.load(body);
-                    $('table').first().children('tr').each(function(i, element) {
-                        var countryName =  $(element).children('td:nth-child(2)').text().replace(/\[(.*)?\]/g, '').trim();
-                        var countryPopulation = $(element).children('td:nth-child(3)').text().replace(/,/g, '').trim();
-                        for (i in countries) {
-                            if (countries[i].name == countryName) {
-                                if (parseInt(countryPopulation) == 1 || parseInt(countryPopulation) == 0) {
-                                    console.log("Warning: Unable to fetch population data for "+countryName);
-                                } else {
-                                    countries[i].population = parseInt(countryPopulation);
-                                }
-                            }
-                        }
-                    });
-                } else {
-                    throw("Unable to fetch URL from Wikipedia");
-                }
-                deferred.resolve(countries);
-            });
-        } catch (exception) {
-            console.log("Warning: Unable to fetch population data");
-            // Always return the country object (even if an error occurs)
-            deferred.resolve(countries);
-        }
-        return deferred.promise;
-    } else {
-        return countries;
-    }
-})
-.then(function(countries) {
     // Import data from CIA World Factbook
     // Note: Taking this slowly as the parsed data is not entirely reliable (the parser that exports the data is still in development and buggy)
     var deferred = Q.defer();
@@ -417,6 +380,7 @@ init()
     return deferred.promise;
 })
 .then(function(countries) {
+    // Save all countries to the DB
     var promises = [];
     for (i in countries) {
         // Set the 2 digit ISO code as the ID
@@ -429,9 +393,54 @@ init()
     return Q.all(promises);
 })
 .then(function(countries) {
-    console.log("Updated data for "+countries.length+" countries");
-    console.log("*** Finished importing data into the DB");
-    db.close();
+    if (options.getWikipediaData == true) {        
+        var deferred = Q.defer();
+        // Get UN population statistics by scraping Wikipedia
+        try {
+            var requestPromise = request('http://en.wikipedia.org/wiki/List_of_countries_by_population_(United_Nations)', function (error, response, body) {
+                var promises = [];                
+                // Check the response seems okay
+                if (response && response.statusCode == 200) {
+                    var $ = cheerio.load(body);
+                    
+                    var promise2 = $('table').first().children('tr').each(function(i, element) {
+                        var countryName =  $(element).children('td:nth-child(2)').text().replace(/\[(.*)?\]/g, '').trim();
+                        var countryPopulation = $(element).children('td:nth-child(3)').text().replace(/,/g, '').trim();
+
+                        tinataCountries.getCountry(countryName, countries)
+                        .then(function(country) {
+                            if (country != false) {
+                                country.population = countryPopulation;
+                                return tinataCountries.saveCountry(country);
+                            } else {
+                                if (countryName != "" && countryName != "World")
+                                    console.log("Warning: Failed to update population data for "+countryName);
+                            }
+                        })
+                        .then(function(country) {
+                            promises.push( true );
+                        });
+                    });
+                    
+                } else {
+                    throw("Unable to fetch URL from Wikipedia");
+                }
+                deferred.resolve( Q.all(promises) );
+            });
+        } catch (exception) {
+            console.log("Warning: Unable to fetch population data");
+            deferred.resolve( true );
+        }
+        return deferred.promise;
+    }
+    console.log("done parsing pop");
+})
+.then(function() {
+    db.countries.find({}, function(err, countries) {
+        console.log("There are "+countries.length+" countries in the database.");
+        console.log("*** Finished importing data into the DB");
+        db.close();
+    });
 });
 
 function init() {
