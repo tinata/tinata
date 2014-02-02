@@ -29,7 +29,7 @@ name,officalName,isoNumeric,iso2,iso3,fips,nameForCitizen,adjective,dependantTer
 "Brunei","Brunei Darussalam","96","BN","BRN","BX","Citizen of Brunei","Brunei (as in 'Brunei Government'); Bruneian",
 "Bolivia","The Plurinational State of Bolivia","68","BO","BOL","BL","Bolivian","Bolivian",
 "Brazil","The Federative Republic of Brazil","76","BR","BRA","BR","Brazilian","Brazilian",
-"Bahamas, The","The Commonwealth of The Bahamas","44","BS","BHS","BF","Bahamian","Bahamian",
+"Bahamas","The Commonwealth of The Bahamas","44","BS","BHS","BF","Bahamian","Bahamian",
 "Bhutan","The Kingdom of Bhutan","64","BT","BTN","BT","Bhutanese","Bhutanese",
 "Bouvet Island","","74","BV","BVT","BV","","",true
 "Botswana","The Republic of Botswana","72","BW","BWA","BC","Citizen of Botswana","Botswanan; Botswana (as in 'Botswana Government')",

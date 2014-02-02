@@ -34,7 +34,7 @@
                             </p>
                         <% } %>
                     <% } %>
-        
+                    
                     <% if (country.travelAdvice) { %>
                         <h2>Travel Advice</h2>
                         <p class="lead">
@@ -121,6 +121,12 @@
                             No travel advice available for <%= country.name %>.
                         </p>
                     <% } // End Travel Advice %>
+
+                    <% if (country.notes) { %>
+                        <h2>Notes</h2>
+                        <%= country.notes %>
+                    <% } %>
+                    
                 </div>
                 <div class="tab-pane" id="json">
                     <h2>JSON Response</h2>
