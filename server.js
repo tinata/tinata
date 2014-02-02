@@ -8,6 +8,7 @@ var partials = require('express-partials');
 var ejs = require('ejs');
 var mongoJs = require('mongojs');
 var Q = require('q');
+var dateFormat = require('dateformat');
 var tinataCountries = require(__dirname + '/lib/tinata-countries');
 
 GLOBAL.db = mongoJs.connect("127.0.0.1/tinatapi", ["countries"]);
@@ -84,7 +85,7 @@ app.get('/countries/:name', function(req, res, next) {
             // When returning HTML page identify known issues (missing data)
             // @todo Refactor, move knownIssues to function in class
             var knownIssues = [];
-            res.render('country', { country: country, knownIssues: knownIssues } );
+            res.render('country', { country: country, knownIssues: knownIssues, dateFormat: dateFormat } );
         } else if (responseFormat == 'json') {
             // Default (JSON)
             res.setHeader('Content-Type', 'application/json; charset=utf-8');
