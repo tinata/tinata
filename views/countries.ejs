@@ -3,13 +3,18 @@
         <div class="col-sm-12">
             <h1>
                 Countries
-                <small class="pull-right">
-                     <input class="form-control" placeholder="Country name" ng-model="search.name">
+                <small class="pull-right hidden-xs">
+                     <input name="search" class="form-control" placeholder="Country name" ng-model="search.name"/>
                 </small>
             </h1>
             <p class="lead">
                 Fetch information about every country in JSON by using the URL <a href="/countries.json">/countries.json</a>
             </p>
+            
+            <p class="visible-xs">
+                <input name="search-mobile" class="form-control" placeholder="Country name" ng-model="search.name"/>
+            </p>
+            
             <div class="table-responsive">
                 <table class="table">
                     <thead>
@@ -115,8 +120,11 @@
                     <tbody>
                         <tr ng-repeat="country in countries | orderBy:predicate:reverse | filter:search:strict">
                             <td>
-                                <div id="flag" class="flag pull-left" style="height: 40px; width: 30px; margin-right: 10px; background-image: url(/img/flags/{{ country.iso2.toLowerCase() }}.svg);"></div>
-                                  <h4><a href="/countries/{{ country.iso2 }}">{{ country.name }}</a></h4>
+                                <h4>
+                                    <a href="/countries/{{ country.iso2 }}">
+                                    <div id="flag" class="flag pull-left" style="height: 25px; width: 40px; margin-right: 10px; background-image: url(/img/flags/{{ country.iso2.toLowerCase() }}.svg);"></div>
+                                    {{ country.name }}</a>
+                                </h4>
                             </td>
                             <td>{{country.isoNumeric}}</td>
                             <td>{{country.iso2}}</td>
