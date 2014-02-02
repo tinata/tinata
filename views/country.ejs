@@ -5,39 +5,196 @@
             <p class="lead">
                 Fetch information about this country in JSON by using the URL <a href="/countries/<%= country.iso2 %>.json">/countries/<%= country.iso2 %>.json</a>
             </p>
-            <div class="row">
-                <div class="col-sm-9">
-                    <h3>JSON Response</h3>
-                    <pre>
-<%= JSON.stringify(country, null, 2) %>
-                    </pre>
-                </div>
-                <div class="col-sm-3">
-                    <!-- @todo
-                    <h3>Known issues</h3>
-                    <% if (knownIssues.length > 0) { %>
-                        <ul>
-                        <% knownIssues.forEach(function(knownIssue) { %>
-                            <li>
-                                <% knownIssue %>
-                            </li>
-                        <% }) %>
-                        <ul>
-                    <% } else { %>
-                        <p>There are no known issues with the data for this country.
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-9">
+            <ul class="nav nav-tabs">
+              <li class="active"><a href="#about" data-toggle="tab">About <%= country.name %></a></li>
+              <li><a href="#json" data-toggle="tab">JSON response</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="about">
+                    <br/>
+                    <% if (country.warnings) { %>
+                        <% for (warning in country.warnings.high) { %>
+                            <p class="alert alert-danger">
+                                <i class="fa fa-lg fa-exclamation-circle"></i> <strong>Warning</strong> <%= country.warnings.high[warning] %>
+                            </p>
+                        <% } %>
+                        <% for (warning in country.warnings.medium) { %>
+                            <p class="alert alert-warning">
+                                <i class="fa fa-lg fa-warning"></i> <strong>Important</strong> <%= country.warnings.medium[warning] %>
+                            </p>
+                        <% } %>
+                        <% for (warning in country.warnings.low) { %>
+                            <p class="alert alert-info">
+                                <i class="fa fa-lg fa-info-sign"></i> <strong>Note</strong> <%= country.warnings.low[warning] %>
+                            </p>
+                        <% } %>
                     <% } %>
-                    -->
-                    <h3>Report a problem</h3>
-                    <p>
-                        Notice anything wrong? Let us know!
-                    </p>
-                    <p>
-                        <a target="_new" href="https://github.com/tinata/tinatapi/issues/new?title=Problem with data for <%= country.name %> (<%= country.iso2 %>)" class="btn btn-info btn-block">Report a problem</a>
-                    </p>
-                    <p class="text-muted">
-                        To report a problem, you currently need to have a GitHub account.
-                    </p>
+        
+                    <% if (country.travelAdvice) { %>
+                        <h2>Travel Advice</h2>
+                        <p class="lead">
+                            <%= country.travelAdvice.attribution %>
+                        </p>
+
+                        <% if (country.travelAdvice.fcoTravelAdviceUrl || country.travelAdvice.nhsTravelAdviceUrl) { %>
+                        <ul class="fa-ul">
+                            <% if (country.travelAdvice.fcoTravelAdviceUrl) { %>
+                            <li>
+                                <i class="fa-li fa fa-chevron-right"></i> <a href="<%= country.travelAdvice.fcoTravelAdviceUrl %>">UK Foreign & Commonwealth Office</a>
+                            </li>
+                            <% } %>
+                            <% if (country.travelAdvice.nhsTravelAdviceUrl) { %>
+                            <li>
+                                <i class="fa-li fa fa-chevron-right"></i> <a href="<%= country.travelAdvice.nhsTravelAdviceUrl %>">UK National Health Service</a>
+                            </li>
+                            <% } %>
+                        </ul>
+                        <br/>
+                        <% } %>
+            
+                        <% if (country.travelAdvice.currentAdvice) { %>
+                        <div class="well">            
+                        <p>
+                            <strong>Latest Travel Advice</strong>
+                            <span class="text-muted">last updated on <%= dateFormat(new Date(country.travelAdvice.lastUpdated)) %></span>
+                        </p>
+                        <% country.travelAdvice.currentAdvice.forEach(function(paragraph) { %>
+                            <p>
+                                <%= paragraph %>
+                            </p>
+                        <% }) %>
+                        </div>
+                        <% } %>
+
+                        <% if (country.travelAdvice.money) { %>
+                        <h3>Money</h3>
+                        <% country.travelAdvice.money.forEach(function(paragraph) { %>
+                            <p>
+                                <%= paragraph %>
+                            </p>
+                        <% }) %>
+                        <% } %>
+
+                        <% if (country.travelAdvice.health) { %>
+                        <h3>Health</h3>
+                        <% country.travelAdvice.health.forEach(function(paragraph) { %>
+                            <p>
+                                <%= paragraph %>
+                            </p>
+                        <% }) %>
+                        <% } %>
+
+                        <% if (country.travelAdvice.localLawsAndCustoms) { %>
+                        <h3>Local Laws &amp; Customs</h3>
+                        <% country.travelAdvice.localLawsAndCustoms.forEach(function(paragraph) { %>
+                            <p>
+                                <%= paragraph %>
+                            </p>
+                        <% }) %>
+                        <% } %>
+            
+                        <% if (country.travelAdvice.safetyAndSecurity) { %>
+                        <h3>Safety &amp; Security</h3>
+                        <% country.travelAdvice.safetyAndSecurity.forEach(function(paragraph) { %>
+                            <p>
+                                <%= paragraph %>
+                            </p>
+                        <% }) %>
+                        <% } %>
+
+                        <% if (country.travelAdvice.entryRequirements) { %>
+                        <h3>Entry Requirements</h3>
+                        <% country.travelAdvice.entryRequirements.forEach(function(paragraph) { %>
+                            <p>
+                                <%= paragraph %>
+                            </p>
+                        <% }) %>
+                        <% } %>
+        
+                    <% } else { %>
+                        <p class="well">
+                            No travel advice available for <%= country.name %>.
+                        </p>
+                    <% } // End Travel Advice %>
+                </div>
+                <div class="tab-pane" id="json">
+                    <h2>JSON Response</h2>
+                    <pre><%= JSON.stringify(country, null, 2) %></pre>
                 </div>
             </div>
+        </div>
+        <div class="col-sm-3">
+            <div id="map" style="height: 300px;"></div>
+            <!-- @todo
+            <h3>Known issues</h3>
+            <% if (knownIssues.length > 0) { %>
+                <ul>
+                <% knownIssues.forEach(function(knownIssue) { %>
+                    <li>
+                        <% knownIssue %>
+                    </li>
+                <% }) %>
+                <ul>
+            <% } else { %>
+                <p>There are no known issues with the data for this country.
+            <% } %>
+            -->
+            <h3>Report a problem</h3>
+            <p>
+                Notice anything wrong? Let us know!
+            </p>
+            <p>
+                <a target="_new" href="https://github.com/tinata/tinatapi/issues/new?title=Problem with data for <%= country.name %> (<%= country.iso2 %>)" class="btn btn-info btn-block">Report a problem</a>
+            </p>
+            <p class="text-muted">
+                To report a problem, you currently need to have a GitHub account.
+            </p>
+        </div>
     </div>
 </div>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<script>
+    var geocoder;
+    var map;
+    var mapOptions = {
+        zoom: 3,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+    var marker;
+
+    $(function() {
+        geocoder = new google.maps.Geocoder();
+        map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        lookupAddress();
+    });
+
+    function lookupAddress() {
+        var address = '<%= country.name %>';
+        geocoder.geocode( { 'address': address}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+                if (marker)
+                    marker.setMap(null);
+                marker = new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location,
+                    draggable: true
+                });
+                google.maps.event.addListener(marker, "dragend", function() {
+                    document.getElementById('lat').value = marker.getPosition().lat();
+                    document.getElementById('lng').value = marker.getPosition().lng();
+                });
+                document.getElementById('lat').value = marker.getPosition().lat();
+                document.getElementById('lng').value = marker.getPosition().lng();
+            } else {
+                // Hide map if fails.
+                $('#map').hide();
+            }
+        });
+    }
+ </script>

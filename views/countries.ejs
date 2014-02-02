@@ -185,6 +185,11 @@
                         </tr>
                     </tbody>
                 </table>
+                <div id="loading" class="text-center">
+                    <br/>
+                    <h2><i class="fa fa-lg fa-refresh fa-spin"></i></h2>
+                    <br/>
+                </div>
             </div>
         </div>
     </div>
@@ -192,9 +197,7 @@
 <script>
 function Controller($scope, $http) {
     $http.get('/countries.json').success(function(countries) {
-        for (i in countries) {
-//            countries[i].population
-        }
+        $('#loading').hide();
         $scope.countries = countries;
     });
 }

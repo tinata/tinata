@@ -4,6 +4,19 @@ Changes to the underlyig code and API. The API should be considered unstable for
 
 ====
 
+## 2014-02-02 Bugfixes and Website Enchancements
+
+Improvements to the website to make it easier to use (and work better on mobile devices), to update the information about licencing to make it clear and bugfixes and enhancements to the travel advice parser.
+
+### API Changes
+
+- **description** attribute removed
+- **attribution** attribute added. If present in a block then the source indicated should be attributed if re-publishing the data.
+
+### Bugfixes
+
+- **Bug fixes and enhancements improvements to Travel Advice parser**
+
 ## 2014-02-01 Enhancements
 
 Today sees the roll out of improved aliases, a scraper for data on Wikipedia that leverages this code the removal of the humanRights property and it's replacement in the form of more generic 'warnings' field (with warnings categoried as 'high', 'medium' or 'low').

@@ -1,10 +1,10 @@
-<div class="jumbotron hidden-xs">
-    <a href="https://github.com/tinata/tinatapi"><img style="position: absolute; top: 51px; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+<div class="jumbotron">
+    <a href="https://github.com/tinata/tinatapi"><img class="hidden-xs" style="position: absolute; top: 71px; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
                 <h1 class="clearfix">
-                    <span class="fa-stack pull-left">
+                    <span class="fa-stack pull-left hidden-xs hidden-sm">
                         <i class="fa fa-lg fa-circle fa-stack-2x" style="color: #abc0d6;"></i>
                         <i class="fa fa-lg fa-globe fa-stack-2x" style="color: #2f465b;"></i>
                     </span>
@@ -18,86 +18,69 @@
         </div>
     </div>
 </div>
-<div class="container visible-xs">
-    <div class="row">
-        <div class="col-sm-12 text-center">
-            <h1 class="visible-xs"><i class="fa fa-lg fa-globe"></i> Tinatapi</h1>
-            <p>
-                Free, open access to information about countries
-            </p>
-            <br/>
-        </div>
-    </div>
-</div>
 <div class="wrapper-home clearfix">
     <div class="container container-main">
         <div class="row">
             <div class="col-sm-9">
-                <h2>How to use Tinatapi</h2>
-
+                <br/>
                 <p class="lead">
-                    Tinatapi is an open source, collaborative project created using open data
-                </p>
-                
+                    <strong>Tinatapi</strong> is an open source, collaborative project created using open data
+                </p>              
+                <h3>How to use Tinatapi</h3>
                 <p>
                     You don't need to signup or have an API key to use Tinatapi - just call a URL via REST and receive a response in JSON.
                 </p>
                 
-                <p>
-                    If you're not a software developer, you might be interested to know the data is also <a href="https://github.com/tinata/tinatapi/tree/master/data/csv">available for download in CSV format</a>.
-                </p>
-            
-                <h3>Fetch information about every country</h3>
+                <h4>Fetch information about every country</h4>
                 <p class="well well-code">
-                    <a href="/countries">/countries.json</a> - Get information about every country in a single request.
+                    <span class="text-muted">api.tinata.co.uk</span><a href="/countries">/countries.json</a> - Get information about every country in a single request.
                 </p>
             
-                <h3>Fetch information about a specific country</h3>
-            
-                <h4>By ISO identifier</h4>
-                <p>Use <strong>/countries/{ISO-identifier}.json</strong> to get information about a country using it's 2 or 3 character ISO identifier.</p>
+                <h4>Fetch information about a specific country</h4>            
+                <h5>By ISO identifier</h5>
+                <p>Use <strong>/countries/{ISO-identifier}.json</strong> to get information about a country using it's 2 or 3 character ISO identifier or number.</p>
                 <h4>Examples</h3>
-                <p class="well well-code"><a href="/countries/USA">/countries/USA.json</a> - Get information about the United States</p>
-                <p class="well well-code"><a href="/countries/CN">/countries/CN.json</a> - Get information about China</p>
-                <p class="well well-code"><a href="/countries/ZW">/countries/ZW.json</a> - Get information about Zimbabwe</p>
-                <p class="well well-code"><a href="/countries/IR">/countries/IR.json</a> - Get information about Iran</p>
-            
-                <h4>By country name</h4>
-                <p>Although using the ISO code is recommended (because of how much names vary) you can also reference countries by name.</p>
-                <p class="well well-code"><a href="/countries/United_States">/countries/United_States.json</a> - Get information about the United States</p>
-                <p class="well well-code"><a href="/countries/Canada">/countries/Canada.json</a> - Get information about Canada</p>
-                <p class="well well-code"><a href="/countries/France">/countries/France.json</a> - Get information about France</p>
-                <p class="well well-code"><a href="/countries/India">/countries/India.json</a> - Get information about India</p>
+                <p class="well well-code"><span class="text-muted">api.tinata.co.uk</span><a href="/countries/USA">/countries/USA.json</a> - Get information about the United States</p>
+                <p class="well well-code"><span class="text-muted">api.tinata.co.uk</span><a href="/countries/RU">/countries/RU.json</a> - Get information about Russia</p>
+                <p class="well well-code"><span class="text-muted">api.tinata.co.uk</span><a href="/countries/156">/countries/156.json</a> - Get information about China</p>
+                <h5>By country name</h5>
+                <p>Although using an ISO code is recommended you can also reference countries by name.</p>
+                <p class="well well-code"><span class="text-muted">api.tinata.co.uk</span><a href="/countries/United_States">/countries/United_States.json</a> - Get information about the United States</p>
+                <p class="well well-code"><span class="text-muted">api.tinata.co.uk</span><a href="/countries/IR">/countries/Iran.json</a> - Get information about Iran</p>
+                <p class="well well-code"><span class="text-muted">api.tinata.co.uk</span><a href="/countries/France">/countries/France.json</a> - Get information about France</p>
+                <p class="well well-code"><span class="text-muted">api.tinata.co.uk</span><a href="/countries/India">/countries/India.json</a> - Get information about India</p>
+                <p>Countries can be looked up by known aliases. For example "<a href="/countries/United_Kingdom">United Kingdom</a>", "<a href="/countries/Britain">Britain</a>", "<a href="/countries/Great_Britain">Great Britain</a>" all point to the <a href="/countries/UK">UK</a>.</p>
              </div>
             <div class="col-sm-3">
-                <h3>Datasources</h3>
+                <h3>Licencing</h3>
                 <p>
-                    All data used under licence.
+                    <strong>Tinatapi</strong> is a <strong>free service</strong>, released as <strong>public domain software</strong> and is <strong>provided without warrenty</strong>.
                 </p>
                 <p>
-                    See the invidual sources for details of how the data can be re-used.
+                    You are free to use, modify and republish the data exposed by <strong>Tinatapi</strong> for both commerical and non-commerical purposes,
+                    provided it is appropriately attributed.
+                </p>
+
+                <h3>Acknowledgements</h3>
+                <p>
+                    <strong>Tinatapi</strong> incorporates selected, edited information from a range of sources, including:
                 </p>
                 <ul class="fa-ul">
                     <li><i class="fa-li fa fa-chevron-right"></i> <a href="https://www.gov.uk/government/organisations/foreign-commonwealth-office">UK Foreign &amp; Commonwealth Office</a></li>
                     <li><i class="fa-li fa fa-chevron-right"></i> <a href="http://www.un.org">United Nations</a></li>
+                    <li><i class="fa-li fa fa-chevron-right"></i> <a href="https://www.cia.gov/library/publications/the-world-factbook/">CIA World Factbook</a></li>
                     <li><i class="fa-li fa fa-chevron-right"></i> <a href="http://humanrightsdata.org">CIRI Human Rights Data Project</a></li>
                     <li><i class="fa-li fa fa-chevron-right"></i> <a href="http://ilga.org">International Lesbian, Gay, Bisexual, Trans and Intersex Association</a></li>
-                    <li><i class="fa-li fa fa-chevron-right"></i> <a href="https://www.cia.gov/library/publications/the-world-factbook/">CIA World Factbook</a></li>
                     <li><i class="fa-li fa fa-chevron-right"></i> <a href="http://openexchangerates.org">Open Exchange Rates</a></li>
                     <li><i class="fa-li fa fa-chevron-right"></i> <a href="http://wikipedia.org">Wikipedia</a></li>
                 </ul>
                 <p>
-                    This is a new service (as of January 2014). Work is underway to make the licensing much clearer (this may involving excluding data sets that limit re-use).
+                     See <a href="/about/">About Tinatapi</a> for more information.
                 </p>
+
+                <h3>About Tinatapi</h3>
                 <p>
-                    If you spot any obivous problems with the licensing or would like to suggest additional open datasets that could be incorporated <a href="mailto:tinatapi@iaincollins.com?subject=Tinatapi">please get in touch</a>.
-                </p>
-                <h3>Contributions welcome</h3>
-                <p>
-                    <i class="fa fa-lg fa-github"></i>  Tinatapi is <strong>public domain</strong> software. 
-                </p>
-                <p>
-                    You can download it from <a href="https://github.com/tinata/tinatapi">https://github.com/tinata/tinatapi</a>
+                    <i class="fa fa-lg fa-github"></i> You can download <strong>Tinatapi</strong> from <a href="https://github.com/tinata/tinatapi">https://github.com/tinata/tinatapi</a>
                 </p>
                 <p>
                     <a href="https://github.com/tinata/tinatapi/issues">Bug reports, feature requests and suggestions are welcome.</a>

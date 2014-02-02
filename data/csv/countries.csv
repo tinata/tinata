@@ -40,7 +40,7 @@ name,officalName,isoNumeric,iso2,iso3,fips,nameForCitizen,adjective,dependantTer
 "Congo (Democratic Republic)","The Democratic Republic of the Congo","180","CD","COD","","Citizen of The Democratic Republic of the Congo","of the Democratic Republic of the Congo; Congolese",
 "Central African Republic","The Central African Republic","140","CF","CAF","CT","Citizen of the Central African Republic","Central African Republic",
 "Congo","The Republic of the Congo","178","CG","COG","CF","Citizen of the Republic of the Congo","of the Republic of the Congo; Congolese",
-"Curaçao","Country of Curaçao","","CW","","","","",true
+"Curaçao","Country of Curaçao","531","CW","CUW","","","",true
 "Switzerland","The Swiss Confederation","756","CH","CHE","SZ","Swiss","Swiss",
 "Ivory Coast","The Republic of Cote D'Ivoire","384","CI","CIV","","Citizen of the Ivory Coast","Ivorian; Ivory Coast (as in 'Ivory Coast Government')",
 "Cook Islands","","184","CK","COK","CW","","",true
@@ -54,7 +54,7 @@ name,officalName,isoNumeric,iso2,iso3,fips,nameForCitizen,adjective,dependantTer
 "Christmas Island","","162","CX","CXR","KT","","",true
 "Cyprus","The Republic of Cyprus","196","CY","CYP","CY","Cypriot","Cypriot; Cyprus (as in 'Cyprus Government')",
 "Czech Republic","The Czech Republic","203","CZ","CZE","EZ","Czech","Czech",
-"Germany","The Federal Republic of Germany","280","DE","DEU","GM","German","German",true
+"Germany","The Federal Republic of Germany","280","DE","DEU","GM","German","German",
 "Djibouti","The Republic of Djibouti","262","DJ","DJI","DJ","Djiboutian","Djiboutian",
 "Denmark","The Kingdom of Denmark","208","DK","DNK","DA","Dane","Danish",
 "Dominica","The Commonwealth of Dominica","212","DM","DMA","DO","Dominican","Dominican",

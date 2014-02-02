@@ -486,7 +486,7 @@ function getTravelAdvice(country) {
                     if (!country.travelAdvice)
                         country.travelAdvice = {};
                         
-                    country.travelAdvice.description = "Travel advice provided by the UK Foreign & Commonwealth Office (www.gov.uk/foreign-travel-advice/)";
+                    country.travelAdvice.attribution = "Travel advice provided by the UK Foreign & Commonwealth Office";
                     country.travelAdvice.currentAdvice = adviceHtmlToText(jsonResponse.details.summary);
                     
                     for (i in jsonResponse.details.parts) {
@@ -501,10 +501,10 @@ function getTravelAdvice(country) {
                                 country.travelAdvice.localLawsAndCustoms = adviceHtmlToText(jsonResponse.details.parts[i].body);
                             break;
                             case "health":
-                                country.travelAdvice.safetyAndSecurity = adviceHtmlToText(jsonResponse.details.parts[i].body);
+                                country.travelAdvice.health = adviceHtmlToText(jsonResponse.details.parts[i].body);
                             break;
                             case "money":
-                                country.travelAdvice.safetyAndSecurity = adviceHtmlToText(jsonResponse.details.parts[i].body);
+                                country.travelAdvice.money = adviceHtmlToText(jsonResponse.details.parts[i].body);
                             break;
                             default:
                         }
@@ -540,7 +540,7 @@ function adviceHtmlToText(html) {
     // Remove links at the end of sentances & fix typos
     var textAsArray = $(html).text().split("\n");
     for (i in textAsArray) {
-        var text = textAsArray[i];
+        var text = textAsArray[i].trim();
         text = text.replace(/See Terrorism(\.)?$/gi, '');
         text = text.replace(/See Crime(\.)?$/gi, '');
         text = text.replace(/See Natural disasters(\.)?$/gi, '');
@@ -551,12 +551,14 @@ function adviceHtmlToText(html) {
         text = text.replace(/See Health(\.)?$/gi, '');
         text = text.replace(/See Dual nationals(\.)?$/gi, '');
         text = text.replace(/See Safety and security(\.)?$/gi, '');
+        text = text.replace(/See Local laws and customs(\.)?$/gi, '');
         text = text.replace(/See Consular assistance(\.)?$/gi, '');
         text = text.replace(/See Local travel(\.)?$/gi, '');
         text = text.replace(/See Outdoor sports activities(\.)?$/gi, '');
         text = text.replace(/Download map \(PDF\)(\.)?$/gi, '');
         text = text.trim();
         text = text.replace(/\.\.$/, '.');
+        text = text.replace(/^\.$/, '');
         
         if (text != "")
             response.push( text );
