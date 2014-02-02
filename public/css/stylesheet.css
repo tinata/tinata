@@ -48,6 +48,12 @@ body {
 .jumbotron h1 {
     font-size: 72px;
     line-height: 72px;
+    text-shadow: 0 1px 1px #fff, 0 5px 20px #fff;
+}
+
+.jumbotron h1 .fa-stack {
+    text-shadow: none;
+    text-shadow: 0 0 100px #fff;
 }
 
 @media(max-width:767px) {
@@ -60,7 +66,7 @@ body {
 .jumbotron .lead {
     font-size: 32px;
     line-height: 56px;
-    text-shadow: 0 1px 1px #fff;
+    text-shadow: 0 1px 1px #fff, 0 5px 20px #fff;
 }
 
 @media(max-width:767px) {
@@ -69,7 +75,6 @@ body {
         font-size: 24px;
         line-height: 32px;
         font-weight: 400;
-        text-shadow: none;
     }
 }
 
