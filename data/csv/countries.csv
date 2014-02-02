@@ -15,7 +15,7 @@ name,officalName,isoNumeric,iso2,iso3,fips,nameForCitizen,adjective,dependantTer
 "Aruba","","533","AW","ABW","AA","","",true
 "Åland Islands","","248","AX","ALA","","","",true
 "Azerbaijan","The Republic of Azerbaijan","31","AZ","AZE","AJ","Azerbaijani","Azerbaijani",
-"Bosnia and Herzegovina","Bosnia and Herzegovina","70","BA","BIH","BK","Citizen of Bosnia and Herzegovina","Bosnia and Herzegovinian (which may be shortened to 'Bosnian' in informal contexts)",
+"Bosnia and Herzegovina","Bosnia and Herzegovina","70","BA","BIH","BK","Citizen of Bosnia and Herzegovina","Bosnian and Herzegovinian",
 "Barbados","Barbados","52","BB","BRB","BB","Barbadian","Barbadian",
 "Bangladesh","The People's Republic of Bangladesh","50","BD","BGD","BG","Bangladeshi","Bangladeshi",
 "Belgium","The Kingdom of Belgium","56","BE","BEL","BE","Belgian","Belgian",
@@ -118,8 +118,8 @@ name,officalName,isoNumeric,iso2,iso3,fips,nameForCitizen,adjective,dependantTer
 "Kiribati","The Republic of Kiribati","296","KI","KIR","KR","Citizen of Kiribati","Kiribati",
 "Comoros","The Union of the Comoros","174","KM","COM","CN","Comoran","Comoran",
 "St Kitts and Nevis","The Federation of Saint Christopher and Nevis","659","KN","KNA","","Citizen of St Christopher and Nevis","St Kitts and Nevis",
-"Korea (North)","The Democratic People's Republic of Korea","408","KP","PRK","","Citizen of the Democratic People's Republic of Korea; Citizen of the DPRK","North Korean",
-"Korea (South)","The Republic of Korea","410","KR","KOR","","South Korean","South Korean",
+"North Korea","The Democratic People's Republic of Korea","408","KP","PRK","","Citizen of the Democratic People's Republic of Korea","North Korean",
+"South Korea,"The Republic of Korea","410","KR","KOR","","South Korean","South Korean",
 "Kuwait","The State of Kuwait","414","KW","KWT","KU","Kuwaiti","Kuwaiti",
 "Cayman Islands","","136","KY","CYM","CJ","","",true
 "Kazakhstan","The Republic of Kazakhstan","398","KZ","KAZ","KZ","Kazakh","Kazakh",
