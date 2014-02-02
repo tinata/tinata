@@ -36,7 +36,7 @@ name,officalName,isoNumeric,iso2,iso3,fips,nameForCitizen,adjective,dependantTer
 "Belarus","The Republic of Belarus","112","BY","BLR","BO","Belarusian","Belarusian",
 "Belize","Belize","84","BZ","BLZ","BH","Citizen of Belize","Belizean",
 "Canada","Canada","124","CA","CAN","CA","Canadian","Canadian",
-"Cocos [Keeling] Islands","","166","CC","CCK","","","",true
+"Cocos (Keeling) Islands","","166","CC","CCK","","","",true
 "Congo (Democratic Republic)","The Democratic Republic of the Congo","180","CD","COD","","Citizen of The Democratic Republic of the Congo","Congolese",
 "Central African Republic","The Central African Republic","140","CF","CAF","CT","Citizen of the Central African Republic","Central African Republic",
 "Congo","The Republic of the Congo","178","CG","COG","CF","Citizen of the Republic of the Congo","Congolese",
@@ -74,7 +74,7 @@ name,officalName,isoNumeric,iso2,iso3,fips,nameForCitizen,adjective,dependantTer
 "Faroe Islands","","234","FO","FRO","FO","","",true
 "France","The French Republic","250","FR","FRA","FR","French citizen","French",
 "Gabon","The Gabonese Republic","266","GA","GAB","GB","Gabonese","Gabonese",
-"United Kingdom","","826","GB","GBR","UK","","",
+"United Kingdom","","826","GB","GBR","UK","British citizens","British",
 "Grenada","Grenada","308","GD","GRD","GJ","Grenadian","Grenadian",
 "Georgia","Georgia","268","GE","GEO","GG","Georgian","Georgian",
 "French Guiana","","254","GF","GUF","FG","","",true
@@ -248,4 +248,3 @@ name,officalName,isoNumeric,iso2,iso3,fips,nameForCitizen,adjective,dependantTer
 "South Africa","The Republic of South Africa","710","ZA","ZAF","SF","South African","South African",
 "Zambia","The Republic of Zambia","894","ZM","ZMB","ZA","Zambian","Zambian",
 "Zimbabwe","The Republic of Zimbabwe","716","ZW","ZWE","ZI","Zimbabwean","Zimbabwean",
-"Unknown or Invalid Region","",,"ZZ","","","","",

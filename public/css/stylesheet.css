@@ -7,8 +7,25 @@ body {
     -moz-background-size: cover;
 }
 
+.interactive:hover {
+    cursor: pointer;
+}
+
+.flag {
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+    -moz-background-size: contain;
+}
+
 .navbar.navbar-default {
     margin-bottom: 40px;
+}
+
+@media(max-width:767px) {
+    .navbar.navbar-default {
+        margin-bottom: 0px;
+    }
 }
 
 .navbar.navbar-default,
@@ -22,13 +39,38 @@ body {
     background: none;
 }
 
+@media(max-width:767px) {
+    .jumbotron {
+        padding: 0px 20px;
+    }
+}
+
 .jumbotron h1 {
     font-size: 72px;
+    line-height: 72px;
+}
+
+@media(max-width:767px) {
+    .jumbotron h1 {
+        font-size: 42px;
+        line-height: 42px;
+    }
 }
 
 .jumbotron .lead {
     font-size: 32px;
+    line-height: 56px;
     text-shadow: 0 1px 1px #fff;
+}
+
+@media(max-width:767px) {
+    .jumbotron .lead {
+        margin-top: 10px;
+        font-size: 24px;
+        line-height: 32px;
+        font-weight: 400;
+        text-shadow: none;
+    }
 }
 
 .jumbotron .fa-stack {
@@ -51,7 +93,6 @@ body {
 
 .wrapper-home {
     background: #fff;
-    background: rgba(255,255,255,0.9);
 }
 
 .wrapper-home .container.container-main {

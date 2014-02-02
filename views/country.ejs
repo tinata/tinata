@@ -1,7 +1,15 @@
 <div class="container container-main">
     <div class="row">
         <div class="col-sm-12">
-            <h1><%= country.name %></h1>
+            <div id="flag" class="flag interactive pull-left" style="height: 40px; width: 50px; margin-right: 10px; background-image: url(/img/flags/<%= country.iso2.toLowerCase() %>.svg);"></div>
+            <h1>
+                <%= country.name %>
+                <% if (country.dependantTerritory) { %>
+                <small>
+                    Dependant territory
+                </small>
+                <% } %>
+            </h1>
             <p class="lead">
                 Fetch information about this country in JSON by using the URL <a href="/countries/<%= country.iso2 %>.json">/countries/<%= country.iso2 %>.json</a>
             </p>
@@ -17,7 +25,6 @@
             <div class="tab-content">
                 <div class="tab-pane active" id="about">
                     <br/>
-                                        
                     <% if (country.warnings) { %>
                         <% for (warning in country.warnings.high) { %>
                             <p class="alert alert-danger">
@@ -168,6 +175,10 @@
 </div>
 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 <script>
+    $('#flag').on('click touch', function() {
+        window.location = "/countries/<%= country.iso2 %>/flag";
+    });
+
     var geocoder;
     var map;
     var mapOptions = {

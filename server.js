@@ -101,6 +101,41 @@ app.get('/countries/:name', function(req, res, next) {
 });
 
 /** 
+ * Return flag page for country (can be looked up by ISO code, name or an alias)
+ */
+app.get('/countries/:name/flag', function(req, res, next) {
+    tinataCountries.getCountry(req.params.name)
+    .then(function(country) {
+        if (country == false) {
+            // If country not found, return 404
+            res.status(404).render('page-not-found', {
+                title: "Page not found"
+            });
+        } else {
+            res.render('flag', { country: country } );
+        }
+    });
+});
+
+/** 
+ * Return flag for country (can be looked up by ISO code, name or an alias)
+ */
+app.get('/countries/:name/flag.svg', function(req, res, next) {
+    tinataCountries.getCountry(req.params.name)
+    .then(function(country) {
+        if (country == false) {
+            // If country not found, return 404
+            res.status(404).render('page-not-found', {
+                title: "Page not found"
+            });
+        } else {
+            res.redirect('/img/flags/'+country.iso2.toLowerCase()+'.svg');
+        }
+    });
+});
+
+
+/** 
  * Return information about the status of the database (which data is avalible for what countries)
  */
 app.get('/status', function(req, res, next) {

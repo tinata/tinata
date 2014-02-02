@@ -115,12 +115,8 @@
                     <tbody>
                         <tr ng-repeat="country in countries | orderBy:predicate:reverse | filter:search:strict">
                             <td>
-                                <p>
-                                   <strong><a href="/countries/{{ country.iso2 }}">{{ country.name }}</a></strong>
-                                   <span class="text-muted" ng-if="country.dependantTerritory">
-                                       <br/>Dependant territory
-                                   </span>
-                                </p>
+                                <div id="flag" class="flag pull-left" style="height: 40px; width: 30px; margin-right: 10px; background-image: url(/img/flags/{{ country.iso2.toLowerCase() }}.svg);"></div>
+                                  <h4><a href="/countries/{{ country.iso2 }}">{{ country.name }}</a></h4>
                             </td>
                             <td>{{country.isoNumeric}}</td>
                             <td>{{country.iso2}}</td>

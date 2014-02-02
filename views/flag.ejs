@@ -1,0 +1,62 @@
+<div class="container container-main">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>
+                <% if (country.adjective) { %>
+                <%= country.adjective %> national flag
+                <% } else { %>
+                <%= country.name %> national flag
+                <% } %>
+            </h1>
+            <p class="lead">
+                <a href="/countries/<%= country.iso2 %>"><i class="fa fa-arrow-left"></i> View information about <%= country.name %></a>
+            </p>
+            <div id="flag" class="flag" style="height: 400px; 10px; background-image: url(/img/flags/<%= country.iso2.toLowerCase() %>.svg);"></div>
+            <br/>
+            <p class="text-center">
+                 <a class="btn btn-default" href="/countries/<%= country.iso2 %>/flag.svg"> <i class="fa fa-lg fa-download"></i> Download /countries/<%= country.iso2 %>/flag.svg</a>
+            </p>
+        </div>
+    </div>
+</div>
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+<script>
+    var geocoder;
+    var map;
+    var mapOptions = {
+        zoom: 3,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+    var marker;
+
+    $(function() {
+        geocoder = new google.maps.Geocoder();
+        map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        lookupAddress();
+    });
+
+    function lookupAddress() {
+        var address = '<%= country.name %>';
+        geocoder.geocode( { 'address': address}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                map.setCenter(results[0].geometry.location);
+                if (marker)
+                    marker.setMap(null);
+                marker = new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location,
+                    draggable: true
+                });
+                google.maps.event.addListener(marker, "dragend", function() {
+                    document.getElementById('lat').value = marker.getPosition().lat();
+                    document.getElementById('lng').value = marker.getPosition().lng();
+                });
+                document.getElementById('lat').value = marker.getPosition().lat();
+                document.getElementById('lng').value = marker.getPosition().lng();
+            } else {
+                // Hide map if fails.
+                $('#map').hide();
+            }
+        });
+    }
+ </script>
