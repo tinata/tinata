@@ -415,11 +415,51 @@ init()
 });
 
 function init() {
-    // Load countries from DB or from CSV if the DB is empty
+    // Load countries from first DB or from CSV if the DB is empty
     var deferred = Q.defer();
     db.countries.find({}, function(err, countries) {
         if (countries.length && countries.length > 0) {
-            deferred.resolve(countries);
+            // Values in CSV can override existing values in DB
+            var csvConverter = new Converter();
+            csvConverter.on("end_parsed", function(jsonObj) {
+                var csvCountries = jsonObj.csvRows;
+                for (i in csvCountries) {
+                    // Convert string to bool
+                    if (csvCountries[i].dependantTerritory == "true")
+                        csvCountries[i].dependantTerritory = true;
+                    
+                    // Update entry in DB with details from CSV file
+                    var countryExistsInDb = false;
+                    for (j in countries) {
+                        if (csvCountries[i].iso2 == countries[j].iso2) {
+                            countryExistsInDb = true;
+                            for (property in csvCountries[i]) {
+                                countries[j][property] = csvCountries[i][property];
+                            }
+                        }
+                    }
+                    // If country doesn't exist in DB, already, add it.
+                    if (countryExistsInDb == false)
+                        countries.push(csvCountries[i])
+                }
+                
+                // If country no longer exists in CSV file, remove it from DB
+                for (j in countries) {
+                    var countryExistsInCsv = false;
+                    for (i in csvCountries) {
+                        if (csvCountries[i].iso2 == countries[j].iso2)
+                            countryExistsInCsv = true;
+                    }
+                    // Remove from DB & array (so it doesn't get added back!)
+                    // @fixme Should use callback here.
+                    if (countryExistsInCsv == false) {
+                        db.countries.remove({ iso2: countries[j].iso2 });
+                        delete countries[j];
+                    }
+                };
+                deferred.resolve(countries);
+            });
+            csvConverter.from("../data/csv/countries.csv");
         } else {
             // The fallback is load from the base CSV file which lists all
             // countries by name and their various identifiers.
