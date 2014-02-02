@@ -100,6 +100,14 @@
                                 </a>
                             </th>
                             <th>
+                                <a href="" class="btn-block" ng-click="predicate = 'economyRating'; reverse=!reverse">Economy
+                                    <span ng-show="predicate == 'economyRating'">
+                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
+                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
+                                    </span>
+                                </a>
+                            </th>
+                            <th>
                                 <a href="" class="btn-block" ng-click="predicate = 'population'; reverse=!reverse">Population
                                     <span ng-show="predicate == 'population'">
                                         <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
@@ -168,6 +176,29 @@
                                 </p>
                                 <p class="text-muted" ng-if="!country.currencies">
                                     N/A
+                                </p>
+                            </td>
+                            <td>
+                                <p ng-if="!country.economyRating" class="text-muted">
+                                    N/A
+                                </p>
+                                <p ng-if="country.economyRating == 1" class="label" style="background: lightgreen;">
+                                    <i class="fa fa-usd"></i>
+                                </p>
+                                <p ng-if="country.economy == 'Lower middle income'" class="label" style="background: lime;">
+                                    <i class="fa fa-economyRating"></i>
+                                    <i class="fa fa-usd"></i>
+                                </p>
+                                <p ng-if="country.economy == 'Upper middle income'" class="label" style="background: lime;">
+                                    <i class="fa fa-usd"></i>
+                                    <i class="fa fa-usd"></i>
+                                    <i class="fa fa-usd"></i>
+                                </p>
+                                <p ng-if="country.economy == 'High income'" class="label" style="background: green;">
+                                    <i class="fa fa-usd"></i>
+                                    <i class="fa fa-usd"></i>
+                                    <i class="fa fa-usd"></i>
+                                    <i class="fa fa-usd"></i>
                                 </p>
                             </td>
                             <td>

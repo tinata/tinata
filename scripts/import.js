@@ -254,6 +254,44 @@ init()
     }
 })
 .then(function(countries) {
+    // Get the income group from World Bank data.
+    /*
+        Income group: Economies are divided according to 2012 GNI per capita, calculated using the World Bank Atlas method.
+        http://data.worldbank.org/about/country-classifications/world-bank-atlas-method
+        The groups are:
+        low income, $1,035 or less;
+        lower middle income, $1,036 - $4,085;
+        upper middle income, $4,086 - $12,615;
+        high income,$12,616 or more.
+    */
+    var deferred = Q.defer();
+    var csvConverter = new Converter();
+    csvConverter.on("end_parsed", function(jsonObj) {
+        var worldBankCountries = jsonObj.csvRows;
+        for (i in countries) {
+            countries[i].economyRating = 0; // Set default value (0 == unknown)
+            for (j in worldBankCountries) {
+                if (countries[i].iso3 == worldBankCountries[j]['Country Code']) {
+                    var incomeGroup = worldBankCountries[j]['IncomeGroup'].split(':');
+                    countries[i].economy = incomeGroup[0];
+                    if (incomeGroup[0] == "Low income") {
+                        countries[i].economyRating = 1;
+                    } else if (incomeGroup[0] == "Lower middle income") {
+                        countries[i].economyRating = 2;
+                    } else if (incomeGroup[0] == "Upper middle income") {
+                        countries[i].economyRating = 3;
+                    } else if (incomeGroup[0] == "High income") {
+                        countries[i].economyRating = 4;
+                    }
+                }
+            }
+        }
+        deferred.resolve(countries);
+    });
+    csvConverter.from("../data/csv/world-bank-income-group.csv");
+    return deferred.promise;
+})
+.then(function(countries) {
     // Get dialing code and local currencies
     var deferred = Q.defer();
     for (i in countries) {            
