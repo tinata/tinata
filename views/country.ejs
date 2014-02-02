@@ -17,6 +17,7 @@
             <div class="tab-content">
                 <div class="tab-pane active" id="about">
                     <br/>
+                                        
                     <% if (country.warnings) { %>
                         <% for (warning in country.warnings.high) { %>
                             <p class="alert alert-danger">
@@ -37,10 +38,12 @@
                     
                     <% if (country.travelAdvice) { %>
                         <h2>Travel Advice</h2>
+                        <% if (country.travelAdvice.attribution) { %>
                         <p class="lead">
                             <%= country.travelAdvice.attribution %>
                         </p>
-
+                        <% } %>
+                        
                         <% if (country.travelAdvice.fcoTravelAdviceUrl || country.travelAdvice.nhsTravelAdviceUrl) { %>
                         <ul class="fa-ul">
                             <% if (country.travelAdvice.fcoTravelAdviceUrl) { %>
