@@ -1,0 +1,196 @@
+country,iso3,death,imprisonment,persecution
+Afghanistan,AFG,false,true,true
+Albania,ALB,false,false,false
+Algeria,DZA,false,true,true
+Andorra,AND,false,false,false
+Angola,AGO,false,true,true
+Antigua and Barbuda,ATG,false,true,true
+Argentina,ARG,false,false,false
+Armenia,ARM,false,false,false
+Australia,AUS,false,false,false
+Austria,AUT,false,false,false
+Azerbaijan,AZE,false,false,false
+"Bahamas, The",BHS,false,false,false
+Bahrain,BHR,false,false,false
+Bangladesh,BGD,false,true,true
+Barbados,BRB,false,true,true
+Belarus,BLR,false,false,false
+Belgium,BEL,false,false,false
+Belize,BLZ,false,true,true
+Benin,BEN,false,false,false
+Bhutan,BTN,false,true,true
+Bolivia,BOL,false,false,false
+Bosnia and Herzegovina,BIH,false,false,false
+Botswana,BWA,false,true,true
+Brazil,BRA,false,false,false
+Brunei,BRN,false,true,true
+Bulgaria,BGR,false,false,false
+Burkina,BFA,false,false,false
+Burma,MMR,false,false,false
+Burundi,BDI,false,true,true
+Cambodia,KHM,false,false,false
+Cameroon,CMR,false,true,true
+Canada,CAN,false,false,false
+Cape Verde,CPV,false,false,false
+Central African Republic,CAF,false,false,false
+Chad,TCD,false,true,true
+Chile,CHL,false,false,false
+China,CHN,false,false,false
+Colombia,COL,false,false,false
+Comoros,COM,false,true,true
+Congo,COG,false,false,false
+Congo (Democratic Republic),COD,false,false,false
+Costa Rica,CRI,false,false,false
+Croatia,HRV,false,false,false
+Cuba,CUB,false,false,false
+Cyprus,CYP,false,false,false
+Czech Republic,CZE,false,false,false
+Denmark,DNK,false,false,false
+Djibouti,DJI,false,false,false
+Dominica,DMA,false,true,true
+Dominican Republic,DOM,false,false,false
+East Timor,TLS,false,false,false
+Ecuador,ECU,false,false,false
+Egypt,EGY,false,false,true
+El Salvador,SLV,false,false,false
+Equatorial Guinea,GNQ,false,false,false
+Eritrea,ERI,false,true,true
+Estonia,EST,false,false,false
+Ethiopia,ETH,false,true,true
+Fiji,FJI,false,false,false
+Finland,FIN,false,false,false
+France,FRA,false,false,false
+Gabon,GAB,false,false,false
+"Gambia, The",GMB,false,true,true
+Georgia,GEO,false,false,false
+Germany,DEU,false,false,false
+Ghana,GHA,false,true,true
+Greece,GRC,false,false,false
+Grenada,GRD,false,false,false
+Guatemala,GTM,false,false,false
+Guinea,GIN,false,true,true
+Guinea-Bissau,GNB,false,false,false
+Guyana,GUY,false,true,true
+Haiti,HTI,false,false,false
+Honduras,HND,false,false,false
+Hungary,HUN,false,false,false
+Iceland,ISL,false,false,false
+India,IND,false,false,false
+Indonesia,IDN,false,false,false
+Iran,IRN,true,true,true
+Iraq,IRQ,false,false,false
+Ireland,IRL,false,false,false
+Israel,ISR,false,false,false
+Italy,ITA,false,false,false
+Ivory Coast,CIV,false,false,false
+Jamaica,JAM,false,true,true
+Japan,JPN,false,false,false
+Jordan,JOR,false,false,false
+Kazakhstan,KAZ,false,false,false
+Kenya,KEN,false,true,true
+Kiribati,KIR,false,true,true
+Korea (North),PRK,false,false,false
+Korea (South),KOR,false,false,false
+Kosovo,false,false,false,
+Kuwait,KWT,false,true,true
+Kyrgyzstan,KGZ,false,false,false
+Laos,LAO,false,false,false
+Latvia,LVA,false,false,false
+Lebanon,LBN,false,true,true
+Lesotho,LSO,false,false,false
+Liberia,LBR,false,true,true
+Libya,LBY,false,false,true
+Liechtenstein,LIE,false,false,false
+Lithuania,LTU,false,false,false
+Luxembourg,LUX,false,false,false
+Macedonia,MKD,false,false,false
+Madagascar,MDG,false,false,false
+Malawi,MWI,false,true,true
+Malaysia,MYS,false,true,true
+Maldives,MDV,false,false,false
+Mali,MLI,false,false,false
+Malta,MLT,false,false,false
+Marshall Islands,MHL,false,false,false
+Mauritania,MRT,true,true,true
+Mauritius,MUS,false,true,true
+Mexico,MEX,false,false,false
+Micronesia,FSM,false,false,false
+Moldova,MDA,false,false,false
+Monaco,MCO,false,false,false
+Mongolia,MNG,false,false,false
+Montenegro,MNE,false,false,false
+Morocco,MAR,false,true,true
+Mozambique,MOZ,false,true,true
+Namibia,NAM,false,false,false
+Nauru,NRU,false,true,true
+Nepal,NPL,false,false,false
+Netherlands,NLD,false,false,false
+New Zealand,NZL,false,false,false
+Nicaragua,NIC,false,false,false
+Niger,NER,false,false,false
+Nigerian,NGA,true,true,true
+Norway,NOR,false,false,false
+Oman,OMN,false,true,true
+Pakistan,PAK,false,true,true
+Palau,PLW,false,true,true
+Panama,PAN,false,false,false
+Papua New Guinea,PNG,false,true,true
+Paraguay,PRY,false,false,false
+Peru,PER,false,false,false
+Philippines,PHL,false,false,false
+Poland,POL,false,false,false
+Portugal,PRT,false,false,false
+Qatar,QAT,false,true,true
+Romania,ROU,false,false,false
+Russia,RUS,false,false,true
+Rwanda,RWA,false,false,false
+St Kitts and Nevis,KNA,false,true,true
+St Lucia,LCA,false,true,true
+St Vincent,VCT,false,true,true
+Samoa,WSM,false,true,true
+San Marino,SMR,false,false,false
+Sao Tome and Principe,STP,false,true,true
+Saudi Arabia,SAU,true,true,true
+Senegal,SEN,false,true,true
+Serbia,SRB,false,false,false
+Seychelles,SYC,false,true,true
+Sierra Leone,SLE,false,true,true
+Singapore,SGP,false,true,true
+Slovakia,SVK,false,false,false
+Slovenia,SVN,false,false,false
+Solomon Islands,SLB,false,true,true
+Somalia,SOM,true,true,true
+South Africa,ZAF,false,false,false
+South Sudan,SSD,false,true,true
+Spain,ESP,false,false,false
+Sri Lanka,LKA,false,true,true
+Sudan,SDN,true,true,true
+Suriname,SUR,false,false,false
+Swaziland,SWZ,false,false,false
+Sweden,SWE,false,false,false
+Switzerland,CHE,false,false,false
+Syria,SYR,false,true,true
+Tajikistan,TJK,false,false,false
+Tanzania,TZA,false,true,true
+Thailand,THA,false,false,false
+Togo,TGO,false,true,true
+Tonga,TON,false,true,true
+Trinidad and Tobago,TTO,false,true,true
+Tunisia,TUN,false,true,true
+Turkey,TUR,false,false,false
+Turkmenistan,TKM,false,true,true
+Tuvalu,TUV,false,true,true
+Uganda,UGA,false,true,true
+Ukraine,UKR,false,false,false
+United Arab Emirates,ARE,false,true,true
+United Kingdom,GBR,false,false,false
+United States,USA,false,false,false
+Uruguay,URY,false,false,false
+Uzbekistan,UZB,false,true,true
+Vanuatu,VUT,false,false,false
+Vatican City,VAT,false,false,false
+Venezuela,VEN,false,false,false
+Vietnam,VNM,false,false,false
+Yemen,YEM,true,true,true
+Zambia,ZMB,false,true,true
+Zimbabwe,ZWE,false,true,true

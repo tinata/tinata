@@ -193,21 +193,30 @@ init()
     csvConverter.on("end_parsed", function(jsonObj) {
         var lgbtCountries = jsonObj.csvRows;
         for (i in countries) {
+            
+            // Reset existing warnings
+            if (countries[i].warnings.high.lgbtDeathPenalty)
+                delete countries[i].warnings.high.lgbtDeathPenalty;
+            if (countries[i].warnings.high.lgbtImprisonment)
+                delete countries[i].warnings.high.lgbtImprisonment;
+            if (countries[i].warnings.high.lgbtPersecution)
+                delete countries[i].warnings.high.lgbtPersecution;
+
             for (j in lgbtCountries) {
-                if (countries[i].iso3 && countries[i].iso3 == lgbtCountries[j]['ISO 3166-1 (3 letter)']) {
-                    if (lgbtCountries[j]['Persecution'] == 'yes') {
-                        countries[i].warnings.medium.lgbtPersecution = "Members of the LGBT community may be at risk of persecution.";
-                    } else if (lgbtCountries[j]['Imprisonment'] == 'yes') {
-                        countries[i].warnings.high.lgbtImprisonment = "Members of the LGBT community may be at risk of imprisonment.";
-                    } else if (lgbtCountries[j]['Death'] == 'yes') {
+                if (countries[i].iso3 && countries[i].iso3 == lgbtCountries[j].iso3) {
+                    if (lgbtCountries[j].death == 'true') {
                         countries[i].warnings.high.lgbtDeathPenalty = "Members of the LGBT community may be at risk of imprisonment or death.";
+                    } else if (lgbtCountries[j].imprisonment == 'true') {
+                        countries[i].warnings.high.lgbtImprisonment = "Members of the LGBT community may be at risk of imprisonment.";
+                    } else if (lgbtCountries[j].persecution == 'true') {
+                        countries[i].warnings.medium.lgbtPersecution = "Members of the LGBT community may be at risk of persecution.";
                     }
                 }
             }
         }
         deferred.resolve(countries);
     });
-    csvConverter.from("../data/csv/ilga-lgbt-rights.csv");
+    csvConverter.from("../data/csv/lgbt-rights.csv");
     return deferred.promise;
 })
 .then(function(countries) {
