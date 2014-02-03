@@ -123,5 +123,9 @@ body {
     border-left-width: 10px;
     border-radius: 0;
     margin-bottom: 10px;
-    
+
+}
+
+thead {
+    background: #FFF;
 }
