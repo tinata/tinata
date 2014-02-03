@@ -32,7 +32,7 @@ Cambodia,KHM,false,false,false
 Cameroon,CMR,false,true,true
 Canada,CAN,false,false,false
 Cape Verde,CPV,false,false,false
-Central African Republic,CAF,false,false,false
+Central African Republic,CAF,false,true,true
 Chad,TCD,false,true,true
 Chile,CHL,false,false,false
 China,CHN,false,false,false
@@ -60,7 +60,7 @@ Ethiopia,ETH,false,true,true
 Fiji,FJI,false,false,false
 Finland,FIN,false,false,false
 France,FRA,false,false,false
-Gabon,GAB,false,false,false
+Gabon,GAB,false,false,true
 "Gambia, The",GMB,false,true,true
 Georgia,GEO,false,false,false
 Germany,DEU,false,false,false
@@ -85,7 +85,7 @@ Italy,ITA,false,false,false
 Ivory Coast,CIV,false,false,false
 Jamaica,JAM,false,true,true
 Japan,JPN,false,false,false
-Jordan,JOR,false,false,false
+Jordan,JOR,false,false,true
 Kazakhstan,KAZ,false,false,true
 Kenya,KEN,false,true,true
 Kiribati,KIR,false,true,true
@@ -97,7 +97,7 @@ Kyrgyzstan,KGZ,false,false,false
 Laos,LAO,false,false,false
 Latvia,LVA,false,false,false
 Lebanon,LBN,false,true,true
-Lesotho,LSO,false,false,false
+Lesotho,LSO,false,true,true
 Liberia,LBR,false,true,true
 Libya,LBY,false,true,true
 Liechtenstein,LIE,false,false,false
