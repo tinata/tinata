@@ -268,20 +268,25 @@ init()
     var csvConverter = new Converter();
     csvConverter.on("end_parsed", function(jsonObj) {
         var worldBankCountries = jsonObj.csvRows;
-        for (i in countries) {
-            countries[i].economyRating = 0; // Set default value (0 == unknown)
+        for (i in countries) {            
+            countries[i].economy = {};
+            countries[i].economy.incomeRating = 0; // Default (0 == unknown)
+            
             for (j in worldBankCountries) {
                 if (countries[i].iso3 == worldBankCountries[j]['Country Code']) {
+                    
+                    countries[i].economy = {};                    
                     var incomeGroup = worldBankCountries[j]['IncomeGroup'].split(':');
-                    countries[i].economy = incomeGroup[0];
+                    countries[i].economy.income = incomeGroup[0];
+                    
                     if (incomeGroup[0] == "Low income") {
-                        countries[i].economyRating = 1;
+                        countries[i].economy.incomeRating = 1;
                     } else if (incomeGroup[0] == "Lower middle income") {
-                        countries[i].economyRating = 2;
+                        countries[i].economy.incomeRating = 2;
                     } else if (incomeGroup[0] == "Upper middle income") {
-                        countries[i].economyRating = 3;
+                        countries[i].economy.incomeRating = 3;
                     } else if (incomeGroup[0] == "High income") {
-                        countries[i].economyRating = 4;
+                        countries[i].economy.incomeRating = 4;
                     }
                 }
             }

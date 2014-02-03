@@ -4,6 +4,18 @@ Changes to the underlyig code and API. The API should be considered unstable for
 
 ====
 
+## 2014-02-03 API Enchancements
+
+Added economic data from the World Bank.
+
+### API Changes
+
+- **economy* added
+- **economy.income** added. Contains a text string describing income group World Bank.
+-  **economy.incomeRating** added. Integer version of text string.
+
+====
+
 ## 2014-02-02 Bugfixes and Website Enchancements
 
 Improvements to the website to make it easier to use (and work better on mobile devices), to update the information about licencing to make it clear and bugfixes and enhancements to the travel advice parser.
@@ -16,6 +28,8 @@ Improvements to the website to make it easier to use (and work better on mobile 
 ### Bugfixes
 
 - **Bug fixes and enhancements improvements to Travel Advice parser**
+
+====
 
 ## 2014-02-01 Enhancements
 
@@ -52,6 +66,8 @@ Empty properties are now stripped when countries are saved to the DB.
 
 - **numericId** renamed isoNumeric
 - **aliases** added countries can now easily be looked up by aliases (maintained in CSV file)
+
+====
 
 ## 2014-01-28 Bugfixes and enchancements
 

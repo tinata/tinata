@@ -176,7 +176,7 @@ name,officalName,isoNumeric,iso2,iso3,fips,nameForCitizen,adjective,dependantTer
 "Peru","The Republic of Peru","604","PE","PER","PE","Peruvian","Peruvian",
 "French Polynesia","","258","PF","PYF","FP","","",true
 "Papua New Guinea","The Independent State of Papua New Guinea","598","PG","PNG","PP","Papua New Guinean","Papua New Guinean",
-"Philippines","The Republic of the Philippines","608","PH","PHL","RP","Filipino (male), Filipina (female)","Philippine",
+"Philippines","The Republic of the Philippines","608","PH","PHL","RP","Filipino","Philippine",
 "Pakistan","The Islamic Republic of Pakistan","586","PK","PAK","PK","Pakistani","Pakistani",
 "Poland","The Republic of Poland","616","PL","POL","PL","Pole","Polish",
 "Saint Pierre and Miquelon","","666","PM","SPM","","","",true
