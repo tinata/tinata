@@ -194,13 +194,18 @@ init()
         var lgbtCountries = jsonObj.csvRows;
         for (i in countries) {
             
-            // Reset existing warnings
-            if (countries[i].warnings.high.lgbtDeathPenalty)
-                delete countries[i].warnings.high.lgbtDeathPenalty;
-            if (countries[i].warnings.high.lgbtImprisonment)
-                delete countries[i].warnings.high.lgbtImprisonment;
-            if (countries[i].warnings.high.lgbtPersecution)
-                delete countries[i].warnings.high.lgbtPersecution;
+            // Reset existing LGBT community warnings
+            if (countries[i].warnings) {
+                if (countries[i].warnings.high) {
+                    if (countries[i].warnings.high.lgbtDeathPenalty)
+                        delete countries[i].warnings.high.lgbtDeathPenalty;
+                    if (countries[i].warnings.high.lgbtImprisonment)
+                        delete countries[i].warnings.high.lgbtImprisonment;
+                }
+                if (countries[i].warnings.medium)
+                    if (countries[i].warnings.medium.lgbtPersecution)
+                        delete countries[i].warnings.medium.lgbtPersecution;
+            }
 
             for (j in lgbtCountries) {
                 if (countries[i].iso3 && countries[i].iso3 == lgbtCountries[j].iso3) {

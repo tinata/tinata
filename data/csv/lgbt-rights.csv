@@ -71,7 +71,7 @@ Guatemala,GTM,false,false,false
 Guinea,GIN,false,true,true
 Guinea-Bissau,GNB,false,false,false
 Guyana,GUY,false,true,true
-Haiti,HTI,false,false,false
+Haiti,HTI,false,false,true
 Honduras,HND,false,false,false
 Hungary,HUN,false,false,false
 Iceland,ISL,false,false,false
@@ -86,7 +86,7 @@ Ivory Coast,CIV,false,false,false
 Jamaica,JAM,false,true,true
 Japan,JPN,false,false,false
 Jordan,JOR,false,false,false
-Kazakhstan,KAZ,false,false,false
+Kazakhstan,KAZ,false,false,true
 Kenya,KEN,false,true,true
 Kiribati,KIR,false,true,true
 Korea (North),PRK,false,false,false
@@ -115,9 +115,9 @@ Mauritania,MRT,true,true,true
 Mauritius,MUS,false,true,true
 Mexico,MEX,false,false,false
 Micronesia,FSM,false,false,false
-Moldova,MDA,false,false,false
+Moldova,MDA,false,false,true
 Monaco,MCO,false,false,false
-Mongolia,MNG,false,false,false
+Mongolia,MNG,false,false,true
 Montenegro,MNE,false,false,false
 Morocco,MAR,false,true,true
 Mozambique,MOZ,false,true,true

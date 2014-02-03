@@ -128,11 +128,11 @@
                     <tbody>
                         <tr ng-repeat="country in countries | orderBy:predicate:reverse | filter:search:strict">
                             <td>
-                                <h4>
+                                <h5>
                                     <a href="/countries/{{ country.iso2 }}">
-                                    <div id="flag" class="flag pull-left" style="height: 25px; width: 40px; margin-right: 10px; background-image: url(/img/flags/{{ country.iso2.toLowerCase() }}.svg);"></div>
+                                    <div id="flag" class="flag pull-left" style="height: 25px; width: 50px; position: relative; top: -5px; background-image: url(/img/flags/{{ country.iso2.toLowerCase() }}.svg);"></div>
                                     {{ country.name }}</a>
-                                </h4>
+                                </h5>
                             </td>
                             <td>{{country.isoNumeric}}</td>
                             <td>{{country.iso2}}</td>
