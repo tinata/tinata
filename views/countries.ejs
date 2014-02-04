@@ -229,11 +229,15 @@
         </div>
     </div>
 </div>
+<script src="/js/jquery.floatThead.min.js"></script>
 <script>
 function Controller($scope, $http) {
     $http.get('/countries.json').success(function(countries) {
-        // for (country in countries) {
-        //}
+        
+        // Don't use fixed table header on mobile devices (redraws badly due to conflict with JS for responsive tables)
+        if ($(window).width() > 767)
+            $('table').floatThead({ useAbsolutePositioning: false });
+            
         $('#loading').hide();
         $scope.countries = countries;
     });
