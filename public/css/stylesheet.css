@@ -7,6 +7,14 @@ body {
     -moz-background-size: cover;
 }
 
+table thead {
+    background: #FFF;
+}
+
+table p {
+    margin-bottom: 0;
+}
+
 .interactive:hover {
     cursor: pointer;
 }
@@ -16,6 +24,14 @@ body {
     background-position: center center;
     background-size: contain;
     -moz-background-size: contain;
+}
+
+.flag-inline {
+    position: relative;
+    top: -4px;
+    height: 25px;
+    width: 25px;
+    margin-right: 10px;
 }
 
 .navbar.navbar-default {
@@ -124,8 +140,4 @@ body {
     border-radius: 0;
     margin-bottom: 10px;
 
-}
-
-thead {
-    background: #FFF;
 }

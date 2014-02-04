@@ -115,23 +115,16 @@
                                     </span>
                                 </a>
                             </th>
-                            <th>
-                                <a href="" class="btn-block" ng-click="predicate = 'callingCodes'; reverse=!reverse">Calling codes
-                                    <span ng-show="predicate == 'callingCodes'">
-                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
-                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
-                                    </span>
-                                </a>
-                            </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr ng-repeat="country in countries | orderBy:predicate:reverse | filter:search:strict">
                             <td>
-                                <h5>
+                                <h5 style="margin: 0;">
                                     <a href="/countries/{{ country.iso2 }}">
-                                    <div id="flag" class="flag pull-left" style="height: 25px; width: 50px; position: relative; top: -5px; background-image: url(/img/flags/{{ country.iso2.toLowerCase() }}.svg);"></div>
-                                    {{ country.name }}</a>
+                                        <div class="flag flag-inline pull-left" style="background-image: url(/img/flags/{{ country.iso2.toLowerCase() }}.svg);"></div>
+                                        {{ country.name }}
+                                    </a>
                                 </h5>
                             </td>
                             <td>{{country.isoNumeric}}</td>
@@ -206,14 +199,6 @@
                                     {{country.population | number}}
                                 </p>
                                 <p class="text-muted" ng-if="!country.population">
-                                    N/A
-                                </p>
-                            </td>
-                            <td>
-                                <p ng-repeat="callingCode in country.callingCodes">
-                                    {{callingCode}}
-                                </p>
-                                <p class="text-muted" ng-if="!country.callingCodes">
                                     N/A
                                 </p>
                             </td>
