@@ -2,6 +2,15 @@
 
 Changes to the underlyig code and API. The API should be considered unstable for now - properties may be renamed or removed completely.
 
+
+## 2014-02-05 API Enchancements
+
+Added economic data from the World Bank.
+
+### API Changes
+
+- **capitalCities renamed capitalCity** It is now a string, rather than an array. While some countries have multiple capitals, the offical, administrative, executive or seat of goverenment or defacto capital is used; in that order. The most widely used spelling is preferred. This manually curated list is far more accurate than the previous data it replaces.
+
 ====
 
 ## 2014-02-03 API Enchancements
@@ -10,7 +19,7 @@ Added economic data from the World Bank.
 
 ### API Changes
 
-- **economy* added
+- **economy** added
 - **economy.income** added. Contains a text string describing income group World Bank.
 -  **economy.incomeRating** added. Integer version of text string.
 

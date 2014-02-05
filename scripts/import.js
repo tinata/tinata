@@ -74,7 +74,7 @@ init()
         });
     });
     
-    csvConverter.from("../data/csv/country-aliases.csv");
+    csvConverter.from("../data/csv/aliases.csv");
     return Q.all(promises);
 })
 .then(function(countries) {
@@ -282,7 +282,12 @@ init()
     var csvConverter = new Converter();
     csvConverter.on("end_parsed", function(jsonObj) {
         var worldBankCountries = jsonObj.csvRows;
-        for (i in countries) {            
+        for (i in countries) {   
+            
+            // Remove deprecated property
+            if (countries[i].economyRating)
+                delete countries[i].economyRating;
+            
             countries[i].economy = {};
             countries[i].economy.incomeRating = 0; // Default (0 == unknown)
             
@@ -308,6 +313,34 @@ init()
         deferred.resolve(countries);
     });
     csvConverter.from("../data/csv/world-bank-income-group.csv");
+    return deferred.promise;
+})
+.then(function(countries) {
+    // Add (custom curated) list of capital cities.
+    // Some countries have multiple capitals (e.g. administrative/executive).
+    // The offical/administrative/executive/seat of government is prefered.
+    var deferred = Q.defer();
+    var csvConverter = new Converter();
+    csvConverter.on("end_parsed", function(jsonObj) {
+        var capitalCities = jsonObj.csvRows;
+        for (i in countries) {
+            // Reset so that entries deleted from the CSV are removed from DB.
+            if (countries[i].capitalCity)
+                delete countries[i].capitalCity;
+                
+            for (j in capitalCities) {
+                if (countries[i].iso2 == capitalCities[j].iso2) {
+                    // Skip blank values
+                    if (capitalCities[j].capital == "")
+                        continue;
+                        
+                    countries[i].capitalCity = capitalCities[j].capital;
+                }
+            }
+        }
+        deferred.resolve(countries);
+    });
+    csvConverter.from("../data/csv/capital-cities.csv");
     return deferred.promise;
 })
 .then(function(countries) {
@@ -399,12 +432,17 @@ init()
     // Note: Taking this slowly as the parsed data is not entirely reliable (the parser that exports the data is still in development and buggy)
     var deferred = Q.defer();
     for (i in countries) {
+        // Remove 'capitalCities' (now dropped in favour of better curated list)
+        if (countries[i].capitalCities)
+            delete countries[i].capitalCities;
         try {
             var ciaWorldFactbookData = require(__dirname + '/../data/cia-world-factbook/'+countries[i].fips.toLowerCase()+'.json');
+            /*
             if (ciaWorldFactbookData.government.Capital['name:'] != "") {
                 countries[i].capitalCities = [];
                 countries[i].capitalCities.push(ciaWorldFactbookData.government.Capital['name:']);
             }
+            */
         } catch (exception) {
             // console.log("Warning: Unable to load CIA World Factbook data for "+countries[i].name);
         }
