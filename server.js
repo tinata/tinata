@@ -39,6 +39,29 @@ app.get('/about', function(req, res, next) {
 });
 
 /** 
+ * The Maps page
+ * @todo Create single request handler for all maps
+ */
+app.get('/maps', function(req, res, next) {
+    res.render('maps');
+});
+
+/** 
+ * LGBT rights map
+ */
+app.get('/maps/lgbt-rights', function(req, res, next) {
+    res.render('maps/lgbt-rights');
+});
+
+/** 
+ * Economies map
+ */
+app.get('/maps/economies', function(req, res, next) {
+    res.render('maps/economies');
+});
+
+
+/** 
  * List all countries on an HTML page
  */
 app.get('/countries(.html)?', function(req, res, next) {

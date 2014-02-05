@@ -1,0 +1,80 @@
+<div class="container container-main">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>
+                LGBT rights
+            </h1>
+            <p class="lead">
+                Countries where members of the Lesbian Gay Bisexual & Transgender Community are subject to persecution.
+            </p>
+            <div style="height: 20px; width: 20px; margin: 0 10px; background: rgba(100,0,0,1);" class="pull-left"></div>
+            <span class="pull-left">Subject to persecution</span>
+            <div style="height: 20px; width: 20px; margin: 0 10px; background: rgba(150,0,0,1);" class="pull-left"></div>
+            <span class="pull-left">Subject to imprisonment</span>
+            <div style="height: 20px; width: 20px; margin: 0 10px; background: rgba(255,0,0,1);" class="pull-left"></div>
+            <span class="pull-left">Subject to the death penalty</span>
+            <br/><br/>
+            <div id="map" style="height: 600px; visibility: hidden;"></div>
+            <br/>
+            <p>
+                 Maps created with <a href="http://polymaps.org">PolyMaps</a> and the <a href="http://thematicmapping.org">World Borders Dataset</a>.
+            </p>
+         </div>
+    </div>
+</div>
+<script type="text/javascript" src="/js/modernizr.min.js"></script>
+<script type="text/javascript" src="/js/polymaps.min.js"></script>
+<script type="text/javascript" src="/js/nns.min.js"></script>
+<script>
+var po = org.polymaps;
+
+var map = po.map()
+    .container(document.getElementById("map").appendChild(po.svg("svg")))
+    .center({lat: 30, lon: 0})
+    .zoom(2.1);
+
+map.add(po.geoJson()
+    .url("/js/world.json")
+    .tile(false)
+    .zoom(3)
+    .on("load", plotMap));
+
+function plotMap(e) {
+    $.getJSON( "/countries.json", function(countries) {
+
+        $('#map').css({visibility: 'visible'});
+        
+        for (var i = 0; i < e.features.length; i++) {
+            var feature = e.features[i];
+            var countryName = feature.data.properties.name;
+                
+            var tileText = countryName;
+            var tileStyle = "fill: transparent;";
+            tileStyle = "fill: rgba(0,0,0,0.25);";
+            for (c in countries) {
+                if (countryName == countries[c].name) {
+                    try {
+                        if (countries[c].warnings.high.lgbtDeathPenalty)
+                            tileStyle = "fill: rgba(255,0,0,1);";
+                    } catch (e){}
+                     
+                    try {
+                        if (countries[c].warnings.high.lgbtImprisonment)
+                            tileStyle = "fill: rgba(150,0,0,1);";
+                    } catch (e){}
+                    
+                    try {
+                        if (countries[c].warnings.medium.lgbtPersecution)
+                            tileStyle = "fill: rgba(100,0,0,1);";
+                    } catch (e){}
+                }
+            }
+                
+            n$(feature.element)
+                .attr("style", tileStyle)
+                .text(tileText)
+                .add("svg:title");
+        }
+    });
+}
+</script>
