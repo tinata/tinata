@@ -188,7 +188,7 @@ name,officalName,isoNumeric,iso2,iso3,fips,nameForCitizen,adjective,dependantTer
 "Qatar","The State of Qatar","634","QA","QAT","QA","Qatari","Qatari",
 "Réunion","","638","RE","REU","","","",true
 "Romania","Romania","642","RO","ROU","RO","Romanian","Romanian",
-"Serbia","The Republic of Serbia",,"RS","SRB","RI","Serbian","Serbian",
+"Serbia","The Republic of Serbia","688","RS","SRB","RI","Serbian","Serbian",
 "Russia","The Russian Federation","643","RU","RUS","RS","Russian","Russian",
 "Rwanda","The Republic of Rwanda","646","RW","RWA","RW","Rwandan","Rwandan",
 "Saudi Arabia","The Kingdom of Saudi Arabia","682","SA","SAU","SA","Saudi Arabian","Saudi Arabian",
