@@ -18,8 +18,8 @@
             <br/><br/>
             <div id="map" style="height: 600px; visibility: hidden;"></div>
             <br/>
-            <p>
-                 Maps created with <a href="http://polymaps.org">PolyMaps</a> and the <a href="http://thematicmapping.org">World Borders Dataset</a>.
+            <p class="text-right">
+                 Map created with <a href="http://polymaps.org">PolyMaps</a>, the <a href="http://thematicmapping.org">World Borders Dataset</a> and <strong>Tinatapi</strong>.
             </p>
          </div>
     </div>
@@ -36,7 +36,7 @@ var map = po.map()
     .zoom(2.1);
 
 map.add(po.geoJson()
-    .url("/js/world.json")
+    .url("/js/world-polymap.json")
     .tile(false)
     .zoom(3)
     .on("load", plotMap));
