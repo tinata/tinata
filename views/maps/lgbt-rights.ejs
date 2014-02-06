@@ -7,14 +7,20 @@
             <p class="lead">
                 Countries where members of the Lesbian Gay Bisexual & Transgender Community are subject to persecution
             </p>
-            <div class="clearfix">
-                <div style="height: 20px; width: 20px; margin-right: 10px; background: gold;" class="pull-left"></div>
-                <span class="pull-left">Subject to persecution</span>
-                <div style="height: 20px; width: 20px; margin: 0 10px; background: orange;" class="pull-left"></div>
-                <span class="pull-left">Subject to imprisonment</span>
-                <div style="height: 20px; width: 20px; margin: 0 10px; background: maroon;" class="pull-left"></div>
-                <span class="pull-left">Subject to the death penalty</span>
-            </div>
+            <ul class="list-unstyled map-legend">
+                <li>
+                    <div class="colorWell pull-left" style="background: gold;"></div>
+                    <span class="pull-left">Subject to persecution</span>
+                </li>
+                <li>
+                    <div class="colorWell pull-left" style="background: orange;"></div>
+                    <span class="pull-left">Subject to imprisonment</span>
+                </li>
+                <li>
+                    <div class="colorWell pull-left" style="background: maroon;"></div>
+                    <span class="pull-left">Subject to the death penalty</span>
+                </li>
+            </ul>
             <div id="map" class="world-map">
                 <h3 class="country-name"></h3>
             </div>
@@ -51,23 +57,28 @@ function plotMap(e) {
                 
             var tileText = feature.data.properties.name;
             var tileStyle = "fill: transparent;";
-            tileStyle = "fill: rgba(0,0,0,0.25);";
+            tileStyle = "fill: #ccc;";
+            
+            
             for (c in countries) {
                 if (feature.data.properties.iso2 == countries[c].iso2) {
-                    try {
-                        if (countries[c].warnings.high.lgbtDeathPenalty)
-                            tileStyle = "fill: maroon";
-                    } catch (e){}
-                     
-                    try {
-                        if (countries[c].warnings.high.lgbtImprisonment)
-                            tileStyle = "fill: orange";
-                    } catch (e){}
+                    // Check for warnings
+                    if (countries[c].warnings) {
                     
-                    try {
-                        if (countries[c].warnings.medium.lgbtPersecution)
-                            tileStyle = "fill: gold";
-                    } catch (e){}
+                        // Check for warnings in 'high'
+                        if (countries[c].warnings.high) {
+                            if (countries[c].warnings.high.lgbtDeathPenalty)
+                                tileStyle = "fill: maroon;";
+                     
+                            if (countries[c].warnings.high.lgbtImprisonment)
+                                tileStyle = "fill: orange;";
+                        }
+                                                
+                        // Check for warnings in 'medium'
+                        if (countries[c].warnings.medium)
+                            if (countries[c].warnings.medium.lgbtPersecution)
+                                tileStyle = "fill: gold;";
+                    }
                 }
             }
 

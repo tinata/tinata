@@ -7,16 +7,24 @@
             <p class="lead">
                 Income disparity, as measured by the World Bank
             </p>
-            <div class="clearfix">
-                <div style="height: 20px; width: 20px; margin-right: 10px; background: darkgreen;" class="pull-left"></div>
-                <span class="pull-left">High income</span>
-                <div style="height: 20px; width: 20px; margin: 0 10px; background: gold;" class="pull-left"></div>
-                <span class="pull-left">High middle income</span>
-                <div style="height: 20px; width: 20px; margin: 0 10px; background: orange;" class="pull-left"></div>
-                <span class="pull-left">Low middle income</span>
-                <div style="height: 20px; width: 20px; margin: 0 10px; background: maroon;" class="pull-left"></div>
-                <span class="pull-left">Low income</span>
-            </div>
+            <ul class="list-unstyled map-legend">
+                <li>
+                    <div class="colorWell pull-left" style="background: darkgreen;"></div>
+                    <span class="pull-left">High income</span>
+                </li>
+                <li>
+                    <div class="colorWell pull-left" style="background: gold;"></div>
+                    <span class="pull-left">High middle income</span>
+                </li>
+                <li>
+                    <div class="colorWell pull-left" style="background: orange;"></div>
+                    <span class="pull-left">Low middle income</span>
+                </li>
+                <li>
+                    <div class="colorWell pull-left" style="background: maroon;"></div>
+                    <span class="pull-left">Low income</span>
+                </li>
+            </ul>
             <div id="map" class="world-map">
                 <h3 class="country-name"></h3>
             </div>
@@ -56,16 +64,18 @@ function plotMap(e) {
             tileStyle = "fill: rgba(0,0,0,0.25);";
             for (c in countries) {
                 if (feature.data.properties.iso2 == countries[c].iso2) {
-                    try {
-                        if (countries[c].economy.incomeRating == 1)
-                            tileStyle = "fill: maroon;";
-                        if (countries[c].economy.incomeRating == 2)
-                            tileStyle = "fill: orange;";
-                        if (countries[c].economy.incomeRating == 3)
-                            tileStyle = "fill: gold;";
-                        if (countries[c].economy.incomeRating == 4)
-                            tileStyle = "fill: darkgreen;";
-                    } catch (e){}
+                    if (countries[c].economy) {
+                        if (countries[c].economy.incomeRating) {
+                            if (countries[c].economy.incomeRating == 1)
+                                tileStyle = "fill: maroon;";
+                            if (countries[c].economy.incomeRating == 2)
+                                tileStyle = "fill: orange;";
+                            if (countries[c].economy.incomeRating == 3)
+                                tileStyle = "fill: gold;";
+                            if (countries[c].economy.incomeRating == 4)
+                                tileStyle = "fill: darkgreen;";
+                        }
+                    }
                 }
             }
                 
