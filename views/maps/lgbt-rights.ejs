@@ -5,14 +5,14 @@
                 LGBT rights
             </h1>
             <p class="lead">
-                Countries where members of the Lesbian Gay Bisexual & Transgender Community are subject to persecution.
+                Countries where members of the Lesbian Gay Bisexual & Transgender Community are subject to persecution
             </p>
             <div class="clearfix">
-                <div style="height: 20px; width: 20px; margin-right: 10px; background: rgba(100,0,0,1);" class="pull-left"></div>
+                <div style="height: 20px; width: 20px; margin-right: 10px; background: gold;" class="pull-left"></div>
                 <span class="pull-left">Subject to persecution</span>
-                <div style="height: 20px; width: 20px; margin: 0 10px; background: rgba(150,0,0,1);" class="pull-left"></div>
+                <div style="height: 20px; width: 20px; margin: 0 10px; background: orange;" class="pull-left"></div>
                 <span class="pull-left">Subject to imprisonment</span>
-                <div style="height: 20px; width: 20px; margin: 0 10px; background: rgba(255,0,0,1);" class="pull-left"></div>
+                <div style="height: 20px; width: 20px; margin: 0 10px; background: maroon;" class="pull-left"></div>
                 <span class="pull-left">Subject to the death penalty</span>
             </div>
             <div id="map" class="world-map">
@@ -42,34 +42,31 @@ map.add(po.geoJson()
     .on("load", plotMap));
 
 function plotMap(e) {
-        $('svg.map').tooltip();
-        
     $.getJSON( "/countries.json", function(countries) {
 
         $('#map').css({visibility: 'visible'});
         
         for (var i = 0; i < e.features.length; i++) {
             var feature = e.features[i];
-            var countryName = feature.data.properties.name;
                 
-            var tileText = countryName;
+            var tileText = feature.data.properties.name;
             var tileStyle = "fill: transparent;";
             tileStyle = "fill: rgba(0,0,0,0.25);";
             for (c in countries) {
-                if (countryName == countries[c].name) {
+                if (feature.data.properties.iso2 == countries[c].iso2) {
                     try {
                         if (countries[c].warnings.high.lgbtDeathPenalty)
-                            tileStyle = "fill: rgba(255,0,0,1);";
+                            tileStyle = "fill: maroon";
                     } catch (e){}
                      
                     try {
                         if (countries[c].warnings.high.lgbtImprisonment)
-                            tileStyle = "fill: rgba(150,0,0,1);";
+                            tileStyle = "fill: orange";
                     } catch (e){}
                     
                     try {
                         if (countries[c].warnings.medium.lgbtPersecution)
-                            tileStyle = "fill: rgba(100,0,0,1);";
+                            tileStyle = "fill: gold";
                     } catch (e){}
                 }
             }
@@ -91,7 +88,7 @@ function plotMap(e) {
                 .attr("class", "interactive")
                 .attr("data-toggle", "popover")
                 .attr("data-placement", "top")
-                .attr("data-country-name", countryName)
+                .attr("data-country-name", feature.data.properties.name)
                 .text(tileText)
                 .add("svg:title");
         }
