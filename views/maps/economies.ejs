@@ -26,80 +26,120 @@
                 </li>
             </ul>
             <div id="map" class="world-map">
-                <h3 class="country-name"></h3>
+                <h3 id="country-name"></h3>
             </div>
+            <br/>
             <p class="text-right">
-                 Map created with <a href="http://polymaps.org">PolyMaps</a>, the <a href="http://thematicmapping.org">World Borders Dataset</a> and <strong>Tinatapi</strong>.
+                <a href="#source" id="toggle-source" class="btn btn-default btn-sm pull-left"><i class="fa fa-lg fa-code"></i> View source code</a>
+                Map created with <a href="http://polymaps.org">PolyMaps</a>, the <a href="http://thematicmapping.org">World Borders Dataset</a> and <strong>Tinatapi</strong>.
             </p>
+            <div id="source" style="display: none;">
+                <h3>Source code</h3>
+                <h4>HTML</h4>
+<pre id="view-html" class="prettyprint">
+&lt;!-- The object on the page to insert the map into --&gt;
+&lt;div id="map" class="world-map"&gt;
+    &lt;h3 class="country-name"&gt;&lt;/h3&gt;
+&lt;/div&gt;
+
+&lt;!-- jQuery is used in the example to make JSON requests and for DOM manipulation --&gt;
+&lt;script src="http://code.jquery.com/jquery-1.10.2.min.js"&gt;&lt;/script&gt;
+&lt;!-- Modernizr is required by Polymaps --&gt;
+&lt;script src="/js/modernizr.min.js"&gt;&lt;/script&gt;
+&lt;!-- Polymaps is used to draw the maps --&gt;
+&lt;script src="/js/polymaps.min.js"&gt;&lt;/script&gt;
+</pre>
+                <h4>JavaScript</h4>
+                <pre id="view-javascript" class="prettyprint"></pre>
+            </pre>
          </div>
     </div>
 </div>
+<script src="//google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
 <script type="text/javascript" src="/js/modernizr.min.js"></script>
 <script type="text/javascript" src="/js/polymaps.min.js"></script>
-<script type="text/javascript" src="/js/nns.min.js"></script>
-<script>
+<script id="javascript-source">
+// Initalise PolyMaps
 var po = org.polymaps;
 
+// Add map to the div with the id "map"
 var map = po.map()
     .container(document.getElementById("map").appendChild(po.svg("svg")))
     .center({lat: 30, lon: 0})
     .zoom(2.1);
 
+// Fetch the JSON that powers the SVG overlay
 map.add(po.geoJson()
     .url("/js/world-polymap.json")
     .tile(false)
     .zoom(3)
-    .on("load", plotMap));
+    .on("load", mapLoaded));
 
-function plotMap(e) {
-    $.getJSON( "/countries.json", function(countries) {
+function mapLoaded(e) {
+    // Get data for all countries from Tinatapi (using jQuery to make the Ajax request)
+    $.getJSON( "/countries.json", function(countriesJson) {
 
         $('#map').css({visibility: 'visible'});
+
+        // Convert list of countries to be indexed by 2 character ISO code
+        // for efficient lookup e.g. countries.US.name = "United States"
+        var countries = {};
+        for (i in countriesJson) {
+            countries[ countriesJson[i].iso2 ] = countriesJson[i];
+        }
         
         for (var i = 0; i < e.features.length; i++) {
             var feature = e.features[i];
-                
-            var tileText = feature.data.properties.name;
-            var tileStyle = "fill: transparent;";
-            tileStyle = "fill: #ccc;";
-            for (c in countries) {
-                if (feature.data.properties.iso2 == countries[c].iso2) {
-                    if (countries[c].economy) {
-                        if (countries[c].economy.incomeRating) {
-                            if (countries[c].economy.incomeRating == 1)
-                                tileStyle = "fill: maroon;";
-                            if (countries[c].economy.incomeRating == 2)
-                                tileStyle = "fill: orange;";
-                            if (countries[c].economy.incomeRating == 3)
-                                tileStyle = "fill: gold;";
-                            if (countries[c].economy.incomeRating == 4)
-                                tileStyle = "fill: darkgreen;";
-                        }
-                    }
+            
+            // Skip countries not found in countriesJson
+            if (!countries[ feature.data.properties.iso2 ]) {
+                // Still plot the country, but it won't be interactive
+                $(feature.element).attr("style", "fill: #ccc;");
+                continue;
+            }
+
+            var country = countries[ feature.data.properties.iso2 ];
+            var tileStyle = "fill: #ccc;";
+
+            if (country.economy) {
+                if (country.economy.incomeRating) {
+                    if (country.economy.incomeRating == 1) // Low income
+                        tileStyle = "fill: maroon;";
+                    if (country.economy.incomeRating == 2) // Low medium income
+                        tileStyle = "fill: orange;";
+                    if (country.economy.incomeRating == 3) // High medium income
+                        tileStyle = "fill: gold;";
+                    if (country.economy.incomeRating == 4) // High income
+                        tileStyle = "fill: darkgreen;";
                 }
             }
-                
+            
+            // Show/hide country name on mouseover
             $(feature.element).on('mouseover', function() {
-                $('.country-name').html( $(this).data('countryName') );
+                $('#country-name').html( $(this).data('countryName') );
             });
-            
             $(feature.element).on('mouseout', function() {
-                $('.country-name').html('');
+                $('#country-name').html('');
             });
             
+            // Link to more information if the country is clicked
             $(feature.element).on('click touch', function() {
                 window.location = "/countries/"+encodeURIComponent( $(this).data('countryName').replace(" ", "_") );
             });
 
-            n$(feature.element)
+            // Draw the SVG for the country
+            $(feature.element)
                 .attr("style", tileStyle)
                 .attr("class", "interactive")
-                .attr("data-toggle", "popover")
-                .attr("data-placement", "top")
-                .attr("data-country-name", feature.data.properties.name)
-                .text(tileText)
-                .add("svg:title");
+                .attr("data-country-name", country.name);
         }
     });
 }
+</script>
+<script>
+    $('#view-javascript').html( $('#javascript-source').html() );
+    $( "#toggle-source" ).on("click touch", function() {
+        $(this).hide();
+        $("#source").toggle("slow");
+    });
 </script>

@@ -67,6 +67,10 @@ table p {
     background: #fff;
 }
 
+.navbar .navbar-brand {
+    font-weight: 600;
+}
+
 .jumbotron {
     padding: 60px 0;
     margin-bottom: 0;
@@ -173,6 +177,12 @@ ul.map-legend li span {
     margin-bottom: 10px;
 }
 
+@media(max-width:767px) {
+    ul.map-legend li {
+        clear: both;
+    }
+}
+
 svg.map {
   width: 100%;
   height: 100%;
@@ -186,7 +196,7 @@ svg.map {
     margin-bottom: 10px;
 }
 
-.world-map .country-name {
+.world-map #country-name {
     position: absolute;
     left: 0;
     top: 10px;
