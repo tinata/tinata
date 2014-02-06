@@ -61,7 +61,7 @@ function plotMap(e) {
                 
             var tileText = feature.data.properties.name;
             var tileStyle = "fill: transparent;";
-            tileStyle = "fill: rgba(0,0,0,0.25);";
+            tileStyle = "fill: #ccc;";
             for (c in countries) {
                 if (feature.data.properties.iso2 == countries[c].iso2) {
                     if (countries[c].economy) {
