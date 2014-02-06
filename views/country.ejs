@@ -145,7 +145,8 @@
             </div>
         </div>
         <div class="col-sm-3">
-            <div id="map" style="height: 300px;"></div>
+            <!-- Offical name used if found as it makes for more reliable plotting on maps -->
+            <div id="map" style="height: 300px;" data-country-name="<% if (country.officalName) { %><%= country.officalName %><% } else { %><%= country.name %><% } %>"  ></div>
             <!-- @todo
             <h3>Known issues</h3>
             <% if (knownIssues.length > 0) { %>
@@ -194,7 +195,7 @@
     });
 
     function lookupAddress() {
-        var address = '<%= country.name %>';
+        var address = $('#map').data('countryName');
         geocoder.geocode( { 'address': address}, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
                 map.setCenter(results[0].geometry.location);
