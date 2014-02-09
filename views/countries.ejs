@@ -84,14 +84,6 @@
                                 </a>
                             </th>
                             <th>
-                                <a href="" class="btn-block" ng-click="predicate = 'capitalCities'; reverse=!reverse">Capital cities
-                                    <span ng-show="predicate == 'capitalCities'">
-                                        <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
-                                        <span ng-show="reverse"><i class="fa fa-caret-down"></i></span>
-                                    </span>
-                                </a>
-                            </th>
-                            <th>
                                 <a href="" class="btn-block" ng-click="predicate = 'currencies'; reverse=!reverse">Currencies
                                     <span ng-show="predicate == 'currencies'">
                                         <span ng-show="!reverse"><i class="fa fa-caret-up"></i></span>
@@ -153,14 +145,6 @@
                                 </p>
                                 <p class="text-muted" ng-if="!country.notes">
                                     No
-                                </p>
-                            </td>
-                            <td>
-                                <p ng-repeat="capitals in country.capitalCities">
-                                    {{capitals}}
-                                </p>
-                                <p class="text-muted" ng-if="!country.capitalCities">
-                                    N/A
                                 </p>
                             </td>
                             <td>
