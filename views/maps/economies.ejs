@@ -75,6 +75,9 @@ map.add(po.geoJson()
     .zoom(3)
     .on("load", mapLoaded));
 
+map.add(po.drag());
+map.add(po.wheel());
+
 function mapLoaded(e) {
     // Get data for all countries from Tinatapi (using jQuery to make the Ajax request)
     $.getJSON( "/countries.json", function(countriesJson) {
