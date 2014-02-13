@@ -46,6 +46,7 @@ To import the data, run:
 ```
 node scripts/import.js
 ```
+If this fails you will need to create a copy of "config.json.example" and rename it to "config.json".
 
 To run the app:
 ```
