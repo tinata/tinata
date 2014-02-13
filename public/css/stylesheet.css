@@ -203,3 +203,26 @@ svg.map {
     top: 10px;
     background: rgba(255,255,255,0.75);
 }
+
+#zoom-btns {
+    position: absolute;
+    top: 60px;
+    left: 5px;
+}
+
+.zoom-btn {
+    width: 20px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    text-align: center;
+    background: blue;
+    color: #fff;
+    font-weight: bold;
+    font-size: 18px;
+    line-height: 20px;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    user-select: none;
+}
