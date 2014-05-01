@@ -9,12 +9,17 @@ var ejs = require('ejs');
 var mongoJs = require('mongojs');
 var Q = require('q');
 var dateFormat = require('dateformat');
+//var fs = require('fs');
 var tinataCountries = require(__dirname + '/lib/tinata-countries');
 
 GLOBAL.db = mongoJs.connect("127.0.0.1/tinatapi", ["countries"]);
 
 // Initialise and configure Express and Express Partials
 var app = express();
+app.use(function(req, res, next) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    next();
+});
 app.use(express.static(__dirname + '/public'))
 app.use(partials());
 app.set('title', 'Tinatapi');
@@ -40,26 +45,24 @@ app.get('/about', function(req, res, next) {
 
 /** 
  * The Maps page
- * @todo Create single request handler for all maps
  */
 app.get('/maps', function(req, res, next) {
     res.render('maps');
 });
 
 /** 
- * LGBT rights map
+ * Load individual maps
  */
-app.get('/maps/lgbt-rights', function(req, res, next) {
-    res.render('maps/lgbt-rights');
+app.get('/maps/:map', function(req, res, next) {
+    var template = 'maps/'+req.params.map.replace( /[^A-z0-9_-]/ , '');
+    fs.exists('./views/'+template+'.ejs', function(exists) {
+      if (exists) {
+        res.render(template);
+      } else {
+          res.status(404).render('page-not-found', { title: "Page not found" });
+      }
+    });
 });
-
-/** 
- * Economies map
- */
-app.get('/maps/economies', function(req, res, next) {
-    res.render('maps/economies');
-});
-
 
 /** 
  * List all countries on an HTML page
@@ -100,9 +103,7 @@ app.get('/countries/:name', function(req, res, next) {
     .then(function(country) {
         if (country == false) {
             // If country not found, return 404
-            res.status(404).render('page-not-found', {
-                title: "Page not found"
-            });
+            res.status(404).render('page-not-found', { title: "Page not found" });
         } if (responseFormat == 'html') {
             // Return country information as an HTML page.
             // When returning HTML page identify known issues (missing data)
@@ -116,9 +117,7 @@ app.get('/countries/:name', function(req, res, next) {
             res.send( JSON.stringify(country) );
         } else {
             // If file extention not supported, return 404
-            res.status(404).render('page-not-found', {
-                title: "Page not found"
-            });
+            res.status(404).render('page-not-found', { title: "Page not found" });
         }
     });
 });
@@ -131,9 +130,7 @@ app.get('/countries/:name/flag', function(req, res, next) {
     .then(function(country) {
         if (country == false) {
             // If country not found, return 404
-            res.status(404).render('page-not-found', {
-                title: "Page not found"
-            });
+            res.status(404).render('page-not-found', { title: "Page not found" });
         } else {
             res.render('flag', { country: country } );
         }
@@ -148,9 +145,7 @@ app.get('/countries/:name/flag.svg', function(req, res, next) {
     .then(function(country) {
         if (country == false) {
             // If country not found, return 404
-            res.status(404).render('page-not-found', {
-                title: "Page not found"
-            });
+            res.status(404).render('page-not-found', { title: "Page not found" });
         } else {
             res.redirect('/img/flags/'+country.iso2.toLowerCase()+'.svg');
         }
@@ -171,9 +166,7 @@ app.get('/status', function(req, res, next) {
  * Handle all other requests as 404 / Page Not Found errors
  */
 app.use(function(req, res, next) {
-    res.status(404).render('page-not-found', {
-        title: "Page not found"
-    });
+    res.status(404).render('page-not-found', { title: "Page not found" });
 });
 
 app.listen(3001);
