@@ -32,6 +32,27 @@ It also means it's easy to use the CSV files directly for data mashups, or in si
 
 See http://api.tinata.co.uk/about for more information on licensing. Note that  not all the data is currently available for re-use under a public domain licence. Work is being undertaken to simplify the licencing.
 
+##Local Testing
+(WARNING: Incomplete instructions)
+
+These instructions assume that you have nodejs set up.
+
+Install the required packages using:
+```
+npm install
+```
+
+To import the data, run:
+```
+node scripts/import.js
+```
+If this fails you will need to create a copy of "config.json.example" and rename it to "config.json".
+
+To run the app:
+```
+node server.js
+```
+
 ###Terms & Conditions
 
 This is free and unencumbered software released into the public domain.
