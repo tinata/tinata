@@ -513,7 +513,7 @@ function init() {
     // Load countries from first DB or from CSV if the DB is empty
     var deferred = Q.defer();
     db.countries.find({}, function(err, countries) {
-        if (countries.length && countries.length > 0) {
+        if (countries && countries.length > 0) {
             // Values in CSV can override existing values in DB
             var csvConverter = new Converter();
             csvConverter.on("end_parsed", function(jsonObj) {
