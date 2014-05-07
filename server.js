@@ -9,13 +9,14 @@ var ejs = require('ejs');
 var mongoJs = require('mongojs');
 var Q = require('q');
 var dateFormat = require('dateformat');
-//var fs = require('fs');
+var fs = require('fs');
 var tinataCountries = require(__dirname + '/lib/tinata-countries');
 
 GLOBAL.db = mongoJs.connect("127.0.0.1/tinatapi", ["countries"]);
 
 // Initialise and configure Express and Express Partials
 var app = express();
+// Allows all JSON files (e.g. map GeoJSON) to be accessed from any domain
 app.use(function(req, res, next) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     next();
@@ -81,7 +82,6 @@ app.get('/countries.json?', function(req, res, next) {
     tinataCountries.getAllCountries()
     .then(function(countries) {
         res.setHeader('Content-Type', 'application/json; charset=utf-8');
-        res.setHeader("Access-Control-Allow-Origin", "*");
         res.send( JSON.stringify(countries) );
     });
 });
@@ -113,7 +113,6 @@ app.get('/countries/:name', function(req, res, next) {
         } else if (responseFormat == 'json') {
             // Default (JSON)
             res.setHeader('Content-Type', 'application/json; charset=utf-8');
-            res.setHeader("Access-Control-Allow-Origin", "*");
             res.send( JSON.stringify(country) );
         } else {
             // If file extention not supported, return 404
