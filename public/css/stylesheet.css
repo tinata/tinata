@@ -199,27 +199,30 @@ svg.map {
 
 .world-map #country-name {
     position: absolute;
-    left: 0;
-    top: 10px;
-    background: rgba(255,255,255,0.75);
+    left: 40px;
+    top: 15px;
+    padding: 5px;
+    text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
 }
 
 #zoom-btns {
     position: absolute;
-    top: 60px;
+    top: 35px;
     left: 5px;
 }
 
 .zoom-btn {
-    width: 20px;
+    cursor: pointer;
+    width: 26px;
     margin-bottom: 5px;
+    padding-bottom: 2px;
     border-radius: 3px;
     text-align: center;
-    background: blue;
-    color: #fff;
+    background: rgba(220,220,220,0.4);
+    color: rgba(0,0,0,0.5);
     font-weight: bold;
     font-size: 18px;
-    line-height: 20px;
+    line-height: 24px;
         -webkit-touch-callout: none;
         -webkit-user-select: none;
         -moz-user-select: none;
