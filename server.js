@@ -23,7 +23,7 @@ app.use(function(req, res, next) {
 });
 app.use(express.static(__dirname + '/public'))
 app.use(partials());
-app.set('title', 'Tinatapi');
+app.set('title', 'Tinata');
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.engine('ejs', ejs.__express);
