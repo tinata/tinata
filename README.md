@@ -2,7 +2,7 @@
 
 Free, open access to information about countries
 
-http://api.tinata.co.uk
+http://tinata.org
 
 Tinatapi (pronounced tin-a-tap-e) stands for "Tinatapi is not a travel API" (a pun on the notion that it contains information useful to travellers but not exlusively intended for them).
 
@@ -30,7 +30,7 @@ It's designed this way to make it easy for anyone to edit and submit corrections
 
 It also means it's easy to use the CSV files directly for data mashups, or in situations where accessing Tinatapi in a live environment isn't an option.
 
-See http://api.tinata.co.uk/about for more information on licensing. Note that  not all the data is currently available for re-use under a public domain licence. Work is being undertaken to simplify the licencing.
+See http://tinata.org/about for more information on licensing. Note that  not all the data is currently available for re-use under a public domain licence. Work is being undertaken to simplify the licencing.
 
 ##Local Testing
 (WARNING: Incomplete instructions)
