@@ -1,16 +1,26 @@
-#Tinatapi
+#Tinata
 
 Free, open access to information about countries
 
 http://tinata.org
 
-Tinatapi (pronounced tin-a-tap-e) stands for "Tinatapi is not a travel API" (a pun on the notion that it contains information useful to travellers but not exlusively intended for them).
+Tinata (pronounced tin-a-ta) stands for "Tinata is not a travel API". This is a terrible a pun on the notion that it contains information useful to travellers, but is not exlusively intended for them.
 
 It's intended to provide an API that joins together data from multiple sources to create a simple way for developers and data journalists to access lots of useful information in a hassle free way.
 
 It was created for the Foreign and Commonwealth Office Hack 2014 (#fcohack), run by Rewired State. It is written in nodejs. 
 
 The current implementation should be considered beta and the API subject to change. See the CHANGELOG for details of recent changes to the API.
+
+**Note** "Tinata" was formerly called "Tinatapi" (as distinct from "Tinata" - the web based mobile app) but for the sake of simplicity there is no longer a distinction between accessing the service on mobile/desktop or via the API and everything is now hosted on "tinata.org".
+
+##Current Status
+
+The service is actively monitored for performance and avaliblity, though no new work has been done recently (save for hotfixes for reported major issues). Some of the live data (FCO advisories, currency exchange rates) is not currently updating.
+
+There will be some updates to Tinata to address this (including better visiblity of how fresh the data is, and public visibility of continuous intergration status) it over the 8th-9th November, as I'm actively using the service for internal purposes in BBC News Labs and for other purpposes.
+
+Please feel free to submit bug reports, feature requests or pull requests! If you have a similar project and think we could collaborate do get in touch.
 
 ##Datasets
 
@@ -24,11 +34,9 @@ The data has been collated from multiple sources, including:
 - Open Exchange Rates
 - Wikipedia
 
-The DB is built from several CSV files which - when combined - form the basis of data that powers Tinatapi. These datasets are parsed by 'import.js'.
+The DB is built from several CSV files which - when combined - form the basis of data that powers Tinata. These datasets are parsed by 'import.js'.
 
-It's designed this way to make it easy for anyone to edit and submit corrections and additional data.
-
-It also means it's easy to use the CSV files directly for data mashups, or in situations where accessing Tinatapi in a live environment isn't an option.
+It's designed this way to make it easy for anyone to edit and submit corrections and additional data. It also means it's easy to use the CSV files directly for data mashups, or in situations where accessing Tinata in a live environment isn't an option.
 
 See http://tinata.org/about for more information on licensing. Note that  not all the data is currently available for re-use under a public domain licence. Work is being undertaken to simplify the licencing.
 
