@@ -1,0 +1,23 @@
+<div class="container container-main">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>
+                Status
+            </h1>
+			<% if (countries && countries.length) { %>
+				<ol>
+				  <% countries.forEach(function(country) { %>
+					<li>
+						<h3><%= country.name %></h3>
+						<ul>
+							<% for (var key in country) { %>
+								<li><i><%= key %></i> <b><%= JSON.stringify(country[key]) %></b></li>
+							<% } %>
+						</ul>
+					</li>
+				  <% }) %>
+				</ol>
+			<% } %>
+		</div>
+    </div>
+</div>
