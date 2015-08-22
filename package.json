@@ -1,21 +1,30 @@
 {
   "name": "Tinatapi",
   "description": "International travel advice API",
-  "version": "0.0.1",
+  "scripts": {
+    "dbimport": "node scripts/import.js",
+    "dblist": "node scripts/listdb.js",
+    "dbtest": "node examples/test_mongo.js"
+  },
+  "main": "server.js",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "cheerio": "*",
+    "country-data": "*",
+    "csvtojson": "^0.4.2",
+    "dateformat": "*",
+    "ejs": "*",
     "express": "3.*",
     "express-partials": "*",
-    "ejs": "*",
-    "mongojs": "*",
-    "request": "*",
-    "q": "*",
-    "csvtojson": "*",
-    "country-data": "*",
-    "open-exchange-rates": "*",
     "money": "*",
-    "xml2js": "*",
-    "cheerio": "*",
-    "dateformat": "*"
+    "mongodb": "^2.0.40",
+    "open-exchange-rates": "*",
+    "q": "*",
+    "request": "*",
+    "xml2js": "*"
+  },
+  "devDependencies": {
+    "assert": "^1.3.0"
   }
 }

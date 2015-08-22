@@ -41,24 +41,28 @@ It's designed this way to make it easy for anyone to edit and submit corrections
 See http://tinata.org/about for more information on licensing. Note that  not all the data is currently available for re-use under a public domain licence. Work is being undertaken to simplify the licencing.
 
 ##Local Testing
-(WARNING: Incomplete instructions)
 
-These instructions assume that you have nodejs set up.
+These instructions assume that you have node.js and mongoDB set up.
 
 Install the required packages using:
 ```
 npm install
 ```
 
-To import the data, run:
+Test mongoDB connection
 ```
-node scripts/import.js
+node run dbtest
+```
+
+Import the CSV data into mongoDB, run:
+```
+node run dbimport
 ```
 If this fails you will need to create a copy of "config.json.example" and rename it to "config.json".
 
 To run the app:
 ```
-node server.js
+node start
 ```
 
 ###Terms & Conditions
