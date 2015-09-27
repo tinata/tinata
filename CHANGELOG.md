@@ -2,6 +2,14 @@
 
 Changes to the underlyig code and API. The API should be considered unstable for now - properties may be renamed or removed completely.
 
+## 2015-09-27 Bugfixes
+
+csvtojson now works on database import
+
+## 2015-08-09 Bugfixes
+
+Upgraded mongodb and csvtojson
+
 
 ## 2014-02-05 API Enchancements
 
