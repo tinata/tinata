@@ -44,6 +44,16 @@ See http://tinata.org/about for more information on licensing. Note that  not al
 
 These instructions assume that you have node.js and mongoDB set up.
 
+```
+mongod --dbpath=/data --port 27017
+```
+
+if already running
+
+```
+mongod
+```
+
 Install the required packages using:
 ```
 npm install
@@ -51,12 +61,12 @@ npm install
 
 Test mongoDB connection
 ```
-node run dbtest
+npm run dbtest
 ```
 
 Import the CSV data into mongoDB, run:
 ```
-node run dbimport
+npm run dbimport
 ```
 If this fails you will need to create a copy of "config.json.example" and rename it to "config.json".
 
