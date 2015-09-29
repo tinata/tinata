@@ -4,7 +4,7 @@
  */
 var util = require('util');
 var MongoClient = require('mongodb').MongoClient;
-var request = require('request');
+var httpRequest = require('request');
 var Q = require('q');
 var xml2js = require('xml2js');
 var config = require(__dirname + '/../config.json');
@@ -25,9 +25,9 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 
 	// Steps which rely on external services / sites can be disabled here.
 	GLOBAL.options = {};
-	options.getExchangeRateData = true;
-	options.getTravelAdvice = true;
-	options.getWikipediaData = true;
+	options.getExchangeRateData = false;
+	options.getTravelAdvice = false;
+	options.getWikipediaData = false;
 
 	console.log("*** Importing data into the DB");
 
@@ -53,7 +53,7 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 		.then(capitalCities)
 		.then(phoneCodeCurrency)
 		.then(currencyExchange)
-		// .then(ciaWorldFactbook)
+		.then(ciaWorldFactbook)
 		.then(updateAllCountries)
 		.then(wikipedia)
 		.then(importReport);
@@ -64,7 +64,8 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 		db.collection("countries").find({}).toArray(function(err, countries) {
 			if (countries && countries.length > 0) {
 				// Values in CSV can override existing values in DB
-				getCsvFileAsJson("../data/csv/countries.csv", function(jsonObj) {
+				getCsvFileAsJson("../data/csv/countries.csv", function(err, jsonObj) {
+					if (err) throw err;
 					var csvCountries = jsonObj;
 					for (i in csvCountries) {
 						// Convert string to bool
@@ -114,7 +115,7 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 						if (countries[i].dependantTerritory == "true")
 							countries[i].dependantTerritory = true;
 					}
-					console.log("countries.csv imported");
+					console.log("countries.csv imported " + countries.length);
 					deferred.resolve(countries);
 				});
 			}
@@ -124,13 +125,11 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 
 	function aliases(countries) {
 		// Load aliases
-		var promises = [];
-		
+		var deferred = Q.defer(),
+			promises = [];
 		getCsvFileAsJson("../data/csv/aliases.csv", function (err, jsonObj) {
-			if (err) {
-				throw err;
-			}
 			var aliases = jsonObj;
+			if (err) throw err;
 			countries.forEach(function(country, index) {
 				var countryAliases = [];
 				for (a in aliases) {
@@ -163,19 +162,21 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 					// If no aliases, just return country object as-is
 					promises.push(country);
 				}
-				
 			});
-
-			console.log("aliases.csv imported");
+			deferred.resolve( Q.all(promises) );
+			console.log("aliases.csv imported " + countries.length);
 		});
-		return Q.all(promises);
+		return deferred.promise;
 	}
 
 	function humanRights(countries) {
 		// Load Human Rights info from CSV provided by the CIRI Human Rights Data Project (http://www.humanrightsdata.org) and flag warnings appropriately
-		var deferred = Q.defer();
-		getCsvFileAsJson("../data/csv/ciri-human-rights-data.csv", function(jsonObj) {
+		var deferred = Q.defer(),
+			csvPath = "../data/csv/ciri-human-rights-data.csv";
+		getCsvFileAsJson(csvPath, function(err, jsonObj) {
 			var humanRights = jsonObj;
+			if (err) throw err;
+			if (jsonObj === null) throw ReferenceError("Cannot read " + csvPath);
 			for (i in countries) {
 				
 				if (countries[i].humanRights)
@@ -275,7 +276,7 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 				}
 			}
 			deferred.resolve(countries);
-			console.log("ciri-human-rights-data.csv imported");
+			console.log("ciri-human-rights-data.csv imported " + countries.length);
 		});
 		return deferred.promise;
 	}
@@ -283,8 +284,9 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 	function lgbtCountries(countries) {
 		// Flag any warnings related to LGBT persecution or improsionment
 		var deferred = Q.defer();
-		getCsvFileAsJson("../data/csv/lgbt-rights.csv", function(jsonObj) {
+		getCsvFileAsJson("../data/csv/lgbt-rights.csv", function(err, jsonObj) {
 			var lgbtCountries = jsonObj;
+			if (err) throw err;
 			for (i in countries) {
 				
 				// Reset existing LGBT community warnings
@@ -313,7 +315,7 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 				}
 			}
 			deferred.resolve(countries);
-			console.log("lgbt-rights.csv imported");
+			console.log("lgbt-rights.csv imported " + countries.length);
 		});
 		return deferred.promise;
 	}
@@ -321,9 +323,12 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 	function fcoCountries(countries) {
 		// Loop through all countries adding in data provided by the FCO
 		// @todo Use JSON API on GOV.uk to get the endpoint URLs for each country
-		var deferred = Q.defer();
-		getCsvFileAsJson("../data/csv/uk-fco-countries.csv", function(jsonObj) {
+		var deferred = Q.defer(),
+			csvPath = "../data/csv/uk-fco-countries.csv";
+		getCsvFileAsJson(csvPath, function(err, jsonObj) {
 			var fcoCountries = jsonObj;
+			if (err) throw err;
+			if (jsonObj === null) throw ReferenceError("Cannot read " + csvPath);
 			for (i in countries) {
 				for (j in fcoCountries) {
 					if (countries[i].iso2 == fcoCountries[j]['ISO 3166-1 (2 letter)']) {
@@ -342,24 +347,23 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 				}
 			}
 			deferred.resolve(countries);
-			console.log("uk-fco-countries.csv imported");
+			console.log("uk-fco-countries.csv imported " + countries.length);
 		});
 		return deferred.promise;
 	}
 
 	function travelAdvice(countries) {
-		if (options.getTravelAdvice == true) {
-			// Get latest travel advice from FCO on gov.uk
-			var promises = [];
-			for (i in countries) {
-				var country = countries[i];
-				var promise = getTravelAdvice(country);
-				promises.push(promise);
-			}
-			return Q.all(promises);
-		} else {
+		if (options.getTravelAdvice === false) {
 			return countries;
 		}
+		// Get latest travel advice from FCO on gov.uk
+		var promises = [];
+		for (i in countries) {
+			var country = countries[i];
+			var promise = getTravelAdvice(country);
+			promises.push(promise);
+		}
+		return Q.all(promises);
 	}
 
 	function worldBankCountries(countries) {
@@ -374,8 +378,9 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 			high income,$12,616 or more.
 		*/
 		var deferred = Q.defer();
-		getCsvFileAsJson("../data/csv/world-bank-income-group.csv", function(jsonObj) {
+		getCsvFileAsJson("../data/csv/world-bank-income-group.csv", function(err, jsonObj) {
 			var worldBankCountries = jsonObj;
+			if (err) throw err;
 			for (i in countries) {   
 				
 				// Remove deprecated property
@@ -405,7 +410,7 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 				}
 			}
 			deferred.resolve(countries);
-			console.log("world-bank-income-group.csv imported");
+			console.log("world-bank-income-group.csv imported " + countries.length);
 		});
 		return deferred.promise;
 	}
@@ -415,8 +420,9 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 		// Some countries have multiple capitals (e.g. administrative/executive).
 		// The offical/administrative/executive/seat of government is prefered.
 		var deferred = Q.defer();
-		getCsvFileAsJson("../data/csv/capital-cities.csv", function(jsonObj) {
+		getCsvFileAsJson("../data/csv/capital-cities.csv", function(err, jsonObj) {
 			var capitalCities = jsonObj;
+			if (err) throw err;
 			for (i in countries) {
 				// Reset so that entries deleted from the CSV are removed from DB.
 				if (countries[i].capitalCity)
@@ -433,7 +439,7 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 				}
 			}
 			deferred.resolve(countries);
-			console.log("capital-cities.csv imported");
+			console.log("capital-cities.csv imported " + countries.length);
 		});
 		return deferred.promise;
 	}
@@ -465,7 +471,7 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 			}
 		}
 		deferred.resolve(countries);
-		console.log("dialing code and local currencies imported")
+		console.log("dialing code and local currencies imported " + countries.length);
 		return deferred.promise;
 	}
 
@@ -513,7 +519,7 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 							}
 						}
 					}
-					console.log("openexchangerates.org currency exchange rates imported");
+					console.log("openexchangerates.org currency exchange rates imported " + countries.length);
 					deferred.resolve(countries);
 				});
 			} catch (exception) {
@@ -565,7 +571,7 @@ MongoClient.connect("mongodb://127.0.0.1/tinatapi", function(err, db) {
 			var deferred = Q.defer();
 			// Get UN population statistics by scraping Wikipedia
 			try {
-				var requestPromise = request('http://en.wikipedia.org/wiki/List_of_countries_by_population_(United_Nations)', function (error, response, body) {
+				var requestPromise = httpRequest('http://en.wikipedia.org/wiki/List_of_countries_by_population_(United_Nations)', function (error, response, body) {
 					var promises = [];                
 					// Check the response seems okay
 					if (response && response.statusCode == 200) {
@@ -649,7 +655,7 @@ function getTravelAdvice(country) {
 			var url = country.travelAdvice.fcoTravelAdviceUrl+'.json';
 			url = url.replace(/www.\gov\.uk\/foreign-travel-advice/, 'www.gov.uk/api/foreign-travel-advice');
 			country.travelAdvice.fcoTravelAdviceJsonUrl = url;
-			request(url, function (error, response, body) {
+			httpRequest(url, function (error, response, body) {
 				// Check the response seems okay
 				if (response && response.statusCode == 200) {
 					var jsonResponse = JSON.parse(body);
@@ -686,12 +692,12 @@ function getTravelAdvice(country) {
 					country.travelAdvice.lastUpdated = date.toISOString();
 					
 					deferred.resolve(country);
-					console.log("Travel advisory imported")
+					console.log("Travel advisory imported");
 				} else {
 					console.log("Warning: Failed to fetch latest FCO travel advice for "+country.name+" from "+country.travelAdvice.fcoTravelAdviceUrl);
 					deferred.resolve(country);
 				}
-			}); // close request
+			}); // close httpRequest
 		} else {
 			// Travel advice is not available for all countries.
 			deferred.resolve(country);

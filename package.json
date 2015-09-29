@@ -2,6 +2,7 @@
   "name": "Tinatapi",
   "description": "International travel advice API",
   "scripts": {
+    "debugdbimport": "node-debug scripts/import.js",
     "dbimport": "node scripts/import.js",
     "dblist": "node scripts/listdb.js",
     "dbtest": "node examples/test_mongo.js"
